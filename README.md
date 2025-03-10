@@ -2,8 +2,10 @@
 
 ## Workflow
 
-![](./docs/workflow.svg)
+![](./imgs/FlowChart_rent.svg)
+
+![](./imgs/FlowChart_repair.svg)
 
 ## Class Diagram
 
-![](./docs/class.svg)
+![](./imgs/classDiagram.svg)
