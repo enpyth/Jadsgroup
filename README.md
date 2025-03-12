@@ -2,10 +2,10 @@
 
 ## Workflow
 
-![](./imgs/FlowChart_rent.svg)
+![](./docs/imgs/FlowChart_rent.svg)
 
-![](./imgs/FlowChart_repair.svg)
+![](./docs/imgs/FlowChart_repair.svg)
 
 ## Class Diagram
 
-![](./imgs/classDiagram.svg)
+![](./docs/imgs/classDiagram.svg)
