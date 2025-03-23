@@ -30,14 +30,16 @@ export const fakeProducts = {
         // name: faker.commerce.productName(),
         name: faker.helpers.rangeToNumber({ min: 1, max: 100 }).toString() + faker.helpers.arrayElement(['A', 'B', 'C']),
         description: faker.helpers.arrayElement([faker.company.name(), 'NULL']),
-        created_at: faker.date
+        price: parseFloat(faker.commerce.price({ min: 500, max: 3000, dec: 2 })),
+        size: 1,
+        release_time: faker.date
           .between({ from: '2022-01-01', to: '2023-12-31' })
           .toISOString(),
-        price: parseFloat(faker.commerce.price({ min: 500, max: 3000, dec: 2 })),
-        photo_url: `https://api.slingacademy.com/public/sample-products/${id}.png`,
+        image: `https://api.slingacademy.com/public/sample-products/${id}.png`,
         category: faker.helpers.arrayElement(['Jadsgroup', 'xxx']),
-        updated_at: faker.date.recent().toISOString(),
-        state: faker.helpers.arrayElement(states)
+        state: faker.helpers.arrayElement(states),
+        owner: "1",
+        agent: "1"
       };
     }
 

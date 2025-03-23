@@ -1,16 +1,36 @@
 import { NavItem } from 'types';
 
 export type Product = {
-  photo_url: string;
+  id: number;
   name: string;
   description: string;
-  created_at: string;
-  price: number;
-  id: number;
+  price: string;
+  size: string;
+  image: string;
+  release_time: string;
   category: string;
-  updated_at: string;
   state: string;
+  owner: string;
+  agent: string;
 };
+
+export type Lease = {
+  lease_id: number;
+  property_id: number;
+  tenant_email: string;
+  start_date: string;
+  end_date: string;
+  rent_amount: string;
+  deposit_amount: string;
+  stage: string;
+  agreement_to_lease: string;
+};
+
+const JadsEmailList = ["zhangsu1305@gmail.com", "s1@gmail.com"];
+
+export function isCustomer(email: string): boolean {
+  return !JadsEmailList.includes(email);
+}
 
 //Info: The following data is used for the sidebar navigation and Cmd K bar.
 export const navItems: NavItem[] = [
@@ -59,6 +79,38 @@ export const navItems: NavItem[] = [
     isActive: false,
     items: [] // No child items
   }
+];
+
+export const navItems_customer: NavItem[] = [
+  {
+    title: 'Lease',
+    url: '/dashboard/lease',
+    icon: 'post',
+    shortcut: ['p', 'p'],
+    isActive: false,
+    items: [] // No child items
+  },
+  {
+    title: 'Account',
+    url: '#', // Placeholder as there is no direct link for the parent
+    icon: 'billing',
+    isActive: true,
+
+    items: [
+      {
+        title: 'Profile',
+        url: '/dashboard/profile',
+        icon: 'userPen',
+        shortcut: ['m', 'm']
+      },
+      {
+        title: 'Login',
+        shortcut: ['l', 'l'],
+        url: '/',
+        icon: 'login'
+      }
+    ]
+  },
 ];
 
 export interface SaleUser {

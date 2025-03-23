@@ -30,7 +30,7 @@ import {
   SidebarRail,
   useSidebar
 } from '@/components/ui/sidebar';
-import { navItems } from '@/constants/data';
+import { isCustomer, navItems, navItems_customer } from '@/constants/data';
 import {
   BadgeCheck,
   Bell,
@@ -56,6 +56,7 @@ export default function AppSidebar() {
   const { data: session } = useSession();
   const pathname = usePathname();
   const { state, isMobile } = useSidebar();
+  const navigator = isCustomer(session?.user?.email || '') ? navItems_customer : navItems;
 
   return (
     <Sidebar collapsible='icon'>
@@ -74,7 +75,7 @@ export default function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel>Overview</SidebarGroupLabel>
           <SidebarMenu>
-            {navItems.map((item) => {
+            {navigator.map((item) => {
               const Icon = item.icon ? Icons[item.icon] : Icons.logo;
               return item?.items && item?.items?.length > 0 ? (
                 <Collapsible
