@@ -1,16 +1,14 @@
 'use client';
+import { Product } from '@/constants/data';
 import { Lease } from '@/constants/data';
 import { ColumnDef } from '@tanstack/react-table';
 import Image from 'next/image';
 import { CellAction } from './cell-action';
 
 export const columns: ColumnDef<Lease>[] = [
+
   {
-    accessorKey: 'lease_id',
-    header: 'ID'
-  },
-  {
-    accessorKey: 'property_id',
+    accessorKey: 'property_name',
     header: 'Property'
   },
   {
@@ -28,5 +26,17 @@ export const columns: ColumnDef<Lease>[] = [
   {
     accessorKey: 'rent_amount',
     header: 'Price ($/week)'
+  }, 
+  {
+    accessorKey: 'stage',
+    header: 'stage'
+  },
+  {
+    accessorKey: 'agreement_to_lease',
+    header: 'agreement_to_lease'
+  },
+  {
+    accessorKey: 'tenant_email',
+    header: 'tenant_email'
   },
 ];

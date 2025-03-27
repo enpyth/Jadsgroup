@@ -9,6 +9,6 @@ export default async function Dashboard() {
     return redirect('/');
   } else {
     isCustomer(session?.user?.email || '') ? redirect('/dashboard/lease') :
-    redirect('/dashboard/overview');
+    redirect('/dashboard/property');
   }
 }

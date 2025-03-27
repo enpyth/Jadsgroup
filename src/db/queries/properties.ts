@@ -84,6 +84,13 @@ export async function getPropertiesByAgentId(agentId: number) {
     .where(eq(properties.agent_id, agentId));
 }
 
+export async function getPropertiesByID(id: number) {
+  return await db
+    .select()
+    .from(properties)
+    .where(eq(properties.property_id, id));
+}
+
 // 获取最新发布的房产
 export async function getLatestProperties(limit = 10) {
   return await db

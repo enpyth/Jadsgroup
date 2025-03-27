@@ -16,6 +16,7 @@ export type Product = {
 
 export type Lease = {
   lease_id: number;
+  // property_name: string;
   property_id: number;
   tenant_email: string;
   start_date: string;
@@ -43,9 +44,17 @@ export const navItems: NavItem[] = [
     items: [] // Empty array as there are no child items for Dashboard
   },
   {
-    title: 'Product',
-    url: '/dashboard/product',
+    title: 'Property',
+    url: '/dashboard/property',
     icon: 'product',
+    shortcut: ['p', 'p'],
+    isActive: false,
+    items: [] // No child items
+  },
+  {
+    title: 'Lease',
+    url: '/dashboard/lease',
+    icon: 'post',
     shortcut: ['p', 'p'],
     isActive: false,
     items: [] // No child items

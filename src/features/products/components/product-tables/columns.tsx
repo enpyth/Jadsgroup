@@ -5,22 +5,22 @@ import Image from 'next/image';
 import { CellAction } from './cell-action';
 
 export const columns: ColumnDef<Product>[] = [
-  {
-    accessorKey: 'image',
-    header: 'IMAGE',
-    cell: ({ row }) => {
-      return (
-        <div className='relative aspect-square'>
-          <Image
-            src={row.getValue('image')}
-            alt={row.getValue('name')}
-            fill
-            className='rounded-lg'
-          />
-        </div>
-      );
-    }
-  },
+  // {
+  //   accessorKey: 'image',
+  //   header: 'IMAGE',
+  //   cell: ({ row }) => {
+  //     return (
+  //       <div className='relative aspect-square'>
+  //         <Image
+  //           src={row.getValue('image')}
+  //           alt={row.getValue('name')}
+  //           fill
+  //           className='rounded-lg'
+  //         />
+  //       </div>
+  //     );
+  //   }
+  // },
   {
     accessorKey: 'name',
     header: 'Name'
@@ -36,10 +36,6 @@ export const columns: ColumnDef<Product>[] = [
   {
     accessorKey: 'price',
     header: 'Price ($/week)'
-  },
-  {
-    accessorKey: '',
-    header: 'TODO'
   },
   {
     accessorKey: 'state',

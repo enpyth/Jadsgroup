@@ -66,6 +66,7 @@ export default async function ProductListingPage({ }: ProductListingPage) {
       columns={columns}
       data={products}
       totalItems={products.length}
+      url={"/dashboard/property/:id"}
     />
   );
 }
