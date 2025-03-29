@@ -1,17 +1,13 @@
-import FormCardSkeleton from '@/components/form-card-skeleton';
-import PageContainer from '@/components/layout/page-container';
-import { Suspense } from 'react';
-import ProductViewPage from '@/features/products/components/product-view-page';
+"use client"
 
-export const metadata = {
-  title: 'Dashboard : Product View'
-};
+import WorkflowPage from "@/features/workflow/workflow-page"
 
-type PageProps = { params: Promise<{ propertyId: string }> };
-
-export default async function Page(props: PageProps) {
-  const params = await props.params;
+export default function Home() {
   return (
-    <div>TODO workflow</div>
-  );
+    // <ThemeProvider theme={theme}>
+      // <CssBaseline />
+      <WorkflowPage />
+    // </ThemeProvider>
+  )
 }
+
