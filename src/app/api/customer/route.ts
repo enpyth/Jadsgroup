@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import type { Customer } from "@/constants/data"
+import type { Customer } from "@/constants/workflow"
 
 // Server-side customer data
 export async function GET() {

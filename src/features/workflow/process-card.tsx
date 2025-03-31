@@ -1,7 +1,7 @@
 "use client"
 
-import { formatDistanceToNow, format } from "date-fns"
-import { CheckCircle, XCircle, AlertCircle, RotateCcw, Clock, MessageSquare, ChevronDown } from "lucide-react"
+import { format } from "date-fns"
+import { CheckCircle, XCircle, RotateCcw, Clock, MessageSquare, ChevronDown } from "lucide-react"
 import {
   Card,
   CardContent,
@@ -14,7 +14,7 @@ import {
   AccordionDetails,
   Box,
 } from "@mui/material"
-import { type Process, STAGE_NAMES } from "@/constants/data"
+import { type Process, STAGE_NAMES } from "@/constants/workflow"
 
 interface ProcessCardProps {
   process: Process
@@ -77,14 +77,6 @@ export function ProcessCard({
                   </Typography>
                 </Box>
               )}
-              {!isProcessed && (
-                <Box sx={{ display: "flex", alignItems: "center", color: "warning.main" }}>
-                  <AlertCircle size={16} style={{ marginRight: 4 }} />
-                  <Typography variant="caption" fontWeight="medium">
-                    {isCurrentStage ? "Pending" : getStageName(process.state)}
-                  </Typography>
-                </Box>
-              )}
             </div>
           </Box>
         }
@@ -94,18 +86,15 @@ export function ProcessCard({
         <Box
           sx={{
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent: "flex-end",
             alignItems: "center",
             mt: 0.5,
           }}
         >
-          <Typography variant="caption" color="text.secondary">
-            Created {formatDistanceToNow(new Date(process.createdAt), { addSuffix: true })}
-          </Typography>
           {timeRemaining && !isProcessed && isCurrentStage && (
             <Box sx={{ display: "flex", alignItems: "center", color: "warning.main" }}>
               <Clock size={12} style={{ marginRight: 4 }} />
-              <Typography variant="caption">{timeRemaining}</Typography>
+              <Typography variant="caption">Countdown {timeRemaining}</Typography>
             </Box>
           )}
         </Box>

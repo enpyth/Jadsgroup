@@ -1,4 +1,4 @@
-import type { Customer, Process } from "@/constants/data"
+import type { Customer, Process } from "@/constants/workflow"
 
 // Client-side API functions to interact with server
 

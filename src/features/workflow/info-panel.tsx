@@ -2,11 +2,12 @@
 
 import { formatDistance } from "date-fns"
 import { Card, CardContent, CardHeader, Typography, Chip, Button, Divider, Box } from "@mui/material"
-import type { Customer, Process } from "@/constants/data"
+import type { Customer, Process } from "@/constants/workflow"
 import { FileText, Home, Calendar, CreditCard, User, Mail, PenToolIcon, Wrench, Eye } from "lucide-react"
 import { LeasePreviewDialog } from "./dialog-preview"
 import { RepairRequestDialog } from "./dialog-repair"
 import { useState } from "react"
+import {STAGE_NAMES} from "@/constants/workflow"
 
 interface CustomerInfoPanelProps {
   customer: Customer
@@ -37,7 +38,9 @@ export function CustomerInfoPanel({ customer, currentStage, processes }: Custome
   const isWorkflowComplete = currentStage === "finished"
 
   // Check if Document Verification process (s1) is approved
-  const isDocumentVerificationApproved = processes.some((p) => p.stageId === "s1" && p.state === "approved")
+  const isS1Approved = processes.some((p) => p.stageId === "s1" && p.state === "approved")
+  const isS5Approved = processes.some((p) => p.stageId === "s5" && p.state === "approved")
+  const isS8Approved = processes.some((p) => p.stageId === "s8" && p.state === "approved")
 
   const handleRepairRequest = () => {
     setRepairDialogOpen(true)
@@ -167,7 +170,35 @@ export function CustomerInfoPanel({ customer, currentStage, processes }: Custome
                 variant="outlined"
                 size="small"
                 startIcon={<Eye size={14} />}
-                disabled={!isDocumentVerificationApproved}
+                disabled={!isS1Approved}
+                onClick={handleLeasePreview}
+                sx={{
+                  textTransform: "none",
+                  fontSize: "0.75rem",
+                  height: "32px",
+                  flexGrow: 1,
+                }}
+              >
+                Lease Schedule
+              </Button>
+            </Box>
+            {!isS1Approved && (
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ display: "block", mt: 1, textAlign: "center" }}
+              >
+                Available after '{STAGE_NAMES.s1}'
+              </Typography>
+            )}
+          </div>
+          <div style={{ paddingLeft: "24px", marginBottom: "16px" }}>
+            <Box sx={{ display: "flex", gap: 1 }}>
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={<Eye size={14} />}
+                disabled={!isS5Approved}
                 onClick={handleLeasePreview}
                 sx={{
                   textTransform: "none",
@@ -179,13 +210,41 @@ export function CustomerInfoPanel({ customer, currentStage, processes }: Custome
                 Lease Agreement
               </Button>
             </Box>
-            {!isDocumentVerificationApproved && (
+            {!isS5Approved && (
               <Typography
                 variant="caption"
                 color="text.secondary"
                 sx={{ display: "block", mt: 1, textAlign: "center" }}
               >
-                Available after document verification
+                Available after '{STAGE_NAMES.s5}'
+              </Typography>
+            )}
+          </div>
+          <div style={{ paddingLeft: "24px", marginBottom: "16px" }}>
+            <Box sx={{ display: "flex", gap: 1 }}>
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={<Eye size={14} />}
+                disabled={!isS8Approved}
+                onClick={handleLeasePreview}
+                sx={{
+                  textTransform: "none",
+                  fontSize: "0.75rem",
+                  height: "32px",
+                  flexGrow: 1,
+                }}
+              >
+                Lease Contract
+              </Button>
+            </Box>
+            {!isS8Approved && (
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ display: "block", mt: 1, textAlign: "center" }}
+              >
+                Available after '{STAGE_NAMES.s8}'
               </Typography>
             )}
           </div>

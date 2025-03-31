@@ -3,10 +3,10 @@
 import { useState } from "react"
 import { ProcessCard } from "@/features/workflow/process-card"
 import { RefusalDialog } from "@/features/workflow/dialog-refusal"
-import { type Process, type WorkflowState, WORKFLOW_CONFIG } from "@/constants/data"
-import { calculateTimeRemaining } from "@/lib/utils"
+import { type Process, type WorkflowState, WORKFLOW_CONFIG } from "@/constants/workflow"
 import { CheckCircle, XCircle } from "lucide-react"
 import { Box, Typography, Paper } from "@mui/material"
+import { calculateTimeRemaining, getHoursRemaining } from "@/lib/utils"
 
 interface ProcessListProps {
   processes: Process[]
@@ -54,10 +54,28 @@ export function ProcessList({ processes, onApprove, onRefuse, onRollback, curren
     return "transparent"
   }
 
-  // Get stage color for badge
+  // Get stage color based on time remaining
   const getStageColor = (stageId: string) => {
-    const stage = WORKFLOW_CONFIG.find((s) => s.id === stageId)
-    return stage?.color || "gray"
+    if (stageId !== currentState) {
+      return "grey.500"
+    }
+
+    // Check if any process in this stage has less than 24 hours remaining
+    const stageProcesses = processes.filter((p) => p.stageId === stageId && p.state === stageId)
+
+    if (stageProcesses.length === 0) {
+      return "info"
+    }
+
+    // Check time remaining for each process
+    for (const process of stageProcesses) {
+      const hoursRemaining = getHoursRemaining(process.createdAt)
+      if (hoursRemaining < 24) {
+        return "error"
+      }
+    }
+
+    return "warning"
   }
 
   // Render all processes in the specified order
@@ -156,6 +174,7 @@ export function ProcessList({ processes, onApprove, onRefuse, onRollback, curren
 
         const stageIndex = WORKFLOW_CONFIG.findIndex((s) => s.id === stage.id) + 1
         const isCurrentStage = stage.id === currentState
+        const stageColor = getStageColor(stage.id)
 
         return (
           <Paper
@@ -164,7 +183,7 @@ export function ProcessList({ processes, onApprove, onRefuse, onRollback, curren
             sx={{
               p: 2,
               bgcolor: getStageBgColor(stage.id),
-              borderColor: isCurrentStage ? "primary.light" : "divider",
+              borderColor: isCurrentStage ? `${stageColor}.light` : "divider",
               borderRadius: 1,
             }}
           >
@@ -180,8 +199,8 @@ export function ProcessList({ processes, onApprove, onRefuse, onRollback, curren
                   width: 20,
                   height: 20,
                   borderRadius: "50%",
-                  bgcolor: `${stage.color}.main`,
-                  color: "#fff",
+                  bgcolor: `${stageColor}.main`,
+                  color: "grey.300",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",

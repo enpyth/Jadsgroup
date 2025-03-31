@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { type Process, WORKFLOW_CONFIG } from "@/constants/data"
+import { type Process, WORKFLOW_CONFIG } from "@/constants/workflow"
 
 // Server-side process data generation
 export async function GET() {

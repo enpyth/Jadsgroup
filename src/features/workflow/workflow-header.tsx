@@ -1,5 +1,5 @@
 import { Chip, LinearProgress, Typography, Box } from "@mui/material"
-import { type WorkflowState, STAGE_NAMES, WORKFLOW_CONFIG } from "@/constants/data"
+import { type WorkflowState, STAGE_NAMES, WORKFLOW_CONFIG } from "@/constants/workflow"
 import { CheckCircle } from "lucide-react"
 
 interface WorkflowHeaderProps {
@@ -51,7 +51,7 @@ export function WorkflowHeader({ currentState }: WorkflowHeaderProps) {
       </Box>
 
       <Box sx={{ mt: 2 }}>
-        <Box
+        {/* <Box
           sx={{
             display: "flex",
             justifyContent: "space-between",
@@ -63,7 +63,7 @@ export function WorkflowHeader({ currentState }: WorkflowHeaderProps) {
               {stage.name}
             </Typography>
           ))}
-        </Box>
+        </Box> */}
         <LinearProgress
           variant="determinate"
           value={getProgressPercentage()}

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
   Dialog,
   DialogTitle,
@@ -30,14 +30,14 @@ export function LeasePreviewDialog({ open, onClose, propertyId, tenantEmail }: L
   const [loading, setLoading] = useState(true)
 
   // Simulate loading the document
-  useState(() => {
+  useEffect(() => {
     if (open) {
       const timer = setTimeout(() => {
         setLoading(false)
       }, 1500)
       return () => clearTimeout(timer)
     }
-  })
+  }, [open])
 
   const handleDownload = () => {
     // In a real app, this would trigger the actual download
