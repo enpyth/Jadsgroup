@@ -1,11 +1,13 @@
 import Image from "next/image"
 import Hero from "@/components/home/hero"
-import Section from "@/components/home/section"
+import ImgWithSection from "@/components/home/section"
 
 const sections = [
   {
     title: "Land Subdivision",
-    content: "Land subdivision is the process of dividing a single piece of land into smaller parcels can help increase the overall value of the property. Smaller, individually titled lots often have higher market appeal, attracting a broader range of potential buyers.",
+    contents: [
+      "Land subdivision is the process of dividing a single piece of land into smaller parcels can help increase the overall value of the property. Smaller, individually titled lots often have higher market appeal, attracting a broader range of potential buyers."
+    ],
     imageSrc: "/imgs/projmanagement/1.jpg",
     imageAlt: "Land Subdivision",
     bgColor: "bg-white",
@@ -14,7 +16,9 @@ const sections = [
   },
   {
     title: "Infrastructure",
-    content: "Large-scale developments often come with infrastructure improvements. Developers may be required to invest in roads, utilities, and public spaces, benefiting not only the development itself but also the surrounding community.",
+    contents: [
+      "Large-scale developments often come with infrastructure improvements. Developers may be required to invest in roads, utilities, and public spaces, benefiting not only the development itself but also the surrounding community."
+    ],
     imageSrc: "/imgs/projmanagement/2.jpg",
     imageAlt: "Infrastructure",
     bgColor: "bg-cyan-950",
@@ -22,7 +26,9 @@ const sections = [
   },
   {
     title: "Community Development",
-    content: "Property development projects, particularly those with a focus on mixed-use developments, can contribute to the creation of vibrant and sustainable communities. This includes providing amenities, green spaces, and commercial spaces that enhance the overall living experience.",
+    contents: [
+      "Property development projects, particularly those with a focus on mixed-use developments, can contribute to the creation of vibrant and sustainable communities. This includes providing amenities, green spaces, and commercial spaces that enhance the overall living experience."
+    ],
     imageSrc: "/imgs/projmanagement/3.jpg",
     imageAlt: "Community Development",
     bgColor: "bg-red-600",
@@ -31,7 +37,9 @@ const sections = [
   },
   {
     title: "Community Titles",
-    content: "Community title developments is the division of land into lots, each with its own title, and the creation of common property for the use and enjoyment of all owners within the community. This form of property ownership structure allows for the creation of communities with shared amenities, common areas, and facilities.",
+    contents: [
+      "Community title developments is the division of land into lots, each with its own title, and the creation of common property for the use and enjoyment of all owners within the community. This form of property ownership structure allows for the creation of communities with shared amenities, common areas, and facilities."
+    ],
     imageSrc: "/imgs/projmanagement/4.jpg",
     imageAlt: "Community Titles",
     bgColor: "bg-white",
@@ -39,7 +47,9 @@ const sections = [
   },
   {
     title: "Strata Development",
-    content: "In a strata-titled development, each individual owner has ownership of their unit or lot. Additionally, there is shared ownership of common property, which typically includes areas like driveways, lobbies, stairwells, gardens, and recreational facilities.",
+    contents: [
+      "In a strata-titled development, each individual owner has ownership of their unit or lot. Additionally, there is shared ownership of common property, which typically includes areas like driveways, lobbies, stairwells, gardens, and recreational facilities."
+    ],
     imageSrc: "/imgs/projmanagement/5.jpg",
     imageAlt: "Strata Development",
     bgColor: "bg-cyan-950",
@@ -73,7 +83,7 @@ export default function ProjManagement() {
 
         {/* Sections */}
         {sections.map((section, index) => (
-          <Section key={index} {...section} />
+          <ImgWithSection key={index} {...section} />
         ))}
       </div>
     </main>

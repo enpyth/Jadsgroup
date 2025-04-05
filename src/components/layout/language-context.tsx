@@ -111,9 +111,86 @@ const translations: Translations = {
     cn: "Andy Wong拥有土木工程副学士学位和通信学位，辅修计算机科学，并在家族企业的物业管理方面提供帮助。他的抱负是引入技术并简化一些在线业务流程。Andy还拥有Living Adventure，这是一家成立于1981年的旅行社，专门为个人和小团体提供定制的'非常规路线'行程，主要在南美洲、非洲和南极洲大陆，直到Covid19疫情爆发。",
   },
   ShirleyBio: {
-    en: "Shirley plays a crucial role in ensuring the smooth functioning of the office by handling administrative tasks such as organizing schedules, managing tenants’ enquiries and track rental payments. She also reports the financials for various properties; expenses, assets, and liabilities, provide insights that help the business owners make informed decisions.",
+    en: "Shirley plays a crucial role in ensuring the smooth functioning of the office by handling administrative tasks such as organizing schedules, managing tenants' enquiries and track rental payments. She also reports the financials for various properties; expenses, assets, and liabilities, provide insights that help the business owners make informed decisions.",
     cn: "Shirley 负责处理行政事务，例如安排日程、管理租户查询和跟踪租金支付，在确保办公室顺利运作方面发挥着至关重要的作用。她还报告各种物业的财务状况；费用、资产和负债，提供见解，帮助企业主做出明智的决策。"
+  },
+  // Tech titles
+  tech_title_microgrid: { en: "Microgrid", cn: "微电网" },
+  tech_title_commercial: { en: "Solar Commercial", cn: "商业太阳能" },
+  tech_title_residential: { en: "Solar Residential", cn: "住宅太阳能" },
+
+  // Tech descriptions
+  tech_desc_microgrid: {
+    en: "Localised energy system that can operate independently or in conjunction with conventionnal electrical grid",
+    cn: "可独立运行或与传统电网配合的本地化能源系统"
+  },
+  tech_desc_commercial: {
+    en: "To develop and finance alternative energy procurement strategr that is right for your business",
+    cn: "为您的企业开发和融资合适的替代能源采购策略"
+  },
+  tech_desc_residential: {
+    en: "Reduce energy consumption from conventional grid and reduce the const of energy",
+    cn: "减少传统电网能源消耗并降低能源成本"
+  },
+  tech_p1_1: {
+    en: "A Micro-grid is a local energy grid with control capability, which means it can disconnect from the traditional grid and operate autonomously. The grid connects homes, businesses and other buildings to central power sources, which allow users to use electronics.",
+    cn: ""
+  },
+  tech_p1_2: {
+    en: "A Micro-grid generally operates while connected to the grid, but importantly, it can break off and operate on its own using local energy generation in times of crisis like storms or power outages, or for other reasons.",
+    cn: ""
+  },
+  tech_p1_3: {
+    en: "A Micro-grid can be powered by distributed generators, batteries, and/or renewable resources like solar panels. Depending on how it’s fuelled and how its requirements are managed, a micro-grid might run indefinitely.",
+    cn: ""
+  },
+  tech_p1_4: {
+    en: "A Micro-grid connects to the grid at a point of common coupling that maintains voltage at the same level as the main grid unless there is some sort of problem on the grid or other reason to disconnect. A switch can separate the Micro-grid from the main grid automatically or manually, and it then functions as an island.",
+    cn: ""
+  },
+  tech_p1_5: {
+    en: "In general, Micro-grids have made it possible for power generator to provide power to users directly. The Micro-grid has greatly weakened the role of electric grids and intermediaries, thereby providing investors with more lucrative returns.",
+    cn: ""
+  },
+  tech_carousel_m1_1: {
+    en: "Appropriate: islands, mountains, remote areas where the grid cannot reach",
+    cn: ""
+  },
+  tech_carousel_m1_2: {
+    en: "Form: Build Photovoltaic power stations (or joint wind power stations), power storage stations and supplemented diesel generator sets in non-grid areas.",
+    cn: ""
+  },
+  tech_carousel_m1_3: {
+    en: "Charges: It requires minimum electricity usage, PPA, and charges a maintenance fee.",
+    cn: ""
+  },
+  tech_carousel_m2_1: {
+    en: "Appropriate: New houses, new community, and towns with accessible grid connections",
+    cn: ""
+  },
+  tech_carousel_m2_2: {
+    en: "Form: The solar energy is made on the roof, and the energy storage box is built in the house. Each house serves as a complement between the user and the power station and is complemented by a unified network",
+    cn: ""
+  },
+  tech_carousel_m2_3: {
+    en: "Charges: Discounts on normal electricity prices and charges a fixed maintenance fees",
+    cn: ""
+  },
+  tech_carousel_m3_1: {
+    en: "Appropriate: apartment buildings, hotels, office buildings, and group users.",
+    cn: ""
+  },
+  tech_carousel_m3_2: {
+    en: "Form: Set up energy storage power station and system on the site of photovoltaic power station far away from the urban areas, integrate the network point at the user end, remote power supply, supplemented by the external grid",
+    cn: ""
+  },
+  tech_carousel_m3_3: {
+    en: "Charges: Discounts on normal electricity prices and an additional access fees may charges",
+    cn: ""
   }
+
+
+
 }
 
 type LanguageContextType = {

@@ -1,8 +1,10 @@
+"use client"
 import Image from "next/image"
+import { useLanguage } from "@/components/layout/language-context"
 
 interface SectionProps {
     title: string
-    content: string
+    contents: string[]
     imageSrc: string
     imageAlt: string
     reverse?: boolean
@@ -10,15 +12,17 @@ interface SectionProps {
     textColor?: string
 }
 
-export default function Section({
+export default function ImgWithSection({
     title,
-    content,
+    contents,
     imageSrc,
     imageAlt,
     reverse = false,
     bgColor = "bg-white",
     textColor = "text-gray-700"
 }: SectionProps) {
+    const { t } = useLanguage()
+
     return (
         <section className="mb-16 overflow-hidden">
             <div className={`flex flex-col md:flex-row ${reverse ? "md:flex-row-reverse" : ""} h-full`}>
@@ -31,9 +35,13 @@ export default function Section({
                         sizes="(max-width: 768px) 100vw, 50vw"
                     />
                 </div>
-                <div className={`w-full md:w-1/2 py-20 px-12 flex flex-col justify-center ${bgColor} ${textColor}`}>
-                    <h2 className="text-2xl font-bold mb-6">{title}</h2>
-                    <p className="text-sm">{content}</p>
+                <div className={`w-full md:w-1/2 py-8 px-8 flex flex-col justify-center ${bgColor} ${textColor}`}>
+                    {title && <h2 className="text-2xl font-bold my-6">{title}</h2>}
+                    <div className="space-y-4 min-h-[150px] max-h-[250px] overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent hover:scrollbar-thumb-gray-500">
+                        {contents.map((content, index) => (
+                            <p key={index} className="text-sm">{t(content)}</p>
+                        ))}
+                    </div>
                 </div>
             </div>
         </section>
