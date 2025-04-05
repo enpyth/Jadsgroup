@@ -42,3 +42,7 @@ select * from lease where session.user.email == tenant.email
 ## owner
 
 1. show owners' property table
+
+# TODO
+
+compress public resources 

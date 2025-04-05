@@ -1,14 +1,16 @@
 import { auth } from '@/lib/auth';
 import Providers from '@/components/layout/providers';
+import { LanguageProvider } from "@/components/layout/language-context"
 import { Toaster } from '@/components/ui/sonner';
 import type { Metadata } from 'next';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { Lato } from 'next/font/google';
 import NextTopLoader from 'nextjs-toploader';
 import './globals.css';
+import LayoutShell from '@/components/layout/layoutshell';
 
 export const metadata: Metadata = {
-  title: 'jads & market plaza',
+  title: 'JADS',
   description: 'Jadsgroup'
 };
 
@@ -19,7 +21,7 @@ const lato = Lato({
 });
 
 export default async function RootLayout({
-  children
+  children,
 }: {
   children: React.ReactNode;
 }) {
@@ -31,7 +33,11 @@ export default async function RootLayout({
         <NuqsAdapter>
           <Providers session={session}>
             <Toaster />
-            {children}
+            <LanguageProvider>
+              <LayoutShell>
+                {children}
+              </LayoutShell>
+            </LanguageProvider>
           </Providers>
         </NuqsAdapter>
       </body>

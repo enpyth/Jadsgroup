@@ -3,3 +3,5 @@ export const property_filters = {
     agent: "Jadsgroup",
     role: "admin"
 }
+
+export const noLayoutRoutes = ['/error', '/login', '/dashboard'];

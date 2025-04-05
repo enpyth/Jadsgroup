@@ -45,11 +45,12 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import * as React from 'react';
 import { Icons } from '../icons';
+import Image from "next/image"
 
 export const company = {
-  name: 'Acme Inc',
+  name: 'Jadsgroup',
   logo: GalleryVerticalEnd,
-  plan: 'Enterprise'
+  plan: 'Market Plaza'
 };
 
 export default function AppSidebar() {
@@ -61,9 +62,18 @@ export default function AppSidebar() {
   return (
     <Sidebar collapsible='icon'>
       <SidebarHeader>
-        <div className='flex gap-2 py-2 text-sidebar-accent-foreground'>
-          <div className='flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground'>
-            <company.logo className='size-4' />
+        <div className='flex gap-4 py-2 text-sidebar-accent-foreground'>
+          <div className='flex aspect-square size-12 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground'>
+            {/* <company.logo className='size-4' /> */}
+            <Link href='/'>
+              <Image
+                src="/logo.svg"
+                alt="JADS Group Logo"
+                width={80}
+                height={80}
+                className="object-contain"
+              />
+            </Link>
           </div>
           <div className='grid flex-1 text-left text-sm leading-tight'>
             <span className='truncate font-semibold'>{company.name}</span>
