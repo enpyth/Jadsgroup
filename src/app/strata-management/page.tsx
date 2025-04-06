@@ -86,7 +86,7 @@ export default function ProjManagement() {
       <div className="max-w-5xl mx-auto px-4 py-12">
         <section className="mb-16">
           <h2 className="text-3xl font-bold text-center mb-2">Wanted: Shopping Centre</h2>
-          <div className="w-24 h-1 bg-red-600 mx-auto mb-12"></div>
+          <div className="w-40 h-0.5 bg-red-600 mx-auto mb-12"></div>
 
           <div className="space-y-6">
             <p className="text-gray-700">

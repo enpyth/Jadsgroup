@@ -2,6 +2,7 @@
 
 import { useLanguage } from "@/components/layout/language-context"
 import { Home, Users, Package, ShoppingBag } from "lucide-react"
+import Link from "next/link"
 
 export default function ServicesGrid() {
   const { t } = useLanguage()
@@ -13,6 +14,7 @@ export default function ServicesGrid() {
       description: "propertyDesc",
       icon: Home,
       buttonVariant: "outline",
+      href: "/properties"
     },
     {
       id: 2,
@@ -20,13 +22,15 @@ export default function ServicesGrid() {
       description: "technologyDesc",
       icon: Users,
       buttonVariant: "outline",
+      href: "/tech-solar-commercial"
     },
     {
       id: 3,
-      title: "export",
-      description: "exportDesc",
+      title: "business",
+      description: "businessDesc",
       icon: Package,
       buttonVariant: "outline",
+      href: "/project-management"
     },
     {
       id: 4,
@@ -34,6 +38,7 @@ export default function ServicesGrid() {
       description: "marketPlazaDesc",
       icon: ShoppingBag,
       buttonVariant: "outline",
+      href: "/mall"
     },
   ]
 
@@ -52,11 +57,12 @@ export default function ServicesGrid() {
             <p className="text-sm text-gray-600 mb-4 group-hover:text-gray-800 transition-colors duration-300">
               {t(service.description)}
             </p>
-            <button
-              className={"text-xs px-4 py-1 mt-auto transition-colors duration-300 bg-white text-red-600 border border-red-600 hover:bg-red-600 hover:text-white"}
+            <Link
+              href={service.href}
+              className="text-xs px-4 py-1 mt-auto transition-colors duration-300 bg-white text-red-600 border border-red-600 hover:bg-red-600 hover:text-white rounded-md"
             >
-                {t("more")}
-            </button>
+              {t("more")}
+            </Link>
           </div>
         ))}
       </div>

@@ -17,7 +17,7 @@ const translations: Translations = {
   aboutUs: { en: "About Us", cn: "关于我们" },
   property: { en: "Property", cn: "房产" },
   technology: { en: "Technology", cn: "技术" },
-  export: { en: "Export", cn: "出口" },
+  business: { en: "Business", cn: "商业" },
   marketPlaza: { en: "Market Plaza", cn: "市场广场" },
   events: { en: "Events", cn: "活动" },
   contactUs: { en: "Contact Us", cn: "联系我们" },
@@ -36,9 +36,9 @@ const translations: Translations = {
     en: "Seamless renewable photovoltaic solutions powered by AI and IoT technology that can complement with the conventional grid system.",
     cn: "由人工智能和物联网技术支持的无缝可再生光伏解决方案，可以与传统电网系统互补。",
   },
-  exportDesc: {
-    en: "Foster bilateral trade of perishables direct from the growers and small manufacturers between Australia and South East Asia.",
-    cn: "促进澳大利亚和东南亚之间直接从种植者和小型制造商那里获取易腐商品的双边贸易。",
+  businessDesc: {
+    en: "JADS Group can assist in Subdivision projects in joint-venture that align with city planning goals, promoting more efficient land use, better infrastructure planning, and improved urban development.",
+    cn: "JADS集团可以协助合资开展符合城市规划目标的分区项目，促进更高效的土地利用、更好的基础设施规划和更好的城市发展。",
   },
   marketPlazaDesc: {
     en: "We manage Market Plaza a shopping centre situated in the heart of Adelaide CBD product. It is adjacent and in association with Adelaide Central Market (dating back to 1869).",

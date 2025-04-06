@@ -68,7 +68,7 @@ const slides = [
   },
 ]
 
-export default function Page() {
+export default function TechMicrogrid() {
   return (
     <main className="flex-grow">
       <Hero imageSrc="/banner/banner-microgrid.jpg" title="Microgrid" />
@@ -76,11 +76,13 @@ export default function Page() {
       <div className="max-w-5xl mx-auto px-4 py-12">
         {/* Business Partner Section */}
         <section className="mb-16">
-          <h2 className="text-3xl font-bold text-center mb-2">What is Microgrid</h2>
+          <h2 className="text-3xl font-bold text-center mb-2">
+            What is <span className="text-red-700">Micro-grid</span>
+          </h2>
+
         </section>
 
         {/* Sections */}
-        {/* TODO section multi p */}
         {sections.map((section, index) => (
           <Section key={index} {...section} />
         ))}

@@ -47,7 +47,7 @@ export default function TeamSection() {
     <section className="py-16 bg-gray-50">
       <div className="container mx-auto px-8 md:px-12 lg:px-16 max-w-7xl">
         <h2 className="text-3xl font-bold text-center mb-2">Meet the team</h2>
-        <div className="w-24 h-1 bg-red-600 mx-auto mb-12"></div>
+        <div className="w-40 h-0.5 bg-red-600 mx-auto mb-12"></div>
 
         <div className="space-y-16">
           {teamMembers.map((member, index) => (

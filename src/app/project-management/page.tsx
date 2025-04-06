@@ -67,7 +67,7 @@ export default function ProjManagement() {
         {/* Business Partner Section */}
         <section className="mb-16">
           <h2 className="text-3xl font-bold text-center mb-2">Business Partner</h2>
-          <div className="w-24 h-1 bg-red-600 mx-auto mb-12"></div>
+          <div className="w-40 h-0.5 bg-red-600 mx-auto mb-12"></div>
 
           <div className="space-y-6">
             <p className="text-gray-700">

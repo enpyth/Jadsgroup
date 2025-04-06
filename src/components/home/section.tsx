@@ -36,8 +36,8 @@ export default function ImgWithSection({
                     />
                 </div>
                 <div className={`w-full md:w-1/2 py-8 px-8 flex flex-col justify-center ${bgColor} ${textColor}`}>
-                    {title && <h2 className="text-2xl font-bold my-6">{title}</h2>}
-                    <div className="space-y-4 min-h-[150px] max-h-[250px] overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent hover:scrollbar-thumb-gray-500">
+                    {title && <h2 className="text-2xl font-bold mb-6 text-center">{title}</h2>}
+                    <div className="space-y-4 min-h-[200px] max-h-[250px] overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent hover:scrollbar-thumb-gray-500">
                         {contents.map((content, index) => (
                             <p key={index} className="text-sm">{t(content)}</p>
                         ))}
