@@ -60,7 +60,7 @@ export default function HeroCarousel() {
           className={`absolute inset-0 transition-opacity duration-1000 ${index === currentSlide ? "opacity-100" : "opacity-0 pointer-events-none"
             }`}
         >
-          <div className="absolute inset-0 bg-gradient-to-r z-10"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-cyan-950/100 to-stone-900/10 z-10"></div>
           <Image src={slide.image} alt={t(slide.title)} fill className="object-cover" />
           <div className="relative z-20 container mx-auto px-4 h-full flex flex-col justify-end pb-16">
             <div className="text-white">
