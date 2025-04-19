@@ -3,11 +3,6 @@ import { db } from "@/db/index";
 import { leases, properties } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 
-// 查询所有租约
-// export const getAllLeases = async () => {
-//     return await db.select().from(leases).innerJoin(properties, eq(leases.property_id, properties.property_id));
-// };
-
 export const getAllLeases = async () => {
     return await db.select(
         {
@@ -26,7 +21,6 @@ export const getAllLeases = async () => {
     // return await db.select().from(leases);
 };
 
-// 添加新的租约
 export const addLease = async (leaseData: any) => {
     return await db.insert(leases).values(leaseData);
 }; 

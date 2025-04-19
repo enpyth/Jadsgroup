@@ -6,10 +6,16 @@ import { WorkflowHeader } from "@/features/workflow/workflow-header"
 import { CustomerInfoPanel } from "@/features/workflow/info-panel"
 import { type Process, type WorkflowState, WORKFLOW_CONFIG, type RefusalRecord, type Customer } from "@/constants/workflow"
 import { CheckCircle } from "lucide-react"
-import { Box, Alert, Container, Grid, CircularProgress, Typography } from "@mui/material"
+import { Box, Alert, Container, CircularProgress, Typography } from "@mui/material"
 import { getCustomerInfo, getProcesses, approveProcess, refuseProcess, rollbackProcess } from "@/db/tmp_api"
+import Grid from '@mui/material/Grid2'
 
-export default function WorkflowPage() {
+
+interface WorkflowPageProps {
+  user_email: string
+}
+
+export default function WorkflowPage({ user_email }: WorkflowPageProps) {
   // State for data
   const [customer, setCustomer] = useState<Customer | null>(null)
   const [processes, setProcesses] = useState<Process[]>([])
@@ -211,10 +217,10 @@ export default function WorkflowPage() {
       )}
 
       <Grid container spacing={3}>
-        <Grid item xs={12} md={4} lg={3}>
-          {customer && <CustomerInfoPanel customer={customer} currentStage={workflowState} processes={processes}/>}
+        <Grid size={12}>
+          {customer && <CustomerInfoPanel user_email={user_email} customer={customer} currentStage={workflowState} processes={processes}/>}
         </Grid>
-        <Grid item xs={12} md={8} lg={9}>
+        <Grid size={12}>
           <ProcessList
             processes={processes}
             onApprove={handleApprove}

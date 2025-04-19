@@ -16,11 +16,10 @@ function generateInitialProcesses() {
     stage.processes.forEach((processConfig) => {
       processes.push({
         id: processConfig.id,
-        name: processConfig.name,
         description: processConfig.description,
         state: stage.id,
         stageId: stage.id,
-        createdAt: new Date(now - Math.floor(Math.random() * 48) * 3600 * 1000).toISOString(),
+        createdAt: new Date(now).toISOString(),
         assignedTo: processConfig.assignedTo,
         originalStage: stage.id,
       })

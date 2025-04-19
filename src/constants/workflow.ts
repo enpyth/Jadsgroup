@@ -38,7 +38,6 @@ export interface RefusalRecord {
 
 export interface Process {
     id: ProcessId
-    name: string
     description: string
     state: ProcessState
     createdAt: string

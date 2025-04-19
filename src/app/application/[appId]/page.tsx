@@ -87,7 +87,7 @@ export default function Page() {
                 end_date: formData.end_date?.toDate(),
                 rent_amount: formData.rent_amount,
                 deposit_amount: formData.deposit_amount,
-                stage: 's1',
+                stage: 'Review Application',
                 agreement_to_lease: formData.agreement ? 'Yes' : 'No',
             }),
         });

@@ -43,7 +43,7 @@ export default async function LeaseListingPage({ propertyId }: LeaseListingPageP
       columns={columns}
       data={lease}
       totalItems={lease.length}
-      url={"/dashboard/property/:id/lease"}
+      url={"/dashboard/lease/:id"}
     />
   );
 }

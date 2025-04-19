@@ -1,18 +1,12 @@
 import PageContainer from '@/components/layout/page-container';
-import { buttonVariants } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
 import { DataTableSkeleton } from '@/components/ui/table/data-table-skeleton';
 import { searchParamsCache, serialize } from '@/lib/searchparams';
-import { cn } from '@/lib/utils';
-import { Plus } from 'lucide-react';
-import Link from 'next/link';
 import { SearchParams } from 'nuqs/server';
 import { Suspense } from 'react';
 import LeaseListingPage from '@/features/products/components/lease-listing';
 import ProductTableAction from '@/features/products/components/product-tables/product-table-action';
-import { auth } from '@/lib/auth';
-import { isCustomer } from '@/constants/data';
 
 export const metadata = {
     title: 'Dashboard: Property Management',
@@ -30,7 +24,6 @@ export default async function Page(props: pageProps) {
     // This key is used for invoke suspense if any of the search params changed (used for filters).
     const key = serialize({ ...searchParams });
 
-    const session = await auth();
     return (
         <PageContainer scrollable={false}>
             <div className='flex flex-1 flex-col space-y-4'>

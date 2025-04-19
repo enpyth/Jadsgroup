@@ -9,12 +9,13 @@ import { RepairRequestDialog } from "./dialog-repair"
 import { useState } from "react"
 
 interface CustomerInfoPanelProps {
+  user_email: string
   customer: Customer
   currentStage: string
   processes: Process[]
 }
 
-export function CustomerInfoPanel({ customer, currentStage, processes }: CustomerInfoPanelProps) {
+export function CustomerInfoPanel({ user_email, customer, currentStage, processes }: CustomerInfoPanelProps) {
   const [repairDialogOpen, setRepairDialogOpen] = useState(false)
   const [leasePreviewOpen, setLeasePreviewOpen] = useState(false)
 
@@ -87,7 +88,7 @@ export function CustomerInfoPanel({ customer, currentStage, processes }: Custome
           <div style={{ paddingLeft: "24px", marginBottom: "16px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <Mail size={16} color="#666" />
-              <Typography variant="body2">{customer.tenant_email}</Typography>
+              <Typography variant="body2">{user_email}</Typography>
             </div>
           </div>
 

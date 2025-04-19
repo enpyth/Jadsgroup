@@ -54,6 +54,7 @@ export default async function Page(props: pageProps) {
           key={key}
           fallback={<DataTableSkeleton columnCount={5} rowCount={10} />}
         >
+          {/* TODO: 根据propertyId查询leaselist */}
           <LeaseListingPage propertyId={params.propertyId} />
         </Suspense>
       </div>
