@@ -17,7 +17,8 @@ export default function WorkflowPage() {
   const [error, setError] = useState<string | null>(null)
 
   // Current workflow state
-  const [workflowState, setWorkflowState] = useState<WorkflowState>("s1")
+  // TODO get state from db
+  const [workflowState, setWorkflowState] = useState<WorkflowState>("Review Application")
 
   // Force a re-render every minute to update countdown timers
   const [, setTime] = useState(Date.now())

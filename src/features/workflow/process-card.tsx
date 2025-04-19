@@ -14,7 +14,7 @@ import {
   AccordionDetails,
   Box,
 } from "@mui/material"
-import { type Process, STAGE_NAMES } from "@/constants/workflow"
+import { type Process } from "@/constants/workflow"
 
 interface ProcessCardProps {
   process: Process
@@ -38,7 +38,7 @@ export function ProcessCard({
   // Get the stage name for display
   const getStageName = (state: string) => {
     if (state === "approved" || state === "refused") return ""
-    return STAGE_NAMES[state as keyof typeof STAGE_NAMES] || state
+    return process.name
   }
 
   // Format timestamp for display
@@ -54,7 +54,7 @@ export function ProcessCard({
           <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
             <div>
               <Typography variant="subtitle1" fontWeight="bold">
-                {process.name}
+                {process.id}
               </Typography>
               <Typography variant="caption" color="text.secondary">
                 Assigned to: {process.assignedTo}

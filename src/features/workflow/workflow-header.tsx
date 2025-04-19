@@ -1,5 +1,5 @@
 import { Chip, LinearProgress, Typography, Box } from "@mui/material"
-import { type WorkflowState, STAGE_NAMES, WORKFLOW_CONFIG } from "@/constants/workflow"
+import { type WorkflowState, WORKFLOW_CONFIG } from "@/constants/workflow"
 import { CheckCircle } from "lucide-react"
 
 interface WorkflowHeaderProps {
@@ -43,9 +43,13 @@ export function WorkflowHeader({ currentState }: WorkflowHeaderProps) {
             Current Stage:
           </Typography>
           {currentState === "finished" ? (
-            <Chip icon={<CheckCircle size={16} />} label={STAGE_NAMES[currentState]} color="success" size="small" />
+            <Chip icon={<CheckCircle size={16} />} label="Workflow Complete" color="success" size="small" />
           ) : (
-            <Chip label={STAGE_NAMES[currentState]} color="primary" size="small" />
+            <Chip 
+              label={WORKFLOW_CONFIG.find(stage => stage.id === currentState)?.id || currentState} 
+              color="primary" 
+              size="small" 
+            />
           )}
         </Box>
       </Box>

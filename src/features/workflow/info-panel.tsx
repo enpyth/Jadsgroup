@@ -7,7 +7,6 @@ import { FileText, Home, Calendar, CreditCard, User, Mail, PenToolIcon, Wrench, 
 import { LeasePreviewDialog } from "./dialog-preview"
 import { RepairRequestDialog } from "./dialog-repair"
 import { useState } from "react"
-import {STAGE_NAMES} from "@/constants/workflow"
 
 interface CustomerInfoPanelProps {
   customer: Customer
@@ -37,10 +36,10 @@ export function CustomerInfoPanel({ customer, currentStage, processes }: Custome
   const leaseLength = formatDistance(customer.end_date, customer.start_date, { addSuffix: false })
   const isWorkflowComplete = currentStage === "finished"
 
-  // Check if Document Verification process (s1) is approved
-  const isS1Approved = processes.some((p) => p.stageId === "s1" && p.state === "approved")
-  const isS5Approved = processes.some((p) => p.stageId === "s5" && p.state === "approved")
-  const isS8Approved = processes.some((p) => p.stageId === "s8" && p.state === "approved")
+  // Check if Document Verification process is approved
+  const isS1Approved = processes.some((p) => p.stageId === "Review Application" && p.state === "approved")
+  const isS5Approved = processes.some((p) => p.stageId === "Land Lord Review" && p.state === "approved")
+  const isS8Approved = processes.some((p) => p.stageId === "Legal Review" && p.state === "approved")
 
   const handleRepairRequest = () => {
     setRepairDialogOpen(true)
@@ -188,7 +187,7 @@ export function CustomerInfoPanel({ customer, currentStage, processes }: Custome
                 color="text.secondary"
                 sx={{ display: "block", mt: 1, textAlign: "center" }}
               >
-                Available after '{STAGE_NAMES.s1}'
+                Available after 'Review Application'
               </Typography>
             )}
           </div>
@@ -207,7 +206,7 @@ export function CustomerInfoPanel({ customer, currentStage, processes }: Custome
                   flexGrow: 1,
                 }}
               >
-                Lease Agreement
+                Disclosure Statement
               </Button>
             </Box>
             {!isS5Approved && (
@@ -216,7 +215,7 @@ export function CustomerInfoPanel({ customer, currentStage, processes }: Custome
                 color="text.secondary"
                 sx={{ display: "block", mt: 1, textAlign: "center" }}
               >
-                Available after '{STAGE_NAMES.s5}'
+                Available after 'Land Lord Review'
               </Typography>
             )}
           </div>
@@ -235,7 +234,7 @@ export function CustomerInfoPanel({ customer, currentStage, processes }: Custome
                   flexGrow: 1,
                 }}
               >
-                Lease Contract
+                Aggrement to Lease
               </Button>
             </Box>
             {!isS8Approved && (
@@ -244,7 +243,7 @@ export function CustomerInfoPanel({ customer, currentStage, processes }: Custome
                 color="text.secondary"
                 sx={{ display: "block", mt: 1, textAlign: "center" }}
               >
-                Available after '{STAGE_NAMES.s8}'
+                Available after 'Legal Review'
               </Typography>
             )}
           </div>

@@ -212,7 +212,7 @@ export function ProcessList({ processes, onApprove, onRefuse, onRollback, curren
               >
                 {stageIndex}
               </Box>
-              <Typography variant="subtitle2">{stage.name}</Typography>
+              <Typography variant="subtitle2">{stage.id}</Typography>
             </Box>
             <Box
               sx={{
