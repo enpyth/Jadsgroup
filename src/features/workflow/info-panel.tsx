@@ -13,9 +13,10 @@ interface CustomerInfoPanelProps {
   customer: Customer
   currentStage: string
   processes: Process[]
+  leaseId: string
 }
 
-export function CustomerInfoPanel({ user_email, customer, currentStage, processes }: CustomerInfoPanelProps) {
+export function CustomerInfoPanel({ user_email, customer, currentStage, processes, leaseId }: CustomerInfoPanelProps) {
   const [repairDialogOpen, setRepairDialogOpen] = useState(false)
   const [leasePreviewOpen, setLeasePreviewOpen] = useState(false)
 
@@ -163,6 +164,24 @@ export function CustomerInfoPanel({ user_email, customer, currentStage, processe
           <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
             <FileText size={16} color="#666" />
             <Typography variant="subtitle2">Documents</Typography>
+          </div>
+          <div style={{ paddingLeft: "24px", marginBottom: "16px" }}>
+            <Box sx={{ display: "flex", gap: 1 }}>
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={<Eye size={14} />}
+                onClick={() => window.location.href = `/dashboard/lease/form/${leaseId}`}
+                sx={{
+                  textTransform: "none",
+                  fontSize: "0.75rem",
+                  height: "32px",
+                  flexGrow: 1,
+                }}
+              >
+                Application Form
+              </Button>
+            </Box>
           </div>
           <div style={{ paddingLeft: "24px", marginBottom: "16px" }}>
             <Box sx={{ display: "flex", gap: 1 }}>

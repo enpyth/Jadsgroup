@@ -17,6 +17,14 @@ export async function getPropertyById(propertyId: number) {
     .limit(1);
 }
 
+export async function getPropertyByName(name: string) {
+  return await db
+    .select()
+    .from(properties)
+    .where(eq(properties.name, name))
+    .limit(1);
+}
+
 // 获取房产详情，包含所有者和经纪人信息
 export async function getPropertyWithDetails() {
   return await db

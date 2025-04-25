@@ -28,7 +28,7 @@ export default async function Page() {
       <HeroSection />
       <div className="container mx-auto px-8 py-16">
         <FeaturedProperties products={products} />
-        <RecentProperties products={products} />
+        {/* <RecentProperties products={products} /> */}
       </div>
       <CallToAction />
     </div>

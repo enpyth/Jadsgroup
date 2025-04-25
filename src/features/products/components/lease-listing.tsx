@@ -35,7 +35,8 @@ export default async function LeaseListingPage({ propertyId }: LeaseListingPageP
       rent_amount: res.rent_amount,
       deposit_amount: res.deposit_amount,
       stage: res.stage,
-      agreement_to_lease: res.agreement_to_lease
+      agreement_to_lease: res.agreement_to_lease,
+      created_at: new Date(res.created_at).toLocaleDateString()
     }));
 
   return (

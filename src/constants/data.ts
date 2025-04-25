@@ -14,6 +14,16 @@ export type Product = {
   agent: string;
 };
 
+export type Property = {
+  property_id: number;
+  name: string;
+  describe: string;
+  price: string;
+  size: string;
+  image: string;
+  state: string;
+}
+
 export type Lease = {
   lease_id: number;
   // property_name: string;
@@ -25,6 +35,7 @@ export type Lease = {
   deposit_amount: string;
   stage: string;
   agreement_to_lease: string;
+  created_at: string;
 };
 
 const JadsEmailList = ["zhangsu1305@gmail.com", "s1@gmail.com"];

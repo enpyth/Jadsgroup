@@ -7,6 +7,7 @@ import {
   timestamp,
   date,
   varchar,
+  jsonb,
 } from "drizzle-orm/pg-core";
 // 业主表
 export const owners = pgTable("owners", {
@@ -75,6 +76,8 @@ export const leases = pgTable("leases", {
   stage: text("stage").notNull(),
   agreement_to_lease: text("agreement_to_lease").notNull(),
   created_at: timestamp("created_at").defaultNow().notNull(),
+  application_data: jsonb("application_data"),
+  updated_at: timestamp("updated_at").defaultNow(),
 });
 
 // 合作工人表

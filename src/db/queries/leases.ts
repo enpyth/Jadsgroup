@@ -15,7 +15,8 @@ export const getAllLeases = async () => {
             rent_amount: leases.rent_amount,
             deposit_amount: leases.deposit_amount,
             stage: leases.stage,
-            agreement_to_lease: leases.agreement_to_lease
+            agreement_to_lease: leases.agreement_to_lease,
+            created_at: leases.created_at
           }
     ).from(leases).innerJoin(properties, eq(leases.property_id, properties.property_id));
     // return await db.select().from(leases);
@@ -24,3 +25,7 @@ export const getAllLeases = async () => {
 export const addLease = async (leaseData: any) => {
     return await db.insert(leases).values(leaseData);
 }; 
+
+export const getLeaseById = async (leaseId: number) => {
+    return await db.select().from(leases).where(eq(leases.lease_id, leaseId));
+};

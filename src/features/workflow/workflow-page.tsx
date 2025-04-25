@@ -10,12 +10,12 @@ import { Box, Alert, Container, CircularProgress, Typography } from "@mui/materi
 import { getCustomerInfo, getProcesses, approveProcess, refuseProcess, rollbackProcess } from "@/db/tmp_api"
 import Grid from '@mui/material/Grid2'
 
-
 interface WorkflowPageProps {
+  leaseId: string
   user_email: string
 }
 
-export default function WorkflowPage({ user_email }: WorkflowPageProps) {
+export default function WorkflowPage( { leaseId, user_email }: WorkflowPageProps) {
   // State for data
   const [customer, setCustomer] = useState<Customer | null>(null)
   const [processes, setProcesses] = useState<Process[]>([])
@@ -217,10 +217,10 @@ export default function WorkflowPage({ user_email }: WorkflowPageProps) {
       )}
 
       <Grid container spacing={3}>
-        <Grid size={12}>
-          {customer && <CustomerInfoPanel user_email={user_email} customer={customer} currentStage={workflowState} processes={processes}/>}
+        <Grid size={3}>
+          {customer && <CustomerInfoPanel leaseId={leaseId} user_email={user_email} customer={customer} currentStage={workflowState} processes={processes}/>}
         </Grid>
-        <Grid size={12}>
+        <Grid size={9}>
           <ProcessList
             processes={processes}
             onApprove={handleApprove}
