@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { db } from "@/db/index";
 import { leases, properties } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { eq, desc } from 'drizzle-orm';
 
 export const getAllLeases = async () => {
     return await db.select(
@@ -18,8 +18,8 @@ export const getAllLeases = async () => {
             agreement_to_lease: leases.agreement_to_lease,
             created_at: leases.created_at
           }
-    ).from(leases).innerJoin(properties, eq(leases.property_id, properties.property_id));
-    // return await db.select().from(leases);
+    ).from(leases).innerJoin(properties, eq(leases.property_id, properties.property_id))
+    .orderBy(desc(leases.created_at));
 };
 
 export const addLease = async (leaseData: any) => {

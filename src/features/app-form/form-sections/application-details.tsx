@@ -126,6 +126,7 @@ export default function ApplicationDetails({user}: {user: User}) {
             <FileUpload 
               accept="image/*"
               onFileSelect={(file) => updateFormData({ photoIdentification: file })}
+              id="photo-upload"
             />
           </Grid>
         </Grid>
@@ -168,6 +169,8 @@ export default function ApplicationDetails({user}: {user: User}) {
             <FileUpload 
               accept="image/*,.pdf"
               onFileSelect={(file) => updateFormData({ idDocument: file })}
+              id="id-document-upload"
+              maxSizeMB={1}
             />
           </Grid>
         </Grid>

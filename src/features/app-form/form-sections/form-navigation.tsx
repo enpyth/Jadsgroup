@@ -1,61 +1,50 @@
-import { Box, Button } from "@mui/material"
+"use client"
 
-type FormNavigationProps = {
-  currentStep: number
-  totalSteps: number
-  onNext: () => void
-  onPrevious: () => void
-  onSubmit?: () => void
+import { Box, Button } from "@mui/material"
+import { useForm } from "../form-context"
+
+interface FormNavigationProps {
+  onSubmit: () => void
+  isAgreed: boolean
 }
 
-export function FormNavigation({ 
-  currentStep, 
-  totalSteps, 
-  onNext, 
-  onPrevious, 
-  onSubmit 
-}: FormNavigationProps) {
+export default function FormNavigation({ onSubmit, isAgreed }: FormNavigationProps) {
+  const { currentStep, totalSteps, goToNextStep, goToPreviousStep } = useForm()
+
   const buttonStyle = {
-    minWidth: '120px',
-    borderRadius: 2,
-    textTransform: 'none' as const,
-    fontWeight: 'medium' as const
+    minWidth: "120px",
+    textTransform: "none",
   }
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "space-between", mt: 6 }}>
-      {currentStep > 1 ? (
-        <Button 
-          variant="outlined" 
-          onClick={onPrevious} 
-          size="large"
-          sx={buttonStyle}
-        >
-          Previous
-        </Button>
-      ) : (
-        <Box /> // Empty box for spacing
-      )}
-
-      {currentStep < totalSteps ? (
-        <Button 
-          variant="contained" 
-          onClick={onNext} 
-          size="large"
-          sx={buttonStyle}
-        >
-          Next
-        </Button>
-      ) : (
+    <Box sx={{ display: "flex", justifyContent: "space-between", mt: 4 }}>
+      <Button
+        variant="outlined"
+        onClick={goToPreviousStep}
+        disabled={currentStep === 0}
+        sx={buttonStyle}
+      >
+        Previous
+      </Button>
+      {currentStep === totalSteps - 1 ? (
         <Button 
           variant="contained" 
           type="submit" 
           size="large" 
           color="primary"
           onClick={onSubmit}
+          disabled={!isAgreed}
           sx={buttonStyle}
         >
           Submit Application
+        </Button>
+      ) : (
+        <Button
+          variant="contained"
+          onClick={goToNextStep}
+          sx={buttonStyle}
+        >
+          Next
         </Button>
       )}
     </Box>

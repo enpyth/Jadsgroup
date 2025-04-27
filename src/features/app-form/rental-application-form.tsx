@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import { Card, CardContent, Container } from "@mui/material"
 import LeaseInformation from "./form-sections/lease-information"
 import ApplicationDetails from "./form-sections/application-details"
@@ -11,34 +10,40 @@ import TradingExperience from "./form-sections/trading-experience"
 import PrivacyAcknowledgment from "./form-sections/privacy-acknowledgment"
 import FormProgress from "./form-progress"
 import { PropertyInformation } from "./form-sections/property-information"
-import { FormNavigation } from "./form-sections/form-navigation"
+import FormNavigation from "./form-sections/form-navigation"
 import { Property } from "@/constants/data"
 import { useRouter } from "next/navigation"
 import { User } from "next-auth"
 import { FormProvider, useForm } from "./form-context"
 
 function RentalApplicationFormContent({ property, user }: { property: Property, user: User }) {
-  const [currentStep, setCurrentStep] = useState(1)
-  const totalSteps = 7
   const router = useRouter()
-  const { formData } = useForm()
-
-  const nextStep = () => {
-    if (currentStep < totalSteps) {
-      setCurrentStep(currentStep + 1)
-      window.scrollTo(0, 0)
-    }
-  }
-
-  const prevStep = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1)
-      window.scrollTo(0, 0)
-    }
-  }
+  const { formData, currentStep, totalSteps, goToNextStep, goToPreviousStep } = useForm()
 
   const handleSubmit = async () => {
     try {
+      // Upload ID document to Cloudflare R2
+      let idDocumentUrl = null
+      console.log('idDocument: ', formData.idDocument)
+      if (formData.idDocument) {
+        const uploadFormData = new FormData()
+        uploadFormData.append('file', formData.idDocument)
+        uploadFormData.append('fileName', `idDocument_${Date.now()}_${formData.idDocument.name}`)
+        uploadFormData.append('email', user.email || 'anonymous')
+
+        const uploadResponse = await fetch('/api/upload', {
+          method: 'POST',
+          body: uploadFormData,
+        })
+        
+        if (!uploadResponse.ok) {
+          throw new Error('Failed to upload ID document')
+        }
+        
+        const { url } = await uploadResponse.json()
+        idDocumentUrl = url
+      }
+
       // Calculate end date based on lease terms
       const startDate = formData.commencementDate || new Date()
       const endDate = new Date(startDate)
@@ -73,7 +78,8 @@ function RentalApplicationFormContent({ property, user }: { property: Property, 
             },
             identification: {
               type: formData.idType,
-              number: formData.idNumber
+              number: formData.idNumber,
+              id_document: idDocumentUrl
             },
             addresses: {
               residential: {
@@ -128,6 +134,10 @@ function RentalApplicationFormContent({ property, user }: { property: Property, 
                 phone: formData.tradeReference1Phone,
                 email: formData.tradeReference1Email
               }
+            },
+            privacy_acknowledgment: {
+              agreed: formData.agreed,
+              signature: formData.signature
             }
           }
         })
@@ -166,7 +176,7 @@ function RentalApplicationFormContent({ property, user }: { property: Property, 
       case 6:
         return <TradingExperience />
       case 7:
-        return <PrivacyAcknowledgment />
+        return <PrivacyAcknowledgment onAgreementChange={() => { }} />
       default:
         return null
     }
@@ -179,13 +189,10 @@ function RentalApplicationFormContent({ property, user }: { property: Property, 
       <Card sx={{ mt: 4, overflow: "visible", boxShadow: 3 }}>
         <CardContent sx={{ p: { xs: 2, sm: 4 } }}>
           {renderCurrentStep()}
-          
+
           <FormNavigation
-            currentStep={currentStep}
-            totalSteps={totalSteps}
-            onNext={nextStep}
-            onPrevious={prevStep}
             onSubmit={handleSubmit}
+            isAgreed={formData.agreed && formData.signature.trim() !== ""}
           />
         </CardContent>
       </Card>

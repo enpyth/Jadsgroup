@@ -67,16 +67,24 @@ The Workflow System is a multi-stage approval platform for managing lease applic
 
 The system contains **9 primary stages** and **1 final completion state**:
 
-1. **Jadsgroup Initial Review**
-2. **Lease Schedule Finalization**
-3. **Applicant Review**
-4. **Property Owner Review**
-5. **Generate Agreement to Lease**
-6. **Legal Review**
-7. **E-sign & Payment**
-8. **Lease Contract Drafting**
-9. **Final Documentation Review**
-10. **finished**
+### 5.0 Application Form
+
+Every application form have a folder named by user.email to store object file.
+
+Regularly delete the abandoned order folder, and store vaild folder forever.
+
+todo: file name rules
+
+### 5.1 Jadsgroup Initial Review
+### 5.2 Lease Schedule Finalization
+### 5.3 Applicant Review
+### 5.4 Property Owner Review
+### 5.5 Generate Agreement to Lease
+### 5.6 Legal Review
+### 5.7 E-sign & Payment
+### 5.8 Lease Contract Drafting
+### 5.9 Final Documentation Review
+### 5.10 finished
 
 ## 6. Data Models
 

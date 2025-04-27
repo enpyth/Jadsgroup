@@ -87,6 +87,10 @@ interface FormContextType {
   formData: FormData
   updateFormData: (data: Partial<FormData>) => void
   resetForm: () => void
+  currentStep: number
+  totalSteps: number
+  goToNextStep: () => void
+  goToPreviousStep: () => void
 }
 
 const initialFormData: FormData = {
@@ -174,6 +178,8 @@ const FormContext = createContext<FormContextType | undefined>(undefined)
 
 export function FormProvider({ children }: { children: ReactNode }) {
   const [formData, setFormData] = useState<FormData>(initialFormData)
+  const [currentStep, setCurrentStep] = useState(1)
+  const totalSteps = 8 
 
   const updateFormData = (data: Partial<FormData>) => {
     setFormData(prev => ({ ...prev, ...data }))
@@ -181,10 +187,31 @@ export function FormProvider({ children }: { children: ReactNode }) {
 
   const resetForm = () => {
     setFormData(initialFormData)
+    setCurrentStep(1)
+  }
+
+  const goToNextStep = () => {
+    if (currentStep < totalSteps - 1) {
+      setCurrentStep(prev => prev + 1)
+    }
+  }
+
+  const goToPreviousStep = () => {
+    if (currentStep > 0) {
+      setCurrentStep(prev => prev - 1)
+    }
   }
 
   return (
-    <FormContext.Provider value={{ formData, updateFormData, resetForm }}>
+    <FormContext.Provider value={{ 
+      formData, 
+      updateFormData, 
+      resetForm,
+      currentStep,
+      totalSteps,
+      goToNextStep,
+      goToPreviousStep
+    }}>
       {children}
     </FormContext.Provider>
   )

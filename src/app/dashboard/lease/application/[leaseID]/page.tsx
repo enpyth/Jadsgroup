@@ -2,11 +2,94 @@ import { Container, Typography, Paper, Grid, Alert } from "@mui/material"
 import { getLeaseById } from "@/db/queries/leases"
 import { type InferSelectModel } from "drizzle-orm"
 import { leases } from "@/db/schema"
+import { IDDocumentDisplay } from "@/features/app-form/review/id-document-display"
 
 type LeaseData = InferSelectModel<typeof leases>
 
-export default async function LeaseFormPage({ params }: { params: { leaseID: string } }) {
-  const leaseId = parseInt(params.leaseID)
+interface ApplicationData {
+  personal_info: {
+    first_name: string
+    surname: string
+    mobile: string
+    business_phone: string
+    date_of_birth: string
+    country: string
+    occupation: string
+  }
+  identification: {
+    type: string
+    number: string
+    id_document?: string
+  }
+  addresses: {
+    residential: {
+      address: string
+      suburb: string
+      state: string
+      postcode: string
+    }
+    postal: {
+      address: string
+      suburb: string
+      state: string
+      postcode: string
+    }
+  }
+  business_info: {
+    description: string
+    abn_number: string
+    company_name: string
+    director: {
+      first_name: string
+      surname: string
+      address: string
+      suburb: string
+      state: string
+      postcode: string
+    }
+  }
+  financial_info: {
+    assets: Array<{ description: string; amount: string }>
+    liabilities: Array<{ description: string; amount: string }>
+    operates_business: boolean
+    is_employed: boolean
+  }
+  rental_history: {
+    has_rented: boolean
+    type: string
+    previous_address: {
+      address: string
+      suburb: string
+      state: string
+      postcode: string
+    }
+  }
+  trade_reference: {
+    company_name: string
+    address: string
+    contact: {
+      first_name: string
+      surname: string
+      position: string
+      phone: string
+      email: string
+    }
+  }
+  privacy_acknowledgment: {
+    agreed: boolean
+    signature: string
+  }
+}
+
+type PageProps = {
+    params: Promise<{
+        leaseID: string
+    }>
+}
+
+export default async function LeaseFormPage({ params }: PageProps) {
+  const resolvedParams = await params
+  const leaseId = parseInt(resolvedParams.leaseID)
   const result = await getLeaseById(leaseId)
   const leaseData = result[0]
 
@@ -17,6 +100,8 @@ export default async function LeaseFormPage({ params }: { params: { leaseID: str
       </Container>
     )
   }
+
+  const applicationData = leaseData.application_data as ApplicationData | null
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -130,17 +215,25 @@ export default async function LeaseFormPage({ params }: { params: { leaseID: str
             </Paper>
           </Grid>
 
-          {leaseData.application_data && (
-            <Grid item xs={12}>
-              <Typography variant="subtitle1" gutterBottom>
-                Application Data
-              </Typography>
-              <Paper variant="outlined" sx={{ p: 2 }}>
-                <Typography variant="body2" component="pre" sx={{ margin: 0, whiteSpace: "pre-wrap" }}>
-                  {JSON.stringify(leaseData.application_data, null, 2)}
+          {applicationData && (
+            <>
+              <Grid item xs={12}>
+                <Typography variant="subtitle1" gutterBottom>
+                  Application Data
                 </Typography>
-              </Paper>
-            </Grid>
+                <Paper variant="outlined" sx={{ p: 2 }}>
+                  <Typography variant="body2" component="pre" sx={{ margin: 0, whiteSpace: "pre-wrap" }}>
+                    {JSON.stringify(applicationData, null, 2)}
+                  </Typography>
+                </Paper>
+              </Grid>
+
+              {applicationData.identification?.id_document && (
+                <Grid item xs={12}>
+                  <IDDocumentDisplay documentUrl={applicationData.identification.id_document} />
+                </Grid>
+              )}
+            </>
           )}
         </Grid>
       </Paper>

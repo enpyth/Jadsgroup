@@ -114,9 +114,9 @@ export default function ContactForm() {
               placeholder={t("verificationCode")}
               className="bg-white/10 border border-gray-400 p-2 text-white placeholder-gray-300 w-1/2 focus:outline-none focus:ring-2 focus:ring-red-500"
             />
-            <div className="bg-white p-1 rounded">
+            {/* <div className="bg-white p-1 rounded">
               <Image src="/placeholder.svg?height=40&width=100" alt="Captcha" width={100} height={40} />
-            </div>
+            </div> */}
           </div>
 
           <div className="text-center">

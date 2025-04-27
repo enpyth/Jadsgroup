@@ -25,24 +25,28 @@
 
 ---
 
-# Page Design
+# Non-Functional TODO
 
-## tenant
+## Code Arch
 
-1. show lease table
+Abstract features components into common components
 
-select * from lease where session.user.email == tenant.email
+## Optimization
 
-## admin
+add db index, redis
 
-1. show all property table
+## PROD
 
-2. show lease table when the property is choosen
+### object db
 
-## owner
+- Change setting in R2, replace Public Access to Custom Domain. 
+- Update CLOUDFLARE_R2_PUBLIC_URL in env file.
+- Update domains in next.config.js
 
-1. show owners' property table
+### other
 
-# TODO
+Compress public resources.
 
-compress public resources 
+### data clean rules
+
+- delete invaild lease item(file, image) in 'leases' table.

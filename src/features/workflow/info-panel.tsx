@@ -171,7 +171,7 @@ export function CustomerInfoPanel({ user_email, customer, currentStage, processe
                 variant="outlined"
                 size="small"
                 startIcon={<Eye size={14} />}
-                onClick={() => window.location.href = `/dashboard/lease/form/${leaseId}`}
+                onClick={() => window.location.href = `/dashboard/lease/application/${leaseId}`}
                 sx={{
                   textTransform: "none",
                   fontSize: "0.75rem",
