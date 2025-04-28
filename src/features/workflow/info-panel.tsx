@@ -1,30 +1,31 @@
 "use client"
 
-import { formatDistance } from "date-fns"
 import { Card, CardContent, CardHeader, Typography, Chip, Button, Divider, Box } from "@mui/material"
-import type { Customer, Process } from "@/constants/workflow"
+import type { Process } from "@/constants/workflow"
 import { FileText, Home, Calendar, CreditCard, User, Mail, PenToolIcon, Wrench, Eye } from "lucide-react"
 import { LeasePreviewDialog } from "./dialog-preview"
 import { RepairRequestDialog } from "./dialog-repair"
 import { useState } from "react"
+import { type InferSelectModel } from "drizzle-orm"
+import { leases } from "@/db/schema"
+type LeaseData = InferSelectModel<typeof leases>
 
 interface CustomerInfoPanelProps {
+  leaseData: LeaseData
   user_email: string
-  customer: Customer
-  currentStage: string
   processes: Process[]
-  leaseId: string
+  currentStage: string
 }
 
-export function CustomerInfoPanel({ user_email, customer, currentStage, processes, leaseId }: CustomerInfoPanelProps) {
+export function CustomerInfoPanel({ info }: { info: CustomerInfoPanelProps }) {
   const [repairDialogOpen, setRepairDialogOpen] = useState(false)
   const [leasePreviewOpen, setLeasePreviewOpen] = useState(false)
 
-  const formatCurrency = (amount: number) => {
+  const formatCurrency = (amount: string) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "USD",
-    }).format(amount)
+    }).format(Number(amount))
   }
 
   const formatDate = (date: Date) => {
@@ -35,13 +36,12 @@ export function CustomerInfoPanel({ user_email, customer, currentStage, processe
     })
   }
 
-  const leaseLength = formatDistance(customer.end_date, customer.start_date, { addSuffix: false })
-  const isWorkflowComplete = currentStage === "finished"
+  const isWorkflowComplete = info.currentStage === "finished"
 
   // Check if Document Verification process is approved
-  const isS1Approved = processes.some((p) => p.stageId === "Review Application" && p.state === "approved")
-  const isS5Approved = processes.some((p) => p.stageId === "Land Lord Review" && p.state === "approved")
-  const isS8Approved = processes.some((p) => p.stageId === "Legal Review" && p.state === "approved")
+  const isS1Approved = info.processes.some((p) => p.stageId === "Review Application" && p.state === "approved")
+  const isS5Approved = info.processes.some((p) => p.stageId === "Land Lord Review" && p.state === "approved")
+  const isS8Approved = info.processes.some((p) => p.stageId === "Legal Review" && p.state === "approved")
 
   const handleRepairRequest = () => {
     setRepairDialogOpen(true)
@@ -53,7 +53,7 @@ export function CustomerInfoPanel({ user_email, customer, currentStage, processe
 
   const handleRepairSubmit = (description: string, priority: string) => {
     // In a real app, this would send the repair request to the server
-    console.log("Repair request submitted:", { description, priority, propertyId: customer.property_id })
+    console.log("Repair request submitted:", { description, priority, propertyId: info.leaseData.property_id })
     setRepairDialogOpen(false)
   }
 
@@ -73,8 +73,8 @@ export function CustomerInfoPanel({ user_email, customer, currentStage, processe
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <Typography variant="h6">Tenant Information</Typography>
               <Chip
-                label={`Property ID: ${customer.property_id}`}
-                color={currentStage === "finished" ? "success" : "default"}
+                label={`Property ID: ${info.leaseData.property_id}`}
+                color={info.currentStage === "finished" ? "success" : "default"}
                 size="small"
               />
             </div>
@@ -89,7 +89,7 @@ export function CustomerInfoPanel({ user_email, customer, currentStage, processe
           <div style={{ paddingLeft: "24px", marginBottom: "16px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <Mail size={16} color="#666" />
-              <Typography variant="body2">{user_email}</Typography>
+              <Typography variant="body2">{info.user_email}</Typography>
             </div>
           </div>
 
@@ -105,7 +105,7 @@ export function CustomerInfoPanel({ user_email, customer, currentStage, processe
                 Start Date:
               </Typography>
               <Typography variant="caption" fontWeight="medium">
-                {formatDate(customer.start_date)}
+                {formatDate(new Date(info.leaseData.start_date))}
               </Typography>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4px", marginBottom: "8px" }}>
@@ -113,15 +113,7 @@ export function CustomerInfoPanel({ user_email, customer, currentStage, processe
                 End Date:
               </Typography>
               <Typography variant="caption" fontWeight="medium">
-                {formatDate(customer.end_date)}
-              </Typography>
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4px" }}>
-              <Typography variant="caption" color="text.secondary">
-                Lease Length:
-              </Typography>
-              <Typography variant="caption" fontWeight="medium">
-                {leaseLength}
+                {formatDate(new Date(info.leaseData.end_date))}
               </Typography>
             </div>
           </div>
@@ -138,7 +130,7 @@ export function CustomerInfoPanel({ user_email, customer, currentStage, processe
                 Monthly Rent:
               </Typography>
               <Typography variant="caption" fontWeight="medium">
-                {formatCurrency(customer.rent_amount)}
+                {formatCurrency(info.leaseData.rent_amount)}
               </Typography>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4px", marginBottom: "8px" }}>
@@ -146,7 +138,7 @@ export function CustomerInfoPanel({ user_email, customer, currentStage, processe
                 Security Deposit:
               </Typography>
               <Typography variant="caption" fontWeight="medium">
-                {formatCurrency(customer.deposit_amount)}
+                {formatCurrency(info.leaseData.deposit_amount)}
               </Typography>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4px" }}>
@@ -154,7 +146,7 @@ export function CustomerInfoPanel({ user_email, customer, currentStage, processe
                 Total Due at Signing:
               </Typography>
               <Typography variant="caption" fontWeight="medium">
-                {formatCurrency(customer.rent_amount + customer.deposit_amount)}
+                {formatCurrency(info.leaseData.rent_amount) + formatCurrency(info.leaseData.deposit_amount)}
               </Typography>
             </div>
           </div>
@@ -171,7 +163,7 @@ export function CustomerInfoPanel({ user_email, customer, currentStage, processe
                 variant="outlined"
                 size="small"
                 startIcon={<Eye size={14} />}
-                onClick={() => window.location.href = `/dashboard/lease/application/${leaseId}`}
+                onClick={() => window.location.href = `/dashboard/lease/application/${info.leaseData.lease_id}`}
                 sx={{
                   textTransform: "none",
                   fontSize: "0.75rem",
@@ -317,14 +309,14 @@ export function CustomerInfoPanel({ user_email, customer, currentStage, processe
         open={repairDialogOpen}
         onClose={handleRepairDialogClose}
         onSubmit={handleRepairSubmit}
-        propertyId={customer.property_id}
+        propertyId={info.leaseData.property_id}
       />
 
       <LeasePreviewDialog
         open={leasePreviewOpen}
         onClose={handleLeasePreviewClose}
-        propertyId={customer.property_id}
-        tenantEmail={customer.tenant_email}
+        propertyId={info.leaseData.property_id}
+        tenantEmail={info.user_email}
       />
     </>
   )

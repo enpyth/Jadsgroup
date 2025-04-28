@@ -1,25 +1,32 @@
+// TODO: remove tmp api
+// TODO: get processes from db
+
 "use client"
 
 import { useState, useEffect } from "react"
-import { ProcessList } from "@/features/workflow/process-list"
+import { ProcessList } from "@/features/workflow/process-card-list"
 import { WorkflowHeader } from "@/features/workflow/workflow-header"
 import { CustomerInfoPanel } from "@/features/workflow/info-panel"
-import { type Process, type WorkflowState, WORKFLOW_CONFIG, type RefusalRecord, type Customer } from "@/constants/workflow"
+import { type Process, type WorkflowState, WORKFLOW_CONFIG, type RefusalRecord } from "@/constants/workflow"
 import { CheckCircle } from "lucide-react"
 import { Box, Alert, Container, CircularProgress, Typography } from "@mui/material"
-import { getCustomerInfo, getProcesses, approveProcess, refuseProcess, rollbackProcess } from "@/db/tmp_api"
+import { approveProcess, refuseProcess, rollbackProcess } from "@/db/tmp_api"
 import Grid from '@mui/material/Grid2'
+import { leases } from "@/db/schema"
+import { type InferSelectModel } from "drizzle-orm"
+
+type LeaseData = InferSelectModel<typeof leases>
 
 interface WorkflowPageProps {
-  leaseId: string
+  leaseData: LeaseData
   user_email: string
+  processes: Process[]
 }
 
-export default function WorkflowPage( { leaseId, user_email }: WorkflowPageProps) {
+export default function WorkflowPage({ leaseData, user_email, processes: initialProcesses }: WorkflowPageProps) {
   // State for data
-  const [customer, setCustomer] = useState<Customer | null>(null)
-  const [processes, setProcesses] = useState<Process[]>([])
-  const [loading, setLoading] = useState(true)
+  const [processes, setProcesses] = useState<Process[]>(initialProcesses)
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   // Current workflow state
@@ -28,27 +35,6 @@ export default function WorkflowPage( { leaseId, user_email }: WorkflowPageProps
 
   // Force a re-render every minute to update countdown timers
   const [, setTime] = useState(Date.now())
-
-  // Fetch data from server
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        setLoading(true)
-        const [customerData, processesData] = await Promise.all([getCustomerInfo(), getProcesses()])
-
-        setCustomer(customerData)
-        setProcesses(processesData)
-        setError(null)
-      } catch (err) {
-        console.error("Error fetching data:", err)
-        setError("Failed to load data. Please try again later.")
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchData()
-  }, [])
 
   useEffect(() => {
     const interval = setInterval(() => setTime(Date.now()), 60000)
@@ -78,6 +64,29 @@ export default function WorkflowPage( { leaseId, user_email }: WorkflowPageProps
   // Handle process approval
   const handleApprove = async (processId: string) => {
     try {
+      // Get the process that is being approved
+      const processToApprove = processes.find(p => p.id === processId)
+      if (!processToApprove) return
+
+      // Handle different approval actions based on process type
+      switch (processToApprove.stageId) {
+        case "Review Application":
+          console.log("Application review approved:", processToApprove)
+          alert("Application review has been approved. Moving to next stage.")
+          break
+        case "Land Lord Review":
+          console.log("Landlord review approved:", processToApprove)
+          alert("Landlord review has been approved. Moving to next stage.")
+          break
+        case "Legal Review":
+          console.log("Legal review approved:", processToApprove)
+          alert("Legal review has been approved. Moving to next stage.")
+          break
+        default:
+          console.log("Process approved:", processToApprove)
+          alert("Process has been approved. Moving to next stage.")
+      }
+
       await approveProcess(processId)
 
       // Update local state
@@ -218,7 +227,7 @@ export default function WorkflowPage( { leaseId, user_email }: WorkflowPageProps
 
       <Grid container spacing={3}>
         <Grid size={3}>
-          {customer && <CustomerInfoPanel leaseId={leaseId} user_email={user_email} customer={customer} currentStage={workflowState} processes={processes}/>}
+          <CustomerInfoPanel info={{ leaseData, user_email, processes, currentStage: workflowState }}></CustomerInfoPanel>
         </Grid>
         <Grid size={9}>
           <ProcessList

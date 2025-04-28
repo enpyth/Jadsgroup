@@ -1,15 +1,3 @@
-// TODO remove
-export interface Customer {
-    property_id: number
-    tenant_email: string
-    start_date: Date
-    end_date: Date
-    rent_amount: number
-    deposit_amount: number
-    stage: WorkflowState
-    agreement_to_lease: string
-}
-
 export type WorkflowState =
     | "Review Application"
     | "Confirm Lease Schedule"
@@ -45,6 +33,26 @@ export interface Process {
     refusalRecords?: RefusalRecord[]
     originalStage?: WorkflowState
     stageId: WorkflowState
+}
+
+export function generateInitialProcesses(): Process[] {
+    const now = Date.now()
+    const processes: Process[] = []
+
+    WORKFLOW_CONFIG.forEach((stage) => {
+        stage.processes.forEach((processConfig) => {
+            processes.push({
+                id: processConfig.id,
+                description: processConfig.description,
+                state: stage.id,
+                stageId: stage.id,
+                createdAt: new Date(now).toISOString(),
+                assignedTo: processConfig.assignedTo,
+                originalStage: stage.id,
+            })
+        })
+    })
+    return processes
 }
 
 export interface StageConfig {
