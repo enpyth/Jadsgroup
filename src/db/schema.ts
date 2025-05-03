@@ -73,7 +73,7 @@ export const leases = pgTable("leases", {
   end_date: date("end_date").notNull(),
   rent_amount: text("rent_amount").notNull(),
   deposit_amount: text("deposit_amount").notNull(),
-  stage: text("stage").notNull(),
+  state: jsonb("state").notNull(),
   agreement_to_lease: text("agreement_to_lease").notNull(),
   created_at: timestamp("created_at").defaultNow().notNull(),
   application_data: jsonb("application_data"),

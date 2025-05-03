@@ -2,7 +2,6 @@ import WorkflowPage from "@/features/workflow/workflow-page"
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { getLeaseById } from "@/db/queries/leases"
-import { generateInitialProcesses } from "@/constants/workflow"
 
 type PageProps = {
   params: Promise<{
@@ -18,14 +17,12 @@ export default async function Page({ params }: PageProps) {
 
   const resolvedParams = await params
   const leaseId = parseInt(resolvedParams.leaseId)
-  const processes = generateInitialProcesses()
   const leaseData = await getLeaseById(leaseId)
 
   return (
     <WorkflowPage
       leaseData={leaseData[0]}
-      user_email={session?.user?.email || ''}
-      processes={processes}
+      userEmail={session?.user?.email || ''}
     />
   )
 }

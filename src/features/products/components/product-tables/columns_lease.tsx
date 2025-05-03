@@ -29,7 +29,7 @@ export const columns: ColumnDef<Lease>[] = [
   }, 
   {
     accessorKey: 'stage',
-    header: 'stage'
+    header: 'Stage(Y/N) TODO'
   },
   {
     accessorKey: 'agreement_to_lease',

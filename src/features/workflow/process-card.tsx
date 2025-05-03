@@ -35,12 +35,6 @@ export function ProcessCard({
 }: ProcessCardProps) {
   const isProcessed = process.state === "approved" || process.state === "refused"
 
-  // Get the stage name for display
-  const getStageName = (state: string) => {
-    if (state === "approved" || state === "refused") return ""
-    return process.name
-  }
-
   // Format timestamp for display
   const formatTimestamp = (timestamp: string) => {
     return format(new Date(timestamp), "MMM d, yyyy 'at' h:mm a")

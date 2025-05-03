@@ -15,6 +15,7 @@ import { Property } from "@/constants/data"
 import { useRouter } from "next/navigation"
 import { User } from "next-auth"
 import { FormProvider, useForm } from "./form-context"
+import { getInitialState } from "@/constants/workflow"
 
 function RentalApplicationFormContent({ property, user }: { property: Property, user: User }) {
   const router = useRouter()
@@ -63,8 +64,8 @@ function RentalApplicationFormContent({ property, user }: { property: Property, 
           end_date: endDate.toISOString().split('T')[0], // Convert to YYYY-MM-DD format
           rent_amount: property.price,
           deposit_amount: property.price,
-          stage: "Review Application",
-          agreement_to_lease: "agreement_url",
+          state: getInitialState(),
+          agreement_to_lease: "TODO: agreement_url",
           // Additional application data as JSON
           application_data: {
             personal_info: {

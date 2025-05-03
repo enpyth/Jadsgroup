@@ -1,23 +1,31 @@
 "use client"
 
 import { Card, CardContent, CardHeader, Typography, Chip, Button, Divider, Box } from "@mui/material"
-import type { Process } from "@/constants/workflow"
+import type { Process, ProcessId, WorkflowId } from "@/constants/workflow"
+import { WORKFLOW_IDS, PROCESS_IDS, STATES } from "@/constants/workflow"
 import { FileText, Home, Calendar, CreditCard, User, Mail, PenToolIcon, Wrench, Eye } from "lucide-react"
 import { LeasePreviewDialog } from "./dialog-preview"
 import { RepairRequestDialog } from "./dialog-repair"
 import { useState } from "react"
 import { type InferSelectModel } from "drizzle-orm"
 import { leases } from "@/db/schema"
+
 type LeaseData = InferSelectModel<typeof leases>
 
 interface CustomerInfoPanelProps {
   leaseData: LeaseData
-  user_email: string
+  userEmail: string
   processes: Process[]
-  currentStage: string
+  currentStage: WorkflowId
+  isCompleted: boolean
 }
 
-export function CustomerInfoPanel({ info }: { info: CustomerInfoPanelProps }) {
+// Check if all processes in the list are approved
+function isProcessApproved(processes: Process[], processIds: ProcessId[]) {
+  return processIds.every((id) => processes.some((p) => p.id === id && p.state === STATES.APPROVED))
+}
+
+export default function CustomerInfoPanel({ leaseData, userEmail, processes, currentStage, isCompleted }: CustomerInfoPanelProps) {
   const [repairDialogOpen, setRepairDialogOpen] = useState(false)
   const [leasePreviewOpen, setLeasePreviewOpen] = useState(false)
 
@@ -36,12 +44,11 @@ export function CustomerInfoPanel({ info }: { info: CustomerInfoPanelProps }) {
     })
   }
 
-  const isWorkflowComplete = info.currentStage === "finished"
 
-  // Check if Document Verification process is approved
-  const isS1Approved = info.processes.some((p) => p.stageId === "Review Application" && p.state === "approved")
-  const isS5Approved = info.processes.some((p) => p.stageId === "Land Lord Review" && p.state === "approved")
-  const isS8Approved = info.processes.some((p) => p.stageId === "Legal Review" && p.state === "approved")
+  // Check if processes are approved
+  const isStartApproved = isProcessApproved(processes, [PROCESS_IDS.REVIEW_APPLICATION])
+  const isLandlordReviewApproved = isProcessApproved(processes, [PROCESS_IDS.LAND_LORD_REVIEW, PROCESS_IDS.REVIEW_APPLICATION])
+  const isLegalReviewApproved = isProcessApproved(processes, [PROCESS_IDS.DRAFT_CONTRACT, PROCESS_IDS.LAND_LORD_REVIEW, PROCESS_IDS.REVIEW_APPLICATION])
 
   const handleRepairRequest = () => {
     setRepairDialogOpen(true)
@@ -53,7 +60,7 @@ export function CustomerInfoPanel({ info }: { info: CustomerInfoPanelProps }) {
 
   const handleRepairSubmit = (description: string, priority: string) => {
     // In a real app, this would send the repair request to the server
-    console.log("Repair request submitted:", { description, priority, propertyId: info.leaseData.property_id })
+    console.log("Repair request submitted:", { description, priority, propertyId: leaseData.property_id })
     setRepairDialogOpen(false)
   }
 
@@ -73,8 +80,8 @@ export function CustomerInfoPanel({ info }: { info: CustomerInfoPanelProps }) {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <Typography variant="h6">Tenant Information</Typography>
               <Chip
-                label={`Property ID: ${info.leaseData.property_id}`}
-                color={info.currentStage === "finished" ? "success" : "default"}
+                label={`Property ID: ${leaseData.property_id}`}
+                color={isCompleted ? "success" : "default"}
                 size="small"
               />
             </div>
@@ -89,7 +96,7 @@ export function CustomerInfoPanel({ info }: { info: CustomerInfoPanelProps }) {
           <div style={{ paddingLeft: "24px", marginBottom: "16px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <Mail size={16} color="#666" />
-              <Typography variant="body2">{info.user_email}</Typography>
+              <Typography variant="body2">{userEmail}</Typography>
             </div>
           </div>
 
@@ -105,7 +112,7 @@ export function CustomerInfoPanel({ info }: { info: CustomerInfoPanelProps }) {
                 Start Date:
               </Typography>
               <Typography variant="caption" fontWeight="medium">
-                {formatDate(new Date(info.leaseData.start_date))}
+                {formatDate(new Date(leaseData.start_date))}
               </Typography>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4px", marginBottom: "8px" }}>
@@ -113,7 +120,7 @@ export function CustomerInfoPanel({ info }: { info: CustomerInfoPanelProps }) {
                 End Date:
               </Typography>
               <Typography variant="caption" fontWeight="medium">
-                {formatDate(new Date(info.leaseData.end_date))}
+                {formatDate(new Date(leaseData.end_date))}
               </Typography>
             </div>
           </div>
@@ -130,7 +137,7 @@ export function CustomerInfoPanel({ info }: { info: CustomerInfoPanelProps }) {
                 Monthly Rent:
               </Typography>
               <Typography variant="caption" fontWeight="medium">
-                {formatCurrency(info.leaseData.rent_amount)}
+                {formatCurrency(leaseData.rent_amount)}
               </Typography>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4px", marginBottom: "8px" }}>
@@ -138,7 +145,7 @@ export function CustomerInfoPanel({ info }: { info: CustomerInfoPanelProps }) {
                 Security Deposit:
               </Typography>
               <Typography variant="caption" fontWeight="medium">
-                {formatCurrency(info.leaseData.deposit_amount)}
+                {formatCurrency(leaseData.deposit_amount)}
               </Typography>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4px" }}>
@@ -146,7 +153,7 @@ export function CustomerInfoPanel({ info }: { info: CustomerInfoPanelProps }) {
                 Total Due at Signing:
               </Typography>
               <Typography variant="caption" fontWeight="medium">
-                {formatCurrency(info.leaseData.rent_amount) + formatCurrency(info.leaseData.deposit_amount)}
+                {formatCurrency(leaseData.rent_amount) + formatCurrency(leaseData.deposit_amount)}
               </Typography>
             </div>
           </div>
@@ -163,7 +170,7 @@ export function CustomerInfoPanel({ info }: { info: CustomerInfoPanelProps }) {
                 variant="outlined"
                 size="small"
                 startIcon={<Eye size={14} />}
-                onClick={() => window.location.href = `/dashboard/lease/application/${info.leaseData.lease_id}`}
+                onClick={() => window.location.href = `/dashboard/lease/application/${leaseData.lease_id}`}
                 sx={{
                   textTransform: "none",
                   fontSize: "0.75rem",
@@ -181,7 +188,7 @@ export function CustomerInfoPanel({ info }: { info: CustomerInfoPanelProps }) {
                 variant="outlined"
                 size="small"
                 startIcon={<Eye size={14} />}
-                disabled={!isS1Approved}
+                disabled={!isStartApproved}
                 onClick={handleLeasePreview}
                 sx={{
                   textTransform: "none",
@@ -193,13 +200,13 @@ export function CustomerInfoPanel({ info }: { info: CustomerInfoPanelProps }) {
                 Lease Schedule
               </Button>
             </Box>
-            {!isS1Approved && (
+            {!isStartApproved && (
               <Typography
                 variant="caption"
                 color="text.secondary"
                 sx={{ display: "block", mt: 1, textAlign: "center" }}
               >
-                Available after 'Review Application'
+                Available after {WORKFLOW_IDS.START}
               </Typography>
             )}
           </div>
@@ -209,7 +216,7 @@ export function CustomerInfoPanel({ info }: { info: CustomerInfoPanelProps }) {
                 variant="outlined"
                 size="small"
                 startIcon={<Eye size={14} />}
-                disabled={!isS5Approved}
+                disabled={!isLandlordReviewApproved}
                 onClick={handleLeasePreview}
                 sx={{
                   textTransform: "none",
@@ -221,13 +228,13 @@ export function CustomerInfoPanel({ info }: { info: CustomerInfoPanelProps }) {
                 Disclosure Statement
               </Button>
             </Box>
-            {!isS5Approved && (
+            {!isLandlordReviewApproved && (
               <Typography
                 variant="caption"
                 color="text.secondary"
                 sx={{ display: "block", mt: 1, textAlign: "center" }}
               >
-                Available after 'Land Lord Review'
+                Available after {WORKFLOW_IDS.LAND_LORD_REVIEW}
               </Typography>
             )}
           </div>
@@ -237,7 +244,7 @@ export function CustomerInfoPanel({ info }: { info: CustomerInfoPanelProps }) {
                 variant="outlined"
                 size="small"
                 startIcon={<Eye size={14} />}
-                disabled={!isS8Approved}
+                disabled={!isLegalReviewApproved}
                 onClick={handleLeasePreview}
                 sx={{
                   textTransform: "none",
@@ -246,16 +253,16 @@ export function CustomerInfoPanel({ info }: { info: CustomerInfoPanelProps }) {
                   flexGrow: 1,
                 }}
               >
-                Aggrement to Lease
+                Agreement to Lease
               </Button>
             </Box>
-            {!isS8Approved && (
+            {!isLegalReviewApproved && (
               <Typography
                 variant="caption"
                 color="text.secondary"
                 sx={{ display: "block", mt: 1, textAlign: "center" }}
               >
-                Available after 'Legal Review'
+                Available after {WORKFLOW_IDS.LEGAL_REVIEW}
               </Typography>
             )}
           </div>
@@ -274,18 +281,18 @@ export function CustomerInfoPanel({ info }: { info: CustomerInfoPanelProps }) {
               size="small"
               startIcon={<Wrench size={14} />}
               fullWidth
-              disabled={!isWorkflowComplete}
+              disabled={!isCompleted}
               onClick={handleRepairRequest}
               sx={{
                 textTransform: "none",
                 fontSize: "0.75rem",
                 height: "32px",
-                bgcolor: isWorkflowComplete ? "primary.main" : "grey.300",
+                bgcolor: isCompleted ? "primary.main" : "grey.300",
               }}
             >
               Repair Request
             </Button>
-            {!isWorkflowComplete && (
+            {!isCompleted && (
               <Typography
                 variant="caption"
                 color="text.secondary"
@@ -309,14 +316,14 @@ export function CustomerInfoPanel({ info }: { info: CustomerInfoPanelProps }) {
         open={repairDialogOpen}
         onClose={handleRepairDialogClose}
         onSubmit={handleRepairSubmit}
-        propertyId={info.leaseData.property_id}
+        propertyId={leaseData.property_id}
       />
 
       <LeasePreviewDialog
         open={leasePreviewOpen}
         onClose={handleLeasePreviewClose}
-        propertyId={info.leaseData.property_id}
-        tenantEmail={info.user_email}
+        propertyId={leaseData.property_id}
+        tenantEmail={userEmail}
       />
     </>
   )

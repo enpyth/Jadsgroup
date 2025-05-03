@@ -1,245 +1,148 @@
-// TODO: remove tmp api
-// TODO: get processes from db
-
 "use client"
 
-import { useState, useEffect } from "react"
-import { ProcessList } from "@/features/workflow/process-card-list"
-import { WorkflowHeader } from "@/features/workflow/workflow-header"
-import { CustomerInfoPanel } from "@/features/workflow/info-panel"
-import { type Process, type WorkflowState, WORKFLOW_CONFIG, type RefusalRecord } from "@/constants/workflow"
-import { CheckCircle } from "lucide-react"
-import { Box, Alert, Container, CircularProgress, Typography } from "@mui/material"
-import { approveProcess, refuseProcess, rollbackProcess } from "@/db/tmp_api"
-import Grid from '@mui/material/Grid2'
 import { leases } from "@/db/schema"
 import { type InferSelectModel } from "drizzle-orm"
+import { STATES, WorkflowState, getCurrentStage, getProcessPercentage, isWorkflowComplete, updateProcessesRecords } from "@/constants/workflow"
+import { Alert, Box, Container, Snackbar } from "@mui/material"
+import Grid from "@mui/material/Grid2"
+import CustomerInfoPanel from "./info-panel"
+import ProcessList from "./process-card-list"
+import WorkflowHeader from "./workflow-header"
+import { useState, useCallback } from "react"
 
 type LeaseData = InferSelectModel<typeof leases>
 
 interface WorkflowPageProps {
   leaseData: LeaseData
-  user_email: string
-  processes: Process[]
+  userEmail: string
 }
 
-export default function WorkflowPage({ leaseData, user_email, processes: initialProcesses }: WorkflowPageProps) {
-  // State for data
-  const [processes, setProcesses] = useState<Process[]>(initialProcesses)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+type NotificationType = 'success' | 'info' | 'warning' | 'error'
+interface Notification {
+  message: string
+  type: NotificationType
+}
 
-  // Current workflow state
-  // TODO get state from db
-  const [workflowState, setWorkflowState] = useState<WorkflowState>("Review Application")
+// Custom hook for workflow state management
+function useWorkflowState(initialState: WorkflowState[], leaseId: number) {
+  const [workflowStates, setWorkflowStates] = useState<WorkflowState[]>(initialState)
+  const [notification, setNotification] = useState<Notification | null>(null)
 
-  // Force a re-render every minute to update countdown timers
-  const [, setTime] = useState(Date.now())
+  const currentStage = getCurrentStage(workflowStates)
+  const processPercentage = getProcessPercentage(workflowStates)
+  const isCompleted = isWorkflowComplete(workflowStates)
 
-  useEffect(() => {
-    const interval = setInterval(() => setTime(Date.now()), 60000)
-    return () => clearInterval(interval)
-  }, [])
-
-  // Check if all processes are done (approved or refused)
-  useEffect(() => {
-    if (processes.length === 0) return
-
-    const allProcessesDone = processes.every((process) => process.state === "approved" || process.state === "refused")
-
-    if (allProcessesDone && workflowState !== "finished") {
-      setWorkflowState("finished")
-    } else if (!allProcessesDone && workflowState === "finished") {
-      // If a process is rolled back from finished state, determine the appropriate stage
-      for (const stage of WORKFLOW_CONFIG) {
-        const stagePending = processes.some((p) => p.state === stage.id)
-        if (stagePending) {
-          setWorkflowState(stage.id)
-          break
-        }
-      }
-    }
-  }, [processes, workflowState])
-
-  // Handle process approval
-  const handleApprove = async (processId: string) => {
+  const updateProcessState = useCallback(async (
+    processId: string,
+    newState: typeof STATES[keyof typeof STATES],
+    actionName: string
+  ) => {
     try {
-      // Get the process that is being approved
-      const processToApprove = processes.find(p => p.id === processId)
-      if (!processToApprove) return
+      const updatedWorkflowState = workflowStates.map(stage => ({
+        ...stage,
+        processes: stage.processes.map(process =>
+          process.id === processId
+            ? { ...process, state: newState }
+            : process
+        )
+      }))
 
-      // Handle different approval actions based on process type
-      switch (processToApprove.stageId) {
-        case "Review Application":
-          console.log("Application review approved:", processToApprove)
-          alert("Application review has been approved. Moving to next stage.")
-          break
-        case "Land Lord Review":
-          console.log("Landlord review approved:", processToApprove)
-          alert("Landlord review has been approved. Moving to next stage.")
-          break
-        case "Legal Review":
-          console.log("Legal review approved:", processToApprove)
-          alert("Legal review has been approved. Moving to next stage.")
-          break
-        default:
-          console.log("Process approved:", processToApprove)
-          alert("Process has been approved. Moving to next stage.")
-      }
-
-      await approveProcess(processId)
-
-      // Update local state
-      setProcesses((prevProcesses) =>
-        prevProcesses.map((process) => (process.id === processId ? { ...process, state: "approved" } : process)),
-      )
-
-      // Check if all processes in current stage are approved
-      const updatedProcesses = processes.map((process) =>
-        process.id === processId ? { ...process, state: "approved" } : process,
-      )
-
-      // Get all processes for the current stage
-      const currentStageProcesses = updatedProcesses.filter((p) => p.stageId === workflowState)
-
-      // Check if all processes in the current stage are approved
-      const allCurrentStageApproved = currentStageProcesses.every((p) => p.state === "approved")
-
-      // If all processes in current stage are approved, move to next stage
-      if (allCurrentStageApproved && workflowState !== "finished") {
-        const currentStageIndex = WORKFLOW_CONFIG.findIndex((stage) => stage.id === workflowState)
-        if (currentStageIndex < WORKFLOW_CONFIG.length - 1) {
-          setWorkflowState(WORKFLOW_CONFIG[currentStageIndex + 1].id)
-        }
-      }
+      await updateProcessesRecords(leaseId, updatedWorkflowState)
+      setWorkflowStates(updatedWorkflowState)
+      setNotification({
+        message: `'${processId}' has been ${actionName}.`,
+        type: 'success'
+      })
     } catch (err) {
-      console.error("Error approving process:", err)
-      setError("Failed to approve process. Please try again.")
+      console.error(`Error ${actionName} process:`, err)
+      setNotification({ 
+        message: `Failed to ${actionName} process. Please try again.`, 
+        type: 'error' 
+      })
     }
+  }, [workflowStates, leaseId])
+
+  const handleApprove = useCallback((processId: string) => {
+    updateProcessState(processId, STATES.APPROVED, 'approved')
+  }, [updateProcessState])
+
+  const handleRefuse = useCallback((processId: string) => {
+    updateProcessState(processId, STATES.REFUSED, 'refused')
+  }, [updateProcessState])
+
+  const handleRollback = useCallback((processId: string) => {
+    updateProcessState(processId, STATES.PENDING, 'rolled back')
+  }, [updateProcessState])
+
+  return {
+    workflowStates,
+    currentStage,
+    processPercentage,
+    isCompleted,
+    notification,
+    setNotification,
+    handleApprove,
+    handleRefuse,
+    handleRollback
   }
+}
 
-  // Handle process refusal with timestamp
-  const handleRefuse = async (processId: string, reason: string) => {
-    try {
-      const result = await refuseProcess(processId, reason)
-
-      // Update local state
-      setProcesses((prevProcesses) =>
-        prevProcesses.map((process) => {
-          if (process.id === processId) {
-            // Create a new refusal record with timestamp from server
-            const newRefusalRecord: RefusalRecord = {
-              reason,
-              timestamp: result.timestamp,
-            }
-
-            // Add to existing records or create new array
-            const refusalRecords = process.refusalRecords
-              ? [...process.refusalRecords, newRefusalRecord]
-              : [newRefusalRecord]
-
-            return {
-              ...process,
-              state: "refused",
-              refusalRecords,
-            }
-          }
-          return process
-        }),
-      )
-    } catch (err) {
-      console.error("Error refusing process:", err)
-      setError("Failed to refuse process. Please try again.")
-    }
-  }
-
-  // Handle process rollback
-  const handleRollback = async (processId: string) => {
-    try {
-      await rollbackProcess(processId)
-
-      // Update local state
-      setProcesses((prevProcesses) =>
-        prevProcesses.map((process) =>
-          process.id === processId && process.originalStage ? { ...process, state: process.originalStage } : process,
-        ),
-      )
-
-      // Check if we need to roll back the workflow state
-      const processToRollback = processes.find((p) => p.id === processId)
-
-      if (processToRollback && processToRollback.originalStage) {
-        const currentStageIndex = WORKFLOW_CONFIG.findIndex((stage) => stage.id === workflowState)
-        const rollbackStageIndex = WORKFLOW_CONFIG.findIndex((stage) => stage.id === processToRollback.originalStage)
-
-        // If rolling back to an earlier stage
-        if (rollbackStageIndex < currentStageIndex) {
-          // Check if any processes from the current stage are already approved
-          const currentStageHasApproved = processes.some((p) => p.stageId === workflowState && p.state === "approved")
-
-          // If no processes in current stage are approved, roll back to the appropriate stage
-          if (!currentStageHasApproved) {
-            setWorkflowState(processToRollback.originalStage)
-          }
-        }
-      }
-    } catch (err) {
-      console.error("Error rolling back process:", err)
-      setError("Failed to rollback process. Please try again.")
-    }
-  }
-
-  if (loading) {
-    return (
-      <Container maxWidth="xl" sx={{ py: 5, textAlign: "center" }}>
-        <CircularProgress />
-        <Typography variant="body1" sx={{ mt: 2 }}>
-          Loading workflow data...
-        </Typography>
-      </Container>
-    )
-  }
-
-  if (error) {
-    return (
-      <Container maxWidth="xl" sx={{ py: 5 }}>
-        <Alert severity="error" sx={{ mb: 3 }}>
-          {error}
-        </Alert>
-      </Container>
-    )
-  }
+export default function WorkflowPage({ leaseData, userEmail }: WorkflowPageProps) {
+  const {
+    workflowStates,
+    currentStage,
+    processPercentage,
+    isCompleted,
+    notification,
+    setNotification,
+    handleApprove,
+    handleRefuse,
+    handleRollback
+  } = useWorkflowState(leaseData.state as WorkflowState[], leaseData.lease_id)
 
   return (
     <Container maxWidth="xl" sx={{ py: 2 }}>
-      <WorkflowHeader currentState={workflowState} />
-
-      {workflowState === "finished" && (
-        <Alert icon={<CheckCircle size={24} />} severity="success" sx={{ mb: 3 }}>
-          <Box>
-            <strong>Application Approved</strong>
-            <Box component="p" sx={{ m: 0 }}>
-              All processes have been successfully completed.
-            </Box>
-          </Box>
-        </Alert>
-      )}
+      <WorkflowHeader 
+        currentStage={currentStage} 
+        processPercentage={processPercentage} 
+        isCompleted={isCompleted} 
+      />
 
       <Grid container spacing={3}>
         <Grid size={3}>
-          <CustomerInfoPanel info={{ leaseData, user_email, processes, currentStage: workflowState }}></CustomerInfoPanel>
+          <CustomerInfoPanel
+            leaseData={leaseData}
+            userEmail={userEmail}
+            processes={workflowStates.flatMap(s => s.processes)}
+            currentStage={currentStage}
+            isCompleted={isCompleted}
+          />
         </Grid>
         <Grid size={9}>
           <ProcessList
-            processes={processes}
+            workflowStates={workflowStates}
             onApprove={handleApprove}
             onRefuse={handleRefuse}
             onRollback={handleRollback}
-            currentState={workflowState}
+            currentStage={currentStage}
           />
         </Grid>
       </Grid>
+
+      <Snackbar
+        open={!!notification}
+        autoHideDuration={3000}
+        onClose={() => setNotification(null)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert
+          onClose={() => setNotification(null)}
+          severity={notification?.type || 'info'}
+          sx={{ width: '100%' }}
+        >
+          {notification?.message}
+        </Alert>
+      </Snackbar>
     </Container>
   )
 }
-

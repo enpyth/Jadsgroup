@@ -1,16 +1,26 @@
 import { NextResponse } from "next/server"
+import { updateLeaseState } from "@/db/queries/leases"
 
-// Handle process approval
 export async function POST(request: Request) {
-  const { action, processId, reason } = await request.json()
+  try {
+    const { leaseId, workflowState } = await request.json()
 
-  // In a real application, this would update a database
-  // For now, we'll just return a success response
-  return NextResponse.json({
-    success: true,
-    action,
-    processId,
-    reason,
-    timestamp: new Date().toISOString(),
-  })
+    if (!leaseId || !workflowState) {
+      return NextResponse.json(
+        { error: "Missing required parameters" },
+        { status: 400 }
+      )
+    }
+
+    // Update lease with new processes and stage
+    await updateLeaseState(leaseId, workflowState)
+
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error("Error in process API:", error)
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    )
+  }
 }

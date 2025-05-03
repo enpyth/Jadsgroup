@@ -3,34 +3,37 @@
 import { useState } from "react"
 import { ProcessCard } from "@/features/workflow/process-card"
 import { RefusalDialog } from "@/features/workflow/dialog-refusal"
-import { type Process, type WorkflowState, WORKFLOW_CONFIG } from "@/constants/workflow"
+import { type Process, type WorkflowId, type WorkflowState, STATES } from "@/constants/workflow"
 import { CheckCircle, XCircle } from "lucide-react"
 import { Box, Typography, Paper } from "@mui/material"
 import { calculateTimeRemaining, getHoursRemaining } from "@/lib/utils"
 
 interface ProcessListProps {
-  processes: Process[]
+  workflowStates: WorkflowState[]
   onApprove: (id: string) => void
   onRefuse: (id: string, reason: string) => void
   onRollback: (id: string) => void
-  currentState: WorkflowState
+  currentStage: WorkflowId
 }
 
-export function ProcessList({ processes, onApprove, onRefuse, onRollback, currentState }: ProcessListProps) {
+export default function ProcessList({ workflowStates, onApprove, onRefuse, onRollback, currentStage }: ProcessListProps) {
   const [refusalDialogOpen, setRefusalDialogOpen] = useState(false)
   const [selectedProcessId, setSelectedProcessId] = useState<string | null>(null)
 
-  // Group processes by their state
-  const approvedProcesses = processes.filter((p) => p.state === "approved")
-  const refusedProcesses = processes.filter((p) => p.state === "refused")
+  // Get all processes from all workflow states
+  const allProcesses = workflowStates.flatMap(stage => stage.processes)
 
-  // Group active processes by stage
-  const activeProcessesByStage = WORKFLOW_CONFIG.reduce(
+  // Group processes by their state
+  const approvedProcesses = allProcesses.filter((p) => p.state === STATES.APPROVED)
+  const refusedProcesses = allProcesses.filter((p) => p.state === STATES.REFUSED)
+
+  // Group active processes by workflow stage
+  const activeProcessesByStage = workflowStates.reduce(
     (acc, stage) => {
-      acc[stage.id] = processes.filter((p) => p.state === stage.id)
+      acc[stage.stageId] = stage.processes.filter(p => p.state === STATES.PENDING)
       return acc
     },
-    {} as Record<string, Process[]>,
+    {} as Record<WorkflowId, Process[]>
   )
 
   const handleRefuseClick = (id: string) => {
@@ -47,21 +50,21 @@ export function ProcessList({ processes, onApprove, onRefuse, onRollback, curren
   }
 
   // Get stage background color
-  const getStageBgColor = (stage: string) => {
-    if (stage === currentState && currentState !== "finished") {
+  const getStageBgColor = (stageId: WorkflowId) => {
+    if (stageId === currentStage) {
       return "rgba(25, 118, 210, 0.04)"
     }
     return "transparent"
   }
 
   // Get stage color based on time remaining
-  const getStageColor = (stageId: string) => {
-    if (stageId !== currentState) {
+  const getStageColor = (stageId: WorkflowId) => {
+    if (stageId !== currentStage) {
       return "grey.500"
     }
 
     // Check if any process in this stage has less than 24 hours remaining
-    const stageProcesses = processes.filter((p) => p.stageId === stageId && p.state === stageId)
+    const stageProcesses = activeProcessesByStage[stageId]
 
     if (stageProcesses.length === 0) {
       return "info"
@@ -117,14 +120,14 @@ export function ProcessList({ processes, onApprove, onRefuse, onRollback, curren
                 onApprove={() => onApprove(process.id)}
                 onRefuse={() => handleRefuseClick(process.id)}
                 onRollback={() => onRollback(process.id)}
-                isCurrentStage={process.stageId === currentState}
+                isCurrentStage={process.state === STATES.APPROVED && currentStage === process.id}
               />
             ))}
           </Box>
         </Paper>
       )}
 
-      {/* Refused Processes - now displayed after approved but before pending */}
+      {/* Refused Processes */}
       {refusedProcesses.length > 0 && (
         <Paper
           variant="outlined"
@@ -160,7 +163,7 @@ export function ProcessList({ processes, onApprove, onRefuse, onRollback, curren
                 onApprove={() => onApprove(process.id)}
                 onRefuse={() => handleRefuseClick(process.id)}
                 onRollback={() => onRollback(process.id)}
-                isCurrentStage={process.stageId === currentState}
+                isCurrentStage={process.state === STATES.REFUSED && currentStage === process.id}
               />
             ))}
           </Box>
@@ -168,21 +171,21 @@ export function ProcessList({ processes, onApprove, onRefuse, onRollback, curren
       )}
 
       {/* Active Processes by Stage */}
-      {WORKFLOW_CONFIG.map((stage) => {
-        const stageProcesses = activeProcessesByStage[stage.id] || []
+      {workflowStates.map((stage, index) => {
+        const stageProcesses = activeProcessesByStage[stage.stageId] || []
         if (stageProcesses.length === 0) return null
 
-        const stageIndex = WORKFLOW_CONFIG.findIndex((s) => s.id === stage.id) + 1
-        const isCurrentStage = stage.id === currentState
-        const stageColor = getStageColor(stage.id)
+        const stageIndex = index + 1
+        const isCurrentStage = stage.stageId === currentStage
+        const stageColor = getStageColor(stage.stageId)
 
         return (
           <Paper
-            key={stage.id}
+            key={stage.stageId}
             variant="outlined"
             sx={{
               p: 2,
-              bgcolor: getStageBgColor(stage.id),
+              bgcolor: getStageBgColor(stage.stageId),
               borderColor: isCurrentStage ? `${stageColor}.light` : "divider",
               borderRadius: 1,
             }}
@@ -212,7 +215,7 @@ export function ProcessList({ processes, onApprove, onRefuse, onRollback, curren
               >
                 {stageIndex}
               </Box>
-              <Typography variant="subtitle2">{stage.id}</Typography>
+              <Typography variant="subtitle2">{stage.stageId}</Typography>
             </Box>
             <Box
               sx={{
@@ -227,8 +230,8 @@ export function ProcessList({ processes, onApprove, onRefuse, onRollback, curren
                   process={process}
                   onApprove={() => onApprove(process.id)}
                   onRefuse={() => handleRefuseClick(process.id)}
-                  isCurrentStage={currentState === stage.id}
-                  timeRemaining={currentState === stage.id ? calculateTimeRemaining(process.createdAt) : undefined}
+                  isCurrentStage={currentStage === stage.stageId}
+                  timeRemaining={currentStage === stage.stageId ? calculateTimeRemaining(process.createdAt) : undefined}
                 />
               ))}
             </Box>

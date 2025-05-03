@@ -1,23 +1,14 @@
-import { Chip, LinearProgress, Typography, Box } from "@mui/material"
-import { type WorkflowState, WORKFLOW_CONFIG } from "@/constants/workflow"
+import { Chip, LinearProgress, Typography, Box, Alert } from "@mui/material"
+import { type WorkflowId } from "@/constants/workflow"
 import { CheckCircle } from "lucide-react"
 
 interface WorkflowHeaderProps {
-  currentState: WorkflowState
+  currentStage: WorkflowId
+  processPercentage: number
+  isCompleted: boolean
 }
 
-export function WorkflowHeader({ currentState }: WorkflowHeaderProps) {
-  // Calculate progress percentage based on current stage
-  const getProgressPercentage = () => {
-    const totalStages = WORKFLOW_CONFIG.length
-    const currentIndex = WORKFLOW_CONFIG.findIndex((stage) => stage.id === currentState)
-
-    if (currentState === "finished") return 100
-    if (currentIndex === -1) return 0
-
-    return ((currentIndex) / totalStages) * 100
-  }
-
+export default function WorkflowHeader({ currentStage, processPercentage, isCompleted }: WorkflowHeaderProps) {
   return (
     <Box sx={{ mb: 3 }}>
       <Box
@@ -42,11 +33,11 @@ export function WorkflowHeader({ currentState }: WorkflowHeaderProps) {
           <Typography variant="body2" fontWeight="medium">
             Current Stage:
           </Typography>
-          {currentState === "finished" ? (
+          {isCompleted ? (
             <Chip icon={<CheckCircle size={16} />} label="Workflow Complete" color="success" size="small" />
           ) : (
             <Chip 
-              label={WORKFLOW_CONFIG.find(stage => stage.id === currentState)?.id || currentState} 
+              label={currentStage}
               color="primary" 
               size="small" 
             />
@@ -54,27 +45,25 @@ export function WorkflowHeader({ currentState }: WorkflowHeaderProps) {
         </Box>
       </Box>
 
-      <Box sx={{ mt: 2 }}>
-        {/* <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            mb: 1,
-          }}
-        >
-          {WORKFLOW_CONFIG.map((stage) => (
-            <Typography key={stage.id} variant="caption" fontWeight="medium">
-              {stage.name}
-            </Typography>
-          ))}
-        </Box> */}
+      <Box sx={{ my: 2 }}>
         <LinearProgress
           variant="determinate"
-          value={getProgressPercentage()}
-          color={currentState === "finished" ? "success" : "primary"}
+          value={processPercentage}
+          color={isCompleted ? "success" : "primary"}
           sx={{ height: 8, borderRadius: 4 }}
         />
       </Box>
+      
+      {isCompleted && (
+        <Alert icon={<CheckCircle size={24} />} severity="success" sx={{ mb: 3 }}>
+          <Box>
+            <strong>Application Approved</strong>
+            <Box component="p" sx={{ m: 0 }}>
+              All processes have been successfully completed.
+            </Box>
+          </Box>
+        </Alert>
+      )}
     </Box>
   )
 }
