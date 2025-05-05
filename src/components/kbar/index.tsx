@@ -1,5 +1,5 @@
 'use client';
-import { navItems } from '@/constants/data';
+import { navItemsAdmin } from '@/constants/data';
 import {
   KBarAnimator,
   KBarPortal,
@@ -22,7 +22,7 @@ export default function KBar({ children }: { children: React.ReactNode }) {
   // These action are for the navigation
   const actions = useMemo(
     () =>
-      navItems.flatMap((navItem) => {
+      navItemsAdmin.flatMap((navItem) => {
         // Only include base action if the navItem has a real URL and is not just a container
         const baseAction =
           navItem.url !== '#'

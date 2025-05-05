@@ -14,9 +14,10 @@ interface ProcessListProps {
   onRefuse: (id: string, reason: string) => void
   onRollback: (id: string) => void
   currentStage: WorkflowId
+  role: string
 }
 
-export default function ProcessList({ workflowStates, onApprove, onRefuse, onRollback, currentStage }: ProcessListProps) {
+export default function ProcessList({ workflowStates, onApprove, onRefuse, onRollback, currentStage, role }: ProcessListProps) {
   const [refusalDialogOpen, setRefusalDialogOpen] = useState(false)
   const [selectedProcessId, setSelectedProcessId] = useState<string | null>(null)
 
@@ -120,6 +121,7 @@ export default function ProcessList({ workflowStates, onApprove, onRefuse, onRol
                 onApprove={() => onApprove(process.id)}
                 onRefuse={() => handleRefuseClick(process.id)}
                 onRollback={() => onRollback(process.id)}
+                role={role}
                 isCurrentStage={process.state === STATES.APPROVED && currentStage === process.id}
               />
             ))}
@@ -163,6 +165,7 @@ export default function ProcessList({ workflowStates, onApprove, onRefuse, onRol
                 onApprove={() => onApprove(process.id)}
                 onRefuse={() => handleRefuseClick(process.id)}
                 onRollback={() => onRollback(process.id)}
+                role={role}
                 isCurrentStage={process.state === STATES.REFUSED && currentStage === process.id}
               />
             ))}
@@ -231,6 +234,7 @@ export default function ProcessList({ workflowStates, onApprove, onRefuse, onRol
                   onApprove={() => onApprove(process.id)}
                   onRefuse={() => handleRefuseClick(process.id)}
                   isCurrentStage={currentStage === stage.stageId}
+                  role={role}
                   timeRemaining={currentStage === stage.stageId ? calculateTimeRemaining(process.createdAt) : undefined}
                 />
               ))}

@@ -27,7 +27,11 @@ The Workflow System is a multi-stage approval platform for managing lease applic
 - Rejection record history  
 - Timestamp tracking  
 
-### 2.4 Feature Highlights
+### 2.5 Authentication
+- user login dashboard with respectively accessibility 
+- kinds of roles have different operation on workflow
+
+### 2.6 Feature Highlights
 - Property, customer, and contract data management  
 - Checkbox/signature to agree to clauses  
 - Text input for supplementary information  

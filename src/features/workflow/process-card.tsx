@@ -1,7 +1,14 @@
-"use client"
+"use client";
 
-import { format } from "date-fns"
-import { CheckCircle, XCircle, RotateCcw, Clock, MessageSquare, ChevronDown } from "lucide-react"
+import { format } from "date-fns";
+import {
+  CheckCircle,
+  XCircle,
+  RotateCcw,
+  Clock,
+  MessageSquare,
+  ChevronDown,
+} from "lucide-react";
 import {
   Card,
   CardContent,
@@ -13,16 +20,16 @@ import {
   AccordionSummary,
   AccordionDetails,
   Box,
-} from "@mui/material"
-import { type Process } from "@/constants/workflow"
-
+} from "@mui/material";
+import { type Process, STATES } from "@/constants/workflow";
 interface ProcessCardProps {
-  process: Process
-  onApprove: () => void
-  onRefuse: () => void
-  onRollback?: () => void
-  isCurrentStage: boolean
-  timeRemaining?: string
+  process: Process;
+  onApprove: () => void;
+  onRefuse: () => void;
+  onRollback?: () => void;
+  isCurrentStage: boolean;
+  timeRemaining?: string;
+  role: string;
 }
 
 export function ProcessCard({
@@ -31,21 +38,29 @@ export function ProcessCard({
   onRefuse,
   onRollback,
   isCurrentStage,
+  role,
   timeRemaining,
 }: ProcessCardProps) {
-  const isProcessed = process.state === "approved" || process.state === "refused"
+  const isProcessed =
+    process.state === STATES.APPROVED || process.state === STATES.REFUSED;
 
   // Format timestamp for display
   const formatTimestamp = (timestamp: string) => {
-    return format(new Date(timestamp), "MMM d, yyyy 'at' h:mm a")
-  }
+    return format(new Date(timestamp), "MMM d, yyyy 'at' h:mm a");
+  };
 
   return (
     <Card variant="outlined">
       <CardHeader
         sx={{ p: 1.5, pb: 0 }}
         title={
-          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "flex-start",
+            }}
+          >
             <div>
               <Typography variant="subtitle1" fontWeight="bold">
                 {process.id}
@@ -55,16 +70,28 @@ export function ProcessCard({
               </Typography>
             </div>
             <div>
-              {process.state === "approved" && (
-                <Box sx={{ display: "flex", alignItems: "center", color: "success.main" }}>
+              {process.state === STATES.APPROVED && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    color: "success.main",
+                  }}
+                >
                   <CheckCircle size={16} style={{ marginRight: 4 }} />
                   <Typography variant="caption" fontWeight="medium">
                     Approved
                   </Typography>
                 </Box>
               )}
-              {process.state === "refused" && (
-                <Box sx={{ display: "flex", alignItems: "center", color: "error.main" }}>
+              {process.state === STATES.REFUSED && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    color: "error.main",
+                  }}
+                >
                   <XCircle size={16} style={{ marginRight: 4 }} />
                   <Typography variant="caption" fontWeight="medium">
                     Refused
@@ -86,9 +113,17 @@ export function ProcessCard({
           }}
         >
           {timeRemaining && !isProcessed && isCurrentStage && (
-            <Box sx={{ display: "flex", alignItems: "center", color: "warning.main" }}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                color: "warning.main",
+              }}
+            >
               <Clock size={12} style={{ marginRight: 4 }} />
-              <Typography variant="caption">Countdown {timeRemaining}</Typography>
+              <Typography variant="caption">
+                Countdown {timeRemaining}
+              </Typography>
             </Box>
           )}
         </Box>
@@ -105,7 +140,13 @@ export function ProcessCard({
                   "& .MuiAccordionSummary-content": { margin: 0 },
                 }}
               >
-                <Box sx={{ display: "flex", alignItems: "center", color: "error.main" }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    color: "error.main",
+                  }}
+                >
                   <MessageSquare size={12} style={{ marginRight: 4 }} />
                   <Typography variant="caption" fontWeight="medium">
                     Refusal History ({process.refusalRecords.length})
@@ -135,7 +176,11 @@ export function ProcessCard({
                       <Typography variant="caption" color="error.dark">
                         {record.reason}
                       </Typography>
-                      <Typography variant="caption" color="error.main" sx={{ display: "block", mt: 0.5 }}>
+                      <Typography
+                        variant="caption"
+                        color="error.main"
+                        sx={{ display: "block", mt: 0.5 }}
+                      >
                         {formatTimestamp(record.timestamp)}
                       </Typography>
                     </Box>
@@ -155,12 +200,13 @@ export function ProcessCard({
           bgcolor: "action.hover",
         }}
       >
-        {(process.state === "approved" || process.state === "refused") && onRollback && (
+        {isProcessed && onRollback && (
           <Button
             variant="outlined"
             size="small"
             onClick={onRollback}
             startIcon={<RotateCcw size={12} />}
+            disabled={process.assignedTo !== role}
             sx={{ textTransform: "none", fontSize: "0.75rem" }}
           >
             Rollback
@@ -173,7 +219,7 @@ export function ProcessCard({
               variant="outlined"
               size="small"
               onClick={onRefuse}
-              disabled={!isCurrentStage}
+              disabled={!isCurrentStage || process.assignedTo !== role}
               sx={{ textTransform: "none", fontSize: "0.75rem" }}
             >
               Refuse
@@ -182,7 +228,7 @@ export function ProcessCard({
               variant="contained"
               size="small"
               onClick={onApprove}
-              disabled={!isCurrentStage}
+              disabled={!isCurrentStage || process.assignedTo !== role}
               sx={{ textTransform: "none", fontSize: "0.75rem" }}
             >
               Approve
@@ -191,6 +237,5 @@ export function ProcessCard({
         )}
       </CardActions>
     </Card>
-  )
+  );
 }
-

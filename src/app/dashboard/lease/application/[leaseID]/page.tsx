@@ -137,7 +137,7 @@ export default async function LeaseFormPage({ params }: PageProps) {
                 <Typography variant="body2" color="text.secondary">
                   Stage
                 </Typography>
-                <Typography variant="body1">{leaseData.stage}</Typography>
+                {/* <Typography variant="body1">{leaseData.state}</Typography> */}
               </Grid>
             </Grid>
           </Grid>

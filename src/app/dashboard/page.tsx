@@ -1,14 +1,12 @@
-import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
-import { isCustomer } from '@/constants/data';
+import { getUserRole, userRoles } from '@/constants/config';
 
 export default async function Dashboard() {
-  const session = await auth();
-  console.log("user info: " + session?.user?.email)
-  if (!session?.user) {
-    return redirect('/');
+  const { email, role } = await getUserRole();
+  console.log(`Login Dashboard. Email: ${email}, Role: ${role}`);
+  if (role == userRoles.UNKNOWN) {
+    redirect('/login');
   } else {
-    isCustomer(session?.user?.email || '') ? redirect('/dashboard/lease') :
-      redirect('/dashboard/property');
+    return redirect('/dashboard/lease');
   }
 }

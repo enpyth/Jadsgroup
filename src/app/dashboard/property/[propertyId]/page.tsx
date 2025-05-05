@@ -10,9 +10,7 @@ import Link from 'next/link';
 import { SearchParams } from 'nuqs/server';
 import { Suspense } from 'react';
 import LeaseListingPage from '@/features/products/components/lease-listing';
-import ProductTableAction from '@/features/products/components/product-tables/product-table-action';
 import { auth } from '@/lib/auth';
-import { isCustomer } from '@/constants/data';
 
 export const metadata = {
   title: 'Dashboard: Property Management',
@@ -55,7 +53,7 @@ export default async function Page(props: pageProps) {
           fallback={<DataTableSkeleton columnCount={5} rowCount={10} />}
         >
           {/* TODO: 根据propertyId查询leaselist */}
-          <LeaseListingPage propertyId={params.propertyId} />
+          {/* <LeaseListingPage propertyId={params.propertyId} /> */}
         </Suspense>
       </div>
     </PageContainer>

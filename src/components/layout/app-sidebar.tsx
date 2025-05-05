@@ -30,7 +30,8 @@ import {
   SidebarRail,
   useSidebar
 } from '@/components/ui/sidebar';
-import { isCustomer, navItems, navItems_customer } from '@/constants/data';
+import { userRoles } from '@/constants/config';
+import { navItemsAdmin, navItemsTenant } from '@/constants/data';
 import {
   BadgeCheck,
   Bell,
@@ -53,11 +54,11 @@ export const company = {
   plan: 'Market Plaza'
 };
 
-export default function AppSidebar() {
+export default function AppSidebar({ role }: { role: string }) {
   const { data: session } = useSession();
   const pathname = usePathname();
   const { state, isMobile } = useSidebar();
-  const navigator = isCustomer(session?.user?.email || '') ? navItems_customer : navItems;
+  const navigator = role == userRoles.TENANT ? navItemsTenant : navItemsAdmin;
 
   return (
     <Sidebar collapsible='icon'>

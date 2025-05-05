@@ -1,8 +1,10 @@
+import { userRoles } from "./config"
+
 // Workflow state constants
 export const WORKFLOW_IDS = {
     START: "Start",
     LEASE_SCHEDULE: "Lease Schedule",
-    LAND_LORD_REVIEW: "Land Lord Review",
+    LANDLORD_REVIEW: "Landlord Review",
     LEGAL_REVIEW: "Legal Review",
     DRAFT_CONTRACT: "Draft Contract",
     FINAL_REVIEW: "Final Review",
@@ -12,7 +14,7 @@ export const WORKFLOW_IDS = {
 export const PROCESS_IDS = {
     REVIEW_APPLICATION: "Review Application",
     LEASE_SCHEDULE: "Lease Schedule",
-    LAND_LORD_REVIEW: "Land Lord Review",
+    LANDLORD_REVIEW: "Landlord Review",
     JADSGROUP_LEGAL_REVIEW: "Jadsgroup Legal Review",
     APPLICANT_LEGAL_REVIEW: "Applicant Legal Review",
     DRAFT_CONTRACT: "Draft Contract",
@@ -56,7 +58,7 @@ export const DEFAULT_WORKFLOW_CONFIG: WorkflowState[] = [
             {
                 id: PROCESS_IDS.REVIEW_APPLICATION,
                 description: "Jadsgroup reviews the applicant and generates a Lease Schedule linked to the selected property.",
-                assignedTo: "Jadsgroup Admin",
+                assignedTo: userRoles.ADMIN,
                 state: STATES.PENDING,
                 createdAt: new Date().toISOString(),
             },
@@ -68,19 +70,19 @@ export const DEFAULT_WORKFLOW_CONFIG: WorkflowState[] = [
             {
                 id: PROCESS_IDS.LEASE_SCHEDULE,
                 description: "Applicant reviews the Lease Schedule and accepts via a challenge-response test.",
-                assignedTo: "Applicant",
+                assignedTo: userRoles.TENANT,
                 state: STATES.PENDING,
                 createdAt: new Date().toISOString(),
             },
         ],
     },
     {
-        stageId: WORKFLOW_IDS.LAND_LORD_REVIEW,
+        stageId: WORKFLOW_IDS.LANDLORD_REVIEW,
         processes: [
             {
-                id: PROCESS_IDS.LAND_LORD_REVIEW,
+                id: PROCESS_IDS.LANDLORD_REVIEW,
                 description: "Property owner accepts or rejects the Lease Schedule. If rejected, JADS can create a new Lease Schedule.",
-                assignedTo: "Property Owner",
+                assignedTo: userRoles.LANDLORD,
                 state: STATES.PENDING,
                 createdAt: new Date().toISOString(),
                 },
@@ -92,14 +94,14 @@ export const DEFAULT_WORKFLOW_CONFIG: WorkflowState[] = [
             {
                 id: PROCESS_IDS.JADSGROUP_LEGAL_REVIEW,
                 description: "JADS Lawyer e-signs the Disclosure Statement.",
-                assignedTo: "JADS Lawyer",
+                assignedTo: userRoles.LAWYER,
                 state: STATES.PENDING,
                 createdAt: new Date().toISOString(),
             },
             {
                 id: PROCESS_IDS.APPLICANT_LEGAL_REVIEW,
                 description: "Applicant e-signs the Disclosure Statement.",
-                assignedTo: "Applicant",
+                assignedTo: userRoles.TENANT,
                 state: STATES.PENDING,
                 createdAt: new Date().toISOString(),
             },
@@ -111,7 +113,7 @@ export const DEFAULT_WORKFLOW_CONFIG: WorkflowState[] = [
             {
                 id: PROCESS_IDS.DRAFT_CONTRACT,
                 description: "System emails the files to JADS Lawyer, who drafts the Final Contract.",
-                assignedTo: "JADS Lawyer",
+                assignedTo: userRoles.LAWYER,
                 state: STATES.PENDING,
                 createdAt: new Date().toISOString(),
             },
@@ -123,7 +125,7 @@ export const DEFAULT_WORKFLOW_CONFIG: WorkflowState[] = [
             {
                 id: PROCESS_IDS.FINAL_REVIEW,
                 description: "Final review of all documentation before lease activation and system updates the applicant's role to Tenant.",
-                assignedTo: "Jadsgroup Admin",
+                assignedTo: userRoles.ADMIN,
                 state: STATES.PENDING,
                 createdAt: new Date().toISOString(),
             },

@@ -1,83 +1,124 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardHeader, Typography, Chip, Button, Divider, Box } from "@mui/material"
-import type { Process, ProcessId, WorkflowId } from "@/constants/workflow"
-import { WORKFLOW_IDS, PROCESS_IDS, STATES } from "@/constants/workflow"
-import { FileText, Home, Calendar, CreditCard, User, Mail, PenToolIcon, Wrench, Eye } from "lucide-react"
-import { LeasePreviewDialog } from "./dialog-preview"
-import { RepairRequestDialog } from "./dialog-repair"
-import { useState } from "react"
-import { type InferSelectModel } from "drizzle-orm"
-import { leases } from "@/db/schema"
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  Typography,
+  Chip,
+  Button,
+  Divider,
+  Box,
+} from "@mui/material";
+import type { Process, ProcessId, WorkflowId } from "@/constants/workflow";
+import { WORKFLOW_IDS, PROCESS_IDS, STATES } from "@/constants/workflow";
+import {
+  FileText,
+  Home,
+  Calendar,
+  CreditCard,
+  User,
+  Mail,
+  PenToolIcon,
+  Wrench,
+  Eye,
+} from "lucide-react";
+import { LeasePreviewDialog } from "./dialog-preview";
+import { RepairRequestDialog } from "./dialog-repair";
+import { useState } from "react";
+import { type InferSelectModel } from "drizzle-orm";
+import { leases } from "@/db/schema";
 
-type LeaseData = InferSelectModel<typeof leases>
+type LeaseData = InferSelectModel<typeof leases>;
 
 interface CustomerInfoPanelProps {
-  leaseData: LeaseData
-  userEmail: string
-  processes: Process[]
-  currentStage: WorkflowId
-  isCompleted: boolean
+  leaseData: LeaseData;
+  processes: Process[];
+  isCompleted: boolean;
 }
 
 // Check if all processes in the list are approved
 function isProcessApproved(processes: Process[], processIds: ProcessId[]) {
-  return processIds.every((id) => processes.some((p) => p.id === id && p.state === STATES.APPROVED))
+  return processIds.every((id) =>
+    processes.some((p) => p.id === id && p.state === STATES.APPROVED)
+  );
 }
 
-export default function CustomerInfoPanel({ leaseData, userEmail, processes, currentStage, isCompleted }: CustomerInfoPanelProps) {
-  const [repairDialogOpen, setRepairDialogOpen] = useState(false)
-  const [leasePreviewOpen, setLeasePreviewOpen] = useState(false)
+export default function CustomerInfoPanel({
+  leaseData,
+  processes,
+  isCompleted,
+}: CustomerInfoPanelProps) {
+  const [repairDialogOpen, setRepairDialogOpen] = useState(false);
+  const [leasePreviewOpen, setLeasePreviewOpen] = useState(false);
 
   const formatCurrency = (amount: string) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "USD",
-    }).format(Number(amount))
-  }
+    }).format(Number(amount));
+  };
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
       day: "numeric",
-    })
-  }
-
+    });
+  };
 
   // Check if processes are approved
-  const isStartApproved = isProcessApproved(processes, [PROCESS_IDS.REVIEW_APPLICATION])
-  const isLandlordReviewApproved = isProcessApproved(processes, [PROCESS_IDS.LAND_LORD_REVIEW, PROCESS_IDS.REVIEW_APPLICATION])
-  const isLegalReviewApproved = isProcessApproved(processes, [PROCESS_IDS.DRAFT_CONTRACT, PROCESS_IDS.LAND_LORD_REVIEW, PROCESS_IDS.REVIEW_APPLICATION])
+  const isStartApproved = isProcessApproved(processes, [
+    PROCESS_IDS.REVIEW_APPLICATION,
+  ]);
+  const isLandlordReviewApproved = isProcessApproved(processes, [
+    PROCESS_IDS.LANDLORD_REVIEW,
+    PROCESS_IDS.REVIEW_APPLICATION,
+  ]);
+  const isLegalReviewApproved = isProcessApproved(processes, [
+    PROCESS_IDS.DRAFT_CONTRACT,
+    PROCESS_IDS.LANDLORD_REVIEW,
+    PROCESS_IDS.REVIEW_APPLICATION,
+  ]);
 
   const handleRepairRequest = () => {
-    setRepairDialogOpen(true)
-  }
+    setRepairDialogOpen(true);
+  };
 
   const handleRepairDialogClose = () => {
-    setRepairDialogOpen(false)
-  }
+    setRepairDialogOpen(false);
+  };
 
   const handleRepairSubmit = (description: string, priority: string) => {
     // In a real app, this would send the repair request to the server
-    console.log("Repair request submitted:", { description, priority, propertyId: leaseData.property_id })
-    setRepairDialogOpen(false)
-  }
+    console.log("Repair request submitted:", {
+      description,
+      priority,
+      propertyId: leaseData.property_id,
+    });
+    setRepairDialogOpen(false);
+  };
 
   const handleLeasePreview = () => {
-    setLeasePreviewOpen(true)
-  }
+    setLeasePreviewOpen(true);
+  };
 
   const handleLeasePreviewClose = () => {
-    setLeasePreviewOpen(false)
-  }
+    setLeasePreviewOpen(false);
+  };
 
   return (
     <>
       <Card variant="outlined" sx={{ height: "100%" }}>
         <CardHeader
           title={
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
               <Typography variant="h6">Tenant Information</Typography>
               <Chip
                 label={`Property ID: ${leaseData.property_id}`}
@@ -89,25 +130,46 @@ export default function CustomerInfoPanel({ leaseData, userEmail, processes, cur
           sx={{ pb: 1 }}
         />
         <CardContent sx={{ pt: 0 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              marginBottom: "8px",
+            }}
+          >
             <User size={16} color="#666" />
             <Typography variant="subtitle2">Tenant</Typography>
           </div>
           <div style={{ paddingLeft: "24px", marginBottom: "16px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <Mail size={16} color="#666" />
-              <Typography variant="body2">{userEmail}</Typography>
+              <Typography variant="body2">{leaseData.tenant_email}</Typography>
             </div>
           </div>
 
           <Divider sx={{ my: 2 }} />
 
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              marginBottom: "8px",
+            }}
+          >
             <Home size={16} color="#666" />
             <Typography variant="subtitle2">Lease Details</Typography>
           </div>
           <div style={{ paddingLeft: "24px", marginBottom: "16px" }}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4px", marginBottom: "8px" }}>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "4px",
+                marginBottom: "8px",
+              }}
+            >
               <Typography variant="caption" color="text.secondary">
                 Start Date:
               </Typography>
@@ -115,7 +177,14 @@ export default function CustomerInfoPanel({ leaseData, userEmail, processes, cur
                 {formatDate(new Date(leaseData.start_date))}
               </Typography>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4px", marginBottom: "8px" }}>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "4px",
+                marginBottom: "8px",
+              }}
+            >
               <Typography variant="caption" color="text.secondary">
                 End Date:
               </Typography>
@@ -127,12 +196,26 @@ export default function CustomerInfoPanel({ leaseData, userEmail, processes, cur
 
           <Divider sx={{ my: 2 }} />
 
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              marginBottom: "8px",
+            }}
+          >
             <CreditCard size={16} color="#666" />
             <Typography variant="subtitle2">Financial Information</Typography>
           </div>
           <div style={{ paddingLeft: "24px", marginBottom: "16px" }}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4px", marginBottom: "8px" }}>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "4px",
+                marginBottom: "8px",
+              }}
+            >
               <Typography variant="caption" color="text.secondary">
                 Monthly Rent:
               </Typography>
@@ -140,7 +223,14 @@ export default function CustomerInfoPanel({ leaseData, userEmail, processes, cur
                 {formatCurrency(leaseData.rent_amount)}
               </Typography>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4px", marginBottom: "8px" }}>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "4px",
+                marginBottom: "8px",
+              }}
+            >
               <Typography variant="caption" color="text.secondary">
                 Security Deposit:
               </Typography>
@@ -148,19 +238,33 @@ export default function CustomerInfoPanel({ leaseData, userEmail, processes, cur
                 {formatCurrency(leaseData.deposit_amount)}
               </Typography>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4px" }}>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "4px",
+              }}
+            >
               <Typography variant="caption" color="text.secondary">
                 Total Due at Signing:
               </Typography>
               <Typography variant="caption" fontWeight="medium">
-                {formatCurrency(leaseData.rent_amount) + formatCurrency(leaseData.deposit_amount)}
+                {formatCurrency(leaseData.rent_amount) +
+                  formatCurrency(leaseData.deposit_amount)}
               </Typography>
             </div>
           </div>
 
           <Divider sx={{ my: 2 }} />
 
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              marginBottom: "8px",
+            }}
+          >
             <FileText size={16} color="#666" />
             <Typography variant="subtitle2">Documents</Typography>
           </div>
@@ -170,7 +274,9 @@ export default function CustomerInfoPanel({ leaseData, userEmail, processes, cur
                 variant="outlined"
                 size="small"
                 startIcon={<Eye size={14} />}
-                onClick={() => window.location.href = `/dashboard/lease/application/${leaseData.lease_id}`}
+                onClick={() =>
+                  (window.location.href = `/dashboard/lease/application/${leaseData.lease_id}`)
+                }
                 sx={{
                   textTransform: "none",
                   fontSize: "0.75rem",
@@ -206,7 +312,7 @@ export default function CustomerInfoPanel({ leaseData, userEmail, processes, cur
                 color="text.secondary"
                 sx={{ display: "block", mt: 1, textAlign: "center" }}
               >
-                Available after {WORKFLOW_IDS.START}
+                Available after '{WORKFLOW_IDS.START}'
               </Typography>
             )}
           </div>
@@ -234,7 +340,7 @@ export default function CustomerInfoPanel({ leaseData, userEmail, processes, cur
                 color="text.secondary"
                 sx={{ display: "block", mt: 1, textAlign: "center" }}
               >
-                Available after {WORKFLOW_IDS.LAND_LORD_REVIEW}
+                Available after '{WORKFLOW_IDS.LANDLORD_REVIEW}'
               </Typography>
             )}
           </div>
@@ -262,7 +368,7 @@ export default function CustomerInfoPanel({ leaseData, userEmail, processes, cur
                 color="text.secondary"
                 sx={{ display: "block", mt: 1, textAlign: "center" }}
               >
-                Available after {WORKFLOW_IDS.LEGAL_REVIEW}
+                Available after '{WORKFLOW_IDS.LEGAL_REVIEW}'
               </Typography>
             )}
           </div>
@@ -270,7 +376,14 @@ export default function CustomerInfoPanel({ leaseData, userEmail, processes, cur
           {/* Repair Request Button - Only enabled when workflow is complete */}
           <Divider sx={{ my: 2 }} />
 
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              marginBottom: "8px",
+            }}
+          >
             <PenToolIcon size={16} color="#666" />
             <Typography variant="subtitle2">Maintenance</Typography>
           </div>
@@ -298,13 +411,23 @@ export default function CustomerInfoPanel({ leaseData, userEmail, processes, cur
                 color="text.secondary"
                 sx={{ display: "block", mt: 1, textAlign: "center" }}
               >
-                Available after application approval
+                Available after '{WORKFLOW_IDS.FINAL_REVIEW}'
               </Typography>
             )}
           </div>
 
-          <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: "1px solid #eee" }}>
-            <Typography variant="caption" color="text.secondary" sx={{ display: "flex", alignItems: "center" }}>
+          <div
+            style={{
+              marginTop: "16px",
+              paddingTop: "16px",
+              borderTop: "1px solid #eee",
+            }}
+          >
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{ display: "flex", alignItems: "center" }}
+            >
               <Calendar size={12} style={{ marginRight: "4px" }} />
               Last Updated: {new Date().toLocaleDateString()}
             </Typography>
@@ -323,9 +446,8 @@ export default function CustomerInfoPanel({ leaseData, userEmail, processes, cur
         open={leasePreviewOpen}
         onClose={handleLeasePreviewClose}
         propertyId={leaseData.property_id}
-        tenantEmail={userEmail}
+        tenantEmail={leaseData.tenant_email}
       />
     </>
-  )
+  );
 }
-

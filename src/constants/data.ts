@@ -26,7 +26,6 @@ export type Property = {
 
 export type Lease = {
   lease_id: number;
-  // property_name: string;
   property_id: number;
   tenant_email: string;
   start_date: string;
@@ -38,14 +37,8 @@ export type Lease = {
   created_at: string;
 };
 
-const JadsEmailList = ["zhangsu1305@gmail.com", "s1@gmail.com"];
-
-export function isCustomer(email: string): boolean {
-  return !JadsEmailList.includes(email);
-}
-
 //Info: The following data is used for the sidebar navigation and Cmd K bar.
-export const navItems: NavItem[] = [
+export const navItemsAdmin: NavItem[] = [
   {
     title: 'Dashboard',
     url: '/dashboard/overview',
@@ -101,7 +94,7 @@ export const navItems: NavItem[] = [
   }
 ];
 
-export const navItems_customer: NavItem[] = [
+export const navItemsTenant: NavItem[] = [
   {
     title: 'Lease',
     url: '/dashboard/lease',
