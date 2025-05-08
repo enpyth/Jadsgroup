@@ -113,7 +113,7 @@ export const DEFAULT_WORKFLOW_CONFIG: WorkflowState[] = [
             {
                 id: PROCESS_IDS.DRAFT_CONTRACT,
                 description: "System emails the files to JADS Lawyer, who drafts the Final Contract.",
-                assignedTo: userRoles.LAWYER,
+                assignedTo: userRoles.ADMIN,
                 state: STATES.PENDING,
                 createdAt: new Date().toISOString(),
             },

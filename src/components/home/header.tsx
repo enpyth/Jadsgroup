@@ -6,12 +6,14 @@ import { useLanguage } from "@/components/layout/language-context"
 import { useState, useRef } from "react"
 import { usePathname } from "next/navigation"
 import { ChevronDown } from "lucide-react"
+import { useSession } from "next-auth/react"
 
 export default function Header() {
   const { language, setLanguage, t } = useLanguage()
   const dropdownRef = useRef<HTMLLIElement>(null)
   const pathname = usePathname()
   const [techDropdownOpen, setTechDropdownOpen] = useState(false)
+  const { data: session } = useSession()
 
   const techLinks = [
     {
@@ -126,8 +128,8 @@ export default function Header() {
           </nav>
 
           <div className="flex items-center gap-4 text-xs">
-            <Link href="#" className="text-gray-600 hover:text-red-600 transition-colors">
-              {t("signIn")}
+            <Link href={session ? "/dashboard" : "/login"} className="text-gray-600 hover:text-red-600 transition-colors">
+              {session ? t("dashboard") : t("signIn")}
             </Link>
             <button
               onClick={toggleLanguage}

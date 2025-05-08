@@ -1,10 +1,8 @@
-import { Container, Typography, Paper, Grid, Alert } from "@mui/material"
+import { Container, Typography, Paper, Alert } from "@mui/material"
+import Grid from "@mui/material/Grid2"
 import { getLeaseById } from "@/db/queries/leases"
-import { type InferSelectModel } from "drizzle-orm"
-import { leases } from "@/db/schema"
 import { IDDocumentDisplay } from "@/features/app-form/review/id-document-display"
 
-type LeaseData = InferSelectModel<typeof leases>
 
 interface ApplicationData {
   personal_info: {
@@ -110,84 +108,62 @@ export default async function LeaseFormPage({ params }: PageProps) {
       </Typography>
       <Paper elevation={0} sx={{ p: 3, bgcolor: "background.paper", borderRadius: 2 }}>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={6}>
+          <Grid size={6}>
             <Typography variant="subtitle1" gutterBottom>
               Basic Information
             </Typography>
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid size={6}>
                 <Typography variant="body2" color="text.secondary">
                   Lease ID
                 </Typography>
                 <Typography variant="body1">{leaseData.lease_id}</Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid size={6}>
                 <Typography variant="body2" color="text.secondary">
                   Property ID
                 </Typography>
                 <Typography variant="body1">{leaseData.property_id}</Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid size={6}>
                 <Typography variant="body2" color="text.secondary">
                   Tenant Email
                 </Typography>
                 <Typography variant="body1">{leaseData.tenant_email}</Typography>
               </Grid>
-              <Grid item xs={6}>
-                <Typography variant="body2" color="text.secondary">
-                  Stage
-                </Typography>
-                {/* <Typography variant="body1">{leaseData.state}</Typography> */}
-              </Grid>
             </Grid>
           </Grid>
 
-          <Grid item xs={12} md={6}>
+          <Grid size={6}>
             <Typography variant="subtitle1" gutterBottom>
               Dates
             </Typography>
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid size={6}>
                 <Typography variant="body2" color="text.secondary">
                   Start Date
                 </Typography>
                 <Typography variant="body1">
-                  {new Date(leaseData.start_date).toLocaleDateString()}
+                  {leaseData.start_date}
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid size={6}>
                 <Typography variant="body2" color="text.secondary">
                   End Date
                 </Typography>
                 <Typography variant="body1">
-                  {new Date(leaseData.end_date).toLocaleDateString()}
-                </Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography variant="body2" color="text.secondary">
-                  Created At
-                </Typography>
-                <Typography variant="body1">
-                  {new Date(leaseData.created_at).toLocaleDateString()}
-                </Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography variant="body2" color="text.secondary">
-                  Updated At
-                </Typography>
-                <Typography variant="body1">
-                  {leaseData.updated_at ? new Date(leaseData.updated_at).toLocaleDateString() : "N/A"}
+                  {leaseData.end_date}
                 </Typography>
               </Grid>
             </Grid>
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Typography variant="subtitle1" gutterBottom>
               Financial Information
             </Typography>
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid size={6}>
                 <Typography variant="body2" color="text.secondary">
                   Rent Amount
                 </Typography>
@@ -195,7 +171,7 @@ export default async function LeaseFormPage({ params }: PageProps) {
                   ${leaseData.rent_amount}
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid size={6}>
                 <Typography variant="body2" color="text.secondary">
                   Deposit Amount
                 </Typography>
@@ -206,7 +182,7 @@ export default async function LeaseFormPage({ params }: PageProps) {
             </Grid>
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Typography variant="subtitle1" gutterBottom>
               Agreement to Lease
             </Typography>
@@ -217,7 +193,7 @@ export default async function LeaseFormPage({ params }: PageProps) {
 
           {applicationData && (
             <>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Typography variant="subtitle1" gutterBottom>
                   Application Data
                 </Typography>
@@ -229,7 +205,7 @@ export default async function LeaseFormPage({ params }: PageProps) {
               </Grid>
 
               {applicationData.identification?.id_document && (
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <IDDocumentDisplay documentUrl={applicationData.identification.id_document} />
                 </Grid>
               )}

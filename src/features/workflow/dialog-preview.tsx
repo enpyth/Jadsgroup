@@ -13,21 +13,28 @@ import {
   Paper,
   Skeleton,
   Divider,
+  TextField,
+  Snackbar,
+  Alert,
 } from "@mui/material"
-import { FileText, Download, X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from "lucide-react"
+import { FileText, Download, X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Edit2, Save } from "lucide-react"
 
 interface LeasePreviewDialogProps {
   open: boolean
   onClose: () => void
   propertyId: number
   tenantEmail: string
+  previewUrl: string | null
 }
 
-export function LeasePreviewDialog({ open, onClose, propertyId, tenantEmail }: LeasePreviewDialogProps) {
+export function LeasePreviewDialog({ open, onClose, propertyId, tenantEmail, previewUrl }: LeasePreviewDialogProps) {
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages] = useState(5) // In a real app, this would be determined from the PDF
   const [zoom, setZoom] = useState(1)
   const [loading, setLoading] = useState(true)
+  const [isEditing, setIsEditing] = useState(false)
+  const [editedContent, setEditedContent] = useState("")
+  const [notification, setNotification] = useState<{ type: 'success' | 'error', message: string } | null>(null)
 
   // Simulate loading the document
   useEffect(() => {
@@ -40,10 +47,45 @@ export function LeasePreviewDialog({ open, onClose, propertyId, tenantEmail }: L
   }, [open])
 
   const handleDownload = () => {
-    // In a real app, this would trigger the actual download
-    console.log("Downloading lease agreement for property:", propertyId)
-    // Typically you would use something like:
-    // window.open('/api/documents/lease-agreement?propertyId=' + propertyId, '_blank');
+    if (previewUrl) {
+      window.open(previewUrl, '_blank');
+    }
+  }
+
+  const handleEdit = () => {
+    setIsEditing(true);
+    // In a real app, you would fetch the document content here
+    setEditedContent("This is the editable content of the document...");
+  }
+
+  const handleSave = async () => {
+    try {
+      // In a real app, you would send the edited content to the server
+      const response = await fetch('/api/documents/save', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content: editedContent,
+          documentKey: 'documents/c5908eea-0b56-481b-924d-f9d3f7bdc3bb.docx',
+        }),
+      });
+
+      if (response.ok) {
+        setNotification({ type: 'success', message: 'Document saved successfully' });
+        setIsEditing(false);
+      } else {
+        throw new Error('Failed to save document');
+      }
+    } catch (error) {
+      setNotification({ type: 'error', message: 'Failed to save document' });
+    }
+  }
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setEditedContent("");
   }
 
   const handleNextPage = () => {
@@ -113,9 +155,25 @@ export function LeasePreviewDialog({ open, onClose, propertyId, tenantEmail }: L
           </Typography>
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <Button variant="outlined" size="small" startIcon={<Download size={16} />} onClick={handleDownload}>
-            Download
-          </Button>
+          {!isEditing ? (
+            <>
+              <Button variant="outlined" size="small" startIcon={<Download size={16} />} onClick={handleDownload}>
+                Download
+              </Button>
+              <Button variant="outlined" size="small" startIcon={<Edit2 size={16} />} onClick={handleEdit}>
+                Edit
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button variant="outlined" size="small" startIcon={<Save size={16} />} onClick={handleSave}>
+                Save
+              </Button>
+              <Button variant="outlined" size="small" onClick={handleCancel}>
+                Cancel
+              </Button>
+            </>
+          )}
           <IconButton onClick={handleZoomOut} size="small">
             <ZoomOut size={16} />
           </IconButton>
@@ -161,6 +219,37 @@ export function LeasePreviewDialog({ open, onClose, propertyId, tenantEmail }: L
             <Skeleton variant="rectangular" width="80%" height={40} sx={{ mb: 1 }} />
             <Skeleton variant="rectangular" width="80%" height={40} />
           </Box>
+        ) : isEditing ? (
+          <TextField
+            multiline
+            fullWidth
+            value={editedContent}
+            onChange={(e) => setEditedContent(e.target.value)}
+            sx={{
+              width: `${80 * zoom}%`,
+              height: `${100 * zoom}%`,
+              maxHeight: "100%",
+              bgcolor: "white",
+              '& .MuiInputBase-root': {
+                height: '100%',
+              },
+              '& .MuiInputBase-input': {
+                height: '100% !important',
+              },
+            }}
+          />
+        ) : previewUrl ? (
+          <iframe
+            src={`https://docs.google.com/viewer?url=${encodeURIComponent(previewUrl)}&embedded=true`}
+            style={{
+              width: `${80 * zoom}%`,
+              height: `${100 * zoom}%`,
+              maxHeight: "100%",
+              border: "none",
+              transition: "all 0.3s ease",
+            }}
+            allowFullScreen
+          />
         ) : (
           <Paper
             elevation={2}
@@ -227,7 +316,7 @@ export function LeasePreviewDialog({ open, onClose, propertyId, tenantEmail }: L
       <Divider />
 
       <DialogActions sx={{ justifyContent: "space-between", px: 2 }}>
-        <Button onClick={handlePrevPage} disabled={currentPage === 1 || loading} startIcon={<ChevronLeft size={16} />}>
+        <Button onClick={handlePrevPage} disabled={currentPage === 1 || loading || isEditing} startIcon={<ChevronLeft size={16} />}>
           Previous
         </Button>
         <Typography>
@@ -235,12 +324,27 @@ export function LeasePreviewDialog({ open, onClose, propertyId, tenantEmail }: L
         </Typography>
         <Button
           onClick={handleNextPage}
-          disabled={currentPage === totalPages || loading}
+          disabled={currentPage === totalPages || loading || isEditing}
           endIcon={<ChevronRight size={16} />}
         >
           Next
         </Button>
       </DialogActions>
+
+      <Snackbar
+        open={!!notification}
+        autoHideDuration={3000}
+        onClose={() => setNotification(null)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
+          onClose={() => setNotification(null)}
+          severity={notification?.type || "info"}
+          sx={{ width: "100%" }}
+        >
+          {notification?.message}
+        </Alert>
+      </Snackbar>
     </Dialog>
   )
 }

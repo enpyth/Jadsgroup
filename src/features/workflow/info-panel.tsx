@@ -51,6 +51,7 @@ export default function CustomerInfoPanel({
 }: CustomerInfoPanelProps) {
   const [repairDialogOpen, setRepairDialogOpen] = useState(false);
   const [leasePreviewOpen, setLeasePreviewOpen] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const formatCurrency = (amount: string) => {
     return new Intl.NumberFormat("en-US", {
@@ -99,12 +100,27 @@ export default function CustomerInfoPanel({
     setRepairDialogOpen(false);
   };
 
-  const handleLeasePreview = () => {
-    setLeasePreviewOpen(true);
+  const handleLeasePreview = async () => {
+    try {
+      // Fetch the document URL
+      const response = await fetch('/api/documents?key=documents/c5908eea-0b56-481b-924d-f9d3f7bdc3bb.docx');
+      const result = await response.json();
+      
+      if (result.success) {
+        // Set the preview URL and open the dialog
+        setPreviewUrl(result.url);
+        setLeasePreviewOpen(true);
+      } else {
+        console.error('Failed to get document URL');
+      }
+    } catch (error) {
+      console.error('Error getting document URL:', error);
+    }
   };
 
   const handleLeasePreviewClose = () => {
     setLeasePreviewOpen(false);
+    setPreviewUrl(null);
   };
 
   return (
@@ -447,6 +463,7 @@ export default function CustomerInfoPanel({
         onClose={handleLeasePreviewClose}
         propertyId={leaseData.property_id}
         tenantEmail={leaseData.tenant_email}
+        previewUrl={previewUrl}
       />
     </>
   );

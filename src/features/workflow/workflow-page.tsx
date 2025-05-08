@@ -16,6 +16,7 @@ import CustomerInfoPanel from "./info-panel";
 import ProcessList from "./process-card-list";
 import WorkflowHeader from "./workflow-header";
 import { useState, useCallback } from "react";
+import { PROCESS_IDS } from "@/constants/workflow";
 
 type LeaseData = InferSelectModel<typeof leases>;
 
@@ -72,7 +73,35 @@ function useWorkflowState(initialState: WorkflowState[], leaseId: number) {
   );
 
   const handleApprove = useCallback(
-    (processId: string) => {
+    async (processId: string) => {
+      if (processId === PROCESS_IDS.REVIEW_APPLICATION) {
+        try {
+          // Generate and upload document
+          const response = await fetch('/api/documents', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              title: 'Application Review Document',
+              content: 'Hello World',
+              date: new Date().toISOString(),
+            }),
+          });
+          
+          const result = await response.json();
+          if (!result.success) {
+            throw new Error('Failed to generate document');
+          }
+        } catch (err) {
+          console.error('Error generating document:', err);
+          setNotification({
+            message: 'Failed to generate document. Please try again.',
+            type: 'error',
+          });
+          return;
+        }
+      }
       updateProcessState(processId, STATES.APPROVED, "approved");
     },
     [updateProcessState]

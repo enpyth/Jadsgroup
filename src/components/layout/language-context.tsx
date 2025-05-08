@@ -84,6 +84,7 @@ const translations: Translations = {
   termsOfUse: { en: "Terms of Use", cn: "使用条款" },
   copyright: { en: "Copyright @2023 JADS Group", cn: "版权所有 @2023 JADS集团" },
   signIn: { en: "Sign In", cn: "登录" },
+  dashboard: { en: "Dashboard", cn: "控制台" },
   // About page translations
   aboutCompany: { en: "Our Company", cn: "我们的公司" },
   companyHistory1: {
@@ -141,7 +142,7 @@ const translations: Translations = {
     cn: ""
   },
   tech_p1_3: {
-    en: "A Micro-grid can be powered by distributed generators, batteries, and/or renewable resources like solar panels. Depending on how it’s fuelled and how its requirements are managed, a micro-grid might run indefinitely.",
+    en: "A Micro-grid can be powered by distributed generators, batteries, and/or renewable resources like solar panels. Depending on how it's fuelled and how its requirements are managed, a micro-grid might run indefinitely.",
     cn: ""
   },
   tech_p1_4: {
@@ -188,9 +189,6 @@ const translations: Translations = {
     en: "Charges: Discounts on normal electricity prices and an additional access fees may charges",
     cn: ""
   }
-
-
-
 }
 
 type LanguageContextType = {

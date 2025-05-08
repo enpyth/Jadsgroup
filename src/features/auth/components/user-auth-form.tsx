@@ -16,7 +16,6 @@ import { useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
-import GithubSignInButton from './github-auth-button';
 import { GoogleSignInButton } from './google-auth-button';
 
 const formSchema = z.object({
@@ -30,7 +29,7 @@ export default function UserAuthForm() {
   const callbackUrl = searchParams.get('callbackUrl');
   const [loading, startTransition] = useTransition();
   const defaultValues = {
-    email: 'demo@gmail.com'
+    email: 'bob@example.com'
   };
   const form = useForm<UserFormValue>({
     resolver: zodResolver(formSchema),
