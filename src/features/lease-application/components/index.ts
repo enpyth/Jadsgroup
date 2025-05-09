@@ -1,0 +1,9 @@
+export { PersonalInfoSection } from './PersonalInfoSection';
+export { IdentificationSection } from './IdentificationSection';
+export { AddressesSection } from './AddressesSection';
+export { BusinessInfoSection } from './BusinessInfoSection';
+export { FinancialInfoSection } from './FinancialInfoSection';
+export { RentalHistorySection } from './RentalHistorySection';
+export { TradeReferenceSection } from './TradeReferenceSection';
+export { PrivacyAcknowledgmentSection } from './PrivacyAcknowledgmentSection';
+export { IDDocumentDisplay } from './IDDocumentDisplay'; 

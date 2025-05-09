@@ -43,7 +43,7 @@ interface ABRResponse {
   };
 }
 
-export async function searchData(
+export async function searchCompanyDataByABN(
   searchString: string,
   includeHistoricalDetails: string,
   authenticationGuid: string
