@@ -89,6 +89,18 @@ export const DEFAULT_WORKFLOW_CONFIG: WorkflowState[] = [
         ],
     },
     {
+        stageId: WORKFLOW_IDS.DRAFT_CONTRACT,
+        processes: [
+            {
+                id: PROCESS_IDS.DRAFT_CONTRACT,
+                description: "System emails the files to JADS Lawyer, who drafts the Final Contract.",
+                assignedTo: userRoles.ADMIN,
+                state: STATES.PENDING,
+                createdAt: new Date().toISOString(),
+            },
+        ],
+    },
+    {
         stageId: WORKFLOW_IDS.LEGAL_REVIEW,
         processes: [
             {
@@ -102,18 +114,6 @@ export const DEFAULT_WORKFLOW_CONFIG: WorkflowState[] = [
                 id: PROCESS_IDS.APPLICANT_LEGAL_REVIEW,
                 description: "Applicant e-signs the Disclosure Statement.",
                 assignedTo: userRoles.TENANT,
-                state: STATES.PENDING,
-                createdAt: new Date().toISOString(),
-            },
-        ],
-    },
-    {
-        stageId: WORKFLOW_IDS.DRAFT_CONTRACT,
-        processes: [
-            {
-                id: PROCESS_IDS.DRAFT_CONTRACT,
-                description: "System emails the files to JADS Lawyer, who drafts the Final Contract.",
-                assignedTo: userRoles.ADMIN,
                 state: STATES.PENDING,
                 createdAt: new Date().toISOString(),
             },

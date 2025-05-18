@@ -89,10 +89,12 @@ export default function ApplicationDetails({user}: {user: User}) {
                 label="Date of Birth"
                 value={formData.dateOfBirth}
                 onChange={(newDate) => updateFormData({ dateOfBirth: newDate })}
+                maxDate={new Date(new Date().setFullYear(new Date().getFullYear() - 18))}
                 slotProps={{
                   textField: {
                     fullWidth: true,
                     variant: "outlined",
+                    helperText: "You must be at least 18 years old",
                   },
                 }}
               />

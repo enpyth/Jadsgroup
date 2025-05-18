@@ -20,6 +20,7 @@ export const IDDocumentDisplay = ({ documentUrl }: IDDocumentDisplayProps) => {
         src={documentUrl}
         alt="ID Document"
         fill
+        sizes="(max-width: 768px) 100vw, 50vw"
         style={{ objectFit: 'contain' }}
       />
     </Box>

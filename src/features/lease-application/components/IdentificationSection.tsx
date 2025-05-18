@@ -1,3 +1,5 @@
+"use client";
+
 import { Grid, Typography } from "@mui/material";
 import { ApplicationData } from "../types";
 import { IDDocumentDisplay } from "./IDDocumentDisplay";
