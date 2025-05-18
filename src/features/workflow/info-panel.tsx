@@ -24,10 +24,10 @@ import {
   Eye,
 } from "lucide-react";
 import { LeasePreviewDialog } from "./dialog-preview";
-import { RepairRequestDialog } from "./dialog-repair";
 import { useState } from "react";
 import { type InferSelectModel } from "drizzle-orm";
 import { leases } from "@/db/schema";
+import { useRouter } from "next/navigation";
 
 type LeaseData = InferSelectModel<typeof leases>;
 
@@ -49,7 +49,7 @@ export default function CustomerInfoPanel({
   processes,
   isCompleted,
 }: CustomerInfoPanelProps) {
-  const [repairDialogOpen, setRepairDialogOpen] = useState(false);
+  const router = useRouter();
   const [leasePreviewOpen, setLeasePreviewOpen] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
@@ -83,21 +83,7 @@ export default function CustomerInfoPanel({
   ]);
 
   const handleRepairRequest = () => {
-    setRepairDialogOpen(true);
-  };
-
-  const handleRepairDialogClose = () => {
-    setRepairDialogOpen(false);
-  };
-
-  const handleRepairSubmit = (description: string, priority: string) => {
-    // In a real app, this would send the repair request to the server
-    console.log("Repair request submitted:", {
-      description,
-      priority,
-      propertyId: leaseData.property_id,
-    });
-    setRepairDialogOpen(false);
+    router.push('/dashboard/maintenance');
   };
 
   const handleLeasePreview = async () => {
@@ -450,13 +436,6 @@ export default function CustomerInfoPanel({
           </div>
         </CardContent>
       </Card>
-
-      <RepairRequestDialog
-        open={repairDialogOpen}
-        onClose={handleRepairDialogClose}
-        onSubmit={handleRepairSubmit}
-        propertyId={leaseData.property_id}
-      />
 
       <LeasePreviewDialog
         open={leasePreviewOpen}
