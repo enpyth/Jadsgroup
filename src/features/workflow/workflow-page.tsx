@@ -32,15 +32,16 @@ interface Notification {
 }
 
 // Custom hook for workflow state management
-function useWorkflowState(initialState: WorkflowState[], leaseId: number) {
+function useWorkflowState(leaseData: LeaseData) {
   const [workflowStates, setWorkflowStates] =
-    useState<WorkflowState[]>(initialState);
+    useState<WorkflowState[]>(leaseData.state as WorkflowState[]);
   const [notification, setNotification] = useState<Notification | null>(null);
 
   const currentStage = getCurrentStage(workflowStates);
   const processPercentage = getProcessPercentage(workflowStates);
   const isCompleted = isWorkflowComplete(workflowStates);
 
+  // Update the process state when the user clicks on the approve, refuse or rollback button
   const updateProcessState = useCallback(
     async (
       processId: string,
@@ -55,7 +56,7 @@ function useWorkflowState(initialState: WorkflowState[], leaseId: number) {
           ),
         }));
 
-        await updateProcessesRecords(leaseId, updatedWorkflowState);
+        await updateProcessesRecords(leaseData.lease_id, updatedWorkflowState);
         setWorkflowStates(updatedWorkflowState);
         setNotification({
           message: `'${processId}' has been ${actionName}.`,
@@ -69,23 +70,33 @@ function useWorkflowState(initialState: WorkflowState[], leaseId: number) {
         });
       }
     },
-    [workflowStates, leaseId]
+    [workflowStates, leaseData.lease_id]
   );
 
   const handleApprove = useCallback(
     async (processId: string) => {
+      // generate document "LeaseSchedule_${leaseData.lease_id}.docx"
       if (processId === PROCESS_IDS.REVIEW_APPLICATION) {
         try {
           // Generate and upload document
-          const response = await fetch('/api/documents', {
+          const response = await fetch('/api/generate-document', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              title: 'Application Review Document',
-              content: 'Hello World',
-              date: new Date().toISOString(),
+              fileName: `LeaseSchedule_${leaseData.lease_id}.docx`,
+              email: leaseData.tenant_email,
+              // TODO: Remove this after testing
+              buffer: {
+                title: 'Application Review Document',
+                content: 'Hello World',
+                first_name: 'John',
+                last_name: 'Doe',
+                phone: '1234567890',
+                description: leaseData.rent_amount,
+                date: new Date().toISOString(),
+              }
             }),
           });
           
@@ -101,7 +112,13 @@ function useWorkflowState(initialState: WorkflowState[], leaseId: number) {
           });
           return;
         }
+      } else if (processId === PROCESS_IDS.LANDLORD_REVIEW) {
+        // TODO: Generate document "AgreementToLease_${leaseData.lease_id}.docx"
+      } else if (processId === PROCESS_IDS.DRAFT_CONTRACT) {
+        // TODO: Generate document "DisclosureStatement_${leaseData.lease_id}.docx"
       }
+
+      // Update the process state
       updateProcessState(processId, STATES.APPROVED, "approved");
     },
     [updateProcessState]
@@ -145,7 +162,7 @@ export default function WorkflowPage({ leaseData, role }: WorkflowPageProps) {
     handleApprove,
     handleRefuse,
     handleRollback,
-  } = useWorkflowState(leaseData.state as WorkflowState[], leaseData.lease_id);
+  } = useWorkflowState(leaseData);
 
   return (
     <Container maxWidth="xl" sx={{ py: 2 }}>

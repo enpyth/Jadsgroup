@@ -23,7 +23,6 @@ import {
   Wrench,
   Eye,
 } from "lucide-react";
-import { LeasePreviewDialog } from "./dialog-preview";
 import { useState } from "react";
 import { type InferSelectModel } from "drizzle-orm";
 import { leases } from "@/db/schema";
@@ -50,8 +49,6 @@ export default function CustomerInfoPanel({
   isCompleted,
 }: CustomerInfoPanelProps) {
   const router = useRouter();
-  const [leasePreviewOpen, setLeasePreviewOpen] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const formatCurrency = (amount: string) => {
     return new Intl.NumberFormat("en-US", {
@@ -86,27 +83,30 @@ export default function CustomerInfoPanel({
     router.push('/dashboard/maintenance');
   };
 
-  const handleLeasePreview = async () => {
+  const downloadDocument = async (fileKey: string) => {
     try {
-      // Fetch the document URL
-      const response = await fetch('/api/documents?key=documents/c5908eea-0b56-481b-924d-f9d3f7bdc3bb.docx');
-      const result = await response.json();
-      
-      if (result.success) {
-        // Set the preview URL and open the dialog
-        setPreviewUrl(result.url);
-        setLeasePreviewOpen(true);
-      } else {
-        console.error('Failed to get document URL');
-      }
+      const downloadUrl = `/api/download?key=${encodeURIComponent(fileKey)}`;
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.click();
     } catch (error) {
-      console.error('Error getting document URL:', error);
+      console.error("Error downloading document:", error);
     }
   };
 
-  const handleLeasePreviewClose = () => {
-    setLeasePreviewOpen(false);
-    setPreviewUrl(null);
+  const handleLeaseScheduleDownload = async () => {
+    const fileKey = `${leaseData.tenant_email}/LeaseSchedule_${leaseData.lease_id}.docx`;
+    await downloadDocument(fileKey);
+  };
+
+  const handleDisclosureStatementDownload = async () => {
+    const fileKey = `${leaseData.tenant_email}/DisclosureStatement_${leaseData.lease_id}.docx`;
+    await downloadDocument(fileKey);
+  };
+
+  const handleAgreementToLeaseDownload = async () => {
+    const fileKey = `${leaseData.tenant_email}/AgreementToLease_${leaseData.lease_id}.docx`;
+    await downloadDocument(fileKey);
   };
 
   return (
@@ -297,7 +297,7 @@ export default function CustomerInfoPanel({
                 size="small"
                 startIcon={<Eye size={14} />}
                 disabled={!isStartApproved}
-                onClick={handleLeasePreview}
+                onClick={handleLeaseScheduleDownload}
                 sx={{
                   textTransform: "none",
                   fontSize: "0.75rem",
@@ -325,7 +325,7 @@ export default function CustomerInfoPanel({
                 size="small"
                 startIcon={<Eye size={14} />}
                 disabled={!isLandlordReviewApproved}
-                onClick={handleLeasePreview}
+                onClick={handleDisclosureStatementDownload}
                 sx={{
                   textTransform: "none",
                   fontSize: "0.75rem",
@@ -353,7 +353,7 @@ export default function CustomerInfoPanel({
                 size="small"
                 startIcon={<Eye size={14} />}
                 disabled={!isLegalReviewApproved}
-                onClick={handleLeasePreview}
+                onClick={handleAgreementToLeaseDownload}
                 sx={{
                   textTransform: "none",
                   fontSize: "0.75rem",
@@ -437,13 +437,6 @@ export default function CustomerInfoPanel({
         </CardContent>
       </Card>
 
-      <LeasePreviewDialog
-        open={leasePreviewOpen}
-        onClose={handleLeasePreviewClose}
-        propertyId={leaseData.property_id}
-        tenantEmail={leaseData.tenant_email}
-        previewUrl={previewUrl}
-      />
     </>
   );
 }

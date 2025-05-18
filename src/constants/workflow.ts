@@ -8,6 +8,7 @@ export const WORKFLOW_IDS = {
     LEGAL_REVIEW: "Legal Review",
     DRAFT_CONTRACT: "Draft Contract",
     FINAL_REVIEW: "Final Review",
+    COMPLETED: "Completed",
 } as const
 
 // Process ID constants
@@ -148,6 +149,9 @@ export function getInitialState(): WorkflowState[] {
 }
 
 export function getCurrentStage(workflowState: WorkflowState[]): WorkflowId {
+    if (workflowState.every(state => state.processes.every(process => process.state === STATES.APPROVED))) {
+        return WORKFLOW_IDS.COMPLETED
+    }
     return workflowState.find(state => state.processes.some(process => process.state === STATES.PENDING || process.state === STATES.REFUSED))?.stageId || WORKFLOW_IDS.START
 }
 
