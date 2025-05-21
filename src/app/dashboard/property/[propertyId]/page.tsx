@@ -9,7 +9,7 @@ import { Plus, Clipboard } from 'lucide-react';
 import Link from 'next/link';
 import { SearchParams } from 'nuqs/server';
 import { Suspense } from 'react';
-import LeaseListingPage from '@/features/products/components/lease-listing';
+import LeaseListingPage from '@/features/products/components/listing-lease';
 import { auth } from '@/lib/auth';
 
 export const metadata = {

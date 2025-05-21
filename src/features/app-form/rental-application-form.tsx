@@ -149,8 +149,22 @@ function RentalApplicationFormContent({ property, user }: { property: Property, 
         throw new Error('Failed to create lease')
       }
 
+      const { lease_id } = await leaseResponse.json()
+      console.log('lease_id: ', lease_id)
+
+      // add outgoing record
+      const outgoingResponse = await fetch(`/api/outgoings/${lease_id}`, {
+        method: 'POST',
+        body: JSON.stringify({ records: [] }),
+      })
+      
+      if (!outgoingResponse.ok) {
+        console.error('Failed to create outgoing:', outgoingResponse.statusText)
+        throw new Error('Failed to create outgoing')
+      }
+
       // Redirect to success page or dashboard
-      router.push('/dashboard/lease')
+      router.push(`/dashboard/lease/${lease_id}`)
     } catch (error) {
       console.error('Error submitting application:', error)
       // TODO: Show error message to user

@@ -4,7 +4,7 @@ import { getAllLeases } from "@/db/queries/leases";
 import { getCurrentStage, WorkflowState, WORKFLOW_IDS } from "@/constants/workflow";
 import { getUserRole, userRoles } from "@/constants/config";
 
-export default async function LeaseListingPage() {
+export default async function ListingLeasePage() {
   const { email, role } = await getUserRole();
   const filterFunction = (property: any) => {
     if (role == userRoles.ADMIN) {

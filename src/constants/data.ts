@@ -64,9 +64,17 @@ export const navItemsAdmin: NavItem[] = [
     items: [] // No child items
   },
   {
+    title: 'Outgoings',
+    url: '/dashboard/outgoings',
+    icon: 'billing',
+    shortcut: ['p', 'p'],
+    isActive: false,
+    items: [] // No child items
+  },
+  {
     title: 'Account',
     url: '#', // Placeholder as there is no direct link for the parent
-    icon: 'billing',
+    icon: 'userPen',
     isActive: true,
 
     items: [
@@ -106,7 +114,7 @@ export const navItemsTenant: NavItem[] = [
   {
     title: 'Account',
     url: '#', // Placeholder as there is no direct link for the parent
-    icon: 'billing',
+    icon: 'userPen',
     isActive: true,
 
     items: [

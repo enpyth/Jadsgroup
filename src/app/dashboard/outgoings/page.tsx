@@ -5,7 +5,7 @@ import { DataTableSkeleton } from '@/components/ui/table/data-table-skeleton';
 import { searchParamsCache, serialize } from '@/lib/searchparams';
 import { SearchParams } from 'nuqs/server';
 import { Suspense } from 'react';
-import ListingLeasePage from '@/features/products/components/listing-lease';
+import ListingOutgoing from '@/features/products/components/listing-outgoing';
 import ProductTableAction from '@/features/products/components/product-tables/product-table-action';
 
 export const metadata = {
@@ -16,7 +16,8 @@ type pageProps = {
     searchParams: Promise<SearchParams>;
 };
 
-export default async function LeasePage(props: pageProps) {
+// TODO: accessibility
+export default async function OutgoingsListPage(props: pageProps) {
     const searchParams = await props.searchParams;
     // Allow nested RSCs to access the search params (in a type-safe way)
     searchParamsCache.parse(searchParams);
@@ -45,7 +46,7 @@ export default async function LeasePage(props: pageProps) {
                     key={key}
                     fallback={<DataTableSkeleton columnCount={5} rowCount={10} />}
                 >
-                    <ListingLeasePage />
+                    <ListingOutgoing />
                 </Suspense>
             </div>
         </PageContainer>

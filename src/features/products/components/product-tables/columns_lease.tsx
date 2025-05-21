@@ -32,10 +32,6 @@ export const columns: ColumnDef<Lease>[] = [
     header: 'Stage(Y/N) TODO'
   },
   {
-    accessorKey: 'agreement_to_lease',
-    header: 'agreement_to_lease'
-  },
-  {
     accessorKey: 'created_at',
     header: 'Created At'
   },

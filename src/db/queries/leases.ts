@@ -22,8 +22,10 @@ export const getAllLeases = async () => {
         .orderBy(desc(leases.created_at));
 };
 
+// todo return the lease id
 export const addLease = async (leaseData: any) => {
-    return await db.insert(leases).values(leaseData);
+    const result = await db.insert(leases).values(leaseData).returning({ lease_id: leases.lease_id });
+    return result[0].lease_id;
 };
 
 export const getLeaseById = async (leaseId: number) => {

@@ -10,6 +10,9 @@ const s3Client = new S3Client({
   },
 });
 
+// Download a file from Cloudflare R2
+// This is used to download documents from the tenant's email folder
+// Example key: tenant_email/document_name.pdf
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);

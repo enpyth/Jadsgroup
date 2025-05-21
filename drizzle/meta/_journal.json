@@ -22,6 +22,13 @@
       "when": 1745993774561,
       "tag": "0002_wet_millenium_guard",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1747749901359,
+      "tag": "0003_dizzy_power_pack",
+      "breakpoints": true
     }
   ]
 }

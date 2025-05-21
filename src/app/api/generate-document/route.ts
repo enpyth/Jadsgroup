@@ -11,6 +11,11 @@ const s3Client = new S3Client({
   },
 });
 
+// Generate a document and upload it to Cloudflare R2
+// This is used to generate a document and upload it to the tenant's email folder
+// The data.buffer is the buffer of the document
+// The data.fileName is the name of the document
+// The data.email is the email of the tenant
 export async function POST(request: Request) {
   try {
     // Get the data from the request

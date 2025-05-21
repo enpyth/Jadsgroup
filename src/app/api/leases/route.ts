@@ -13,8 +13,8 @@ export async function POST(request: Request) {
         }
 
         try {
-            await addLease(leaseData);
-            return new Response(JSON.stringify({ message: 'Lease added successfully' }), {
+            const leaseId = await addLease(leaseData);
+            return new Response(JSON.stringify({ message: 'Lease added successfully', lease_id: leaseId }), {
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
             });

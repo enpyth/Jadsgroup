@@ -111,3 +111,13 @@ export const maintenanceRequests = pgTable("maintenance_requests", {
   request_date: timestamp("request_date").notNull(),
   coworker_id: integer("coworker_id").references(() => coWorkers.coworker_id),
 });
+
+// 支出表
+export const outgoings = pgTable("outgoings", {
+  outgoing_id: serial("outgoing_id").primaryKey(),
+  lease_id: integer("lease_id")
+    .notNull()
+    .references(() => leases.lease_id),
+  records: jsonb("records").notNull(),
+  created_at: timestamp("created_at").defaultNow().notNull(),
+});
