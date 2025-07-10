@@ -52,6 +52,12 @@ export interface WorkflowState {
     processes: Process[]
 }
 
+// stageId is the id of the stage
+// process is the process of the stage
+// description is the description of the process
+// assignedTo is a string of roles combination, e.g. "AdminLandlord"
+// state is the state of the process, e.g. "pending", "approved", "refused"
+// createdAt is the timestamp of the process
 export const DEFAULT_WORKFLOW_CONFIG: WorkflowState[] = [
     {
         stageId: WORKFLOW_IDS.START,
@@ -83,7 +89,7 @@ export const DEFAULT_WORKFLOW_CONFIG: WorkflowState[] = [
             {
                 id: PROCESS_IDS.LANDLORD_REVIEW,
                 description: "Property owner accepts or rejects the Lease Schedule. If rejected, JADS can create a new Lease Schedule.",
-                assignedTo: userRoles.LANDLORD,
+                assignedTo: userRoles.LANDLORD + userRoles.ADMIN,
                 state: STATES.PENDING,
                 createdAt: new Date().toISOString(),
                 },

@@ -219,7 +219,7 @@ export function ProcessCard({
               variant="outlined"
               size="small"
               onClick={onRefuse}
-              disabled={!isCurrentStage || process.assignedTo !== role}
+              disabled={!isCurrentStage || !process.assignedTo.includes(role)}
               sx={{ textTransform: "none", fontSize: "0.75rem" }}
             >
               Refuse
@@ -228,7 +228,7 @@ export function ProcessCard({
               variant="contained"
               size="small"
               onClick={onApprove}
-              disabled={!isCurrentStage || process.assignedTo !== role}
+              disabled={!isCurrentStage || !process.assignedTo.includes(role)}
               sx={{ textTransform: "none", fontSize: "0.75rem" }}
             >
               Approve

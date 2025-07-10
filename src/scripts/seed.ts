@@ -1,4 +1,4 @@
-import 'dotenv/config';
+import "dotenv/config";
 // if the dotenv/config not be set, error: DATABASE_URL environment variable is not set
 import { db } from "@/db/index";
 import { properties, owners, agents, tenants } from "@/db/schema";
@@ -8,18 +8,41 @@ async function seed() {
 
   // 插入房产所有者数据
   const ownersData = [
-    { owner_id: 1, name: "John Smith", phone: "123-456-7890", email: "john@example.com", address: "123 Main St" },
-    { owner_id: 2, name: "Sarah Johnson", phone: "234-567-8901", email: "sarah@example.com", address: "456 Oak Ave" },
-    { owner_id: 3, name: "Michael Brown", phone: "345-678-9012", email: "michael@example.com", address: "789 Pine Rd" },
-    { owner_id: 4, name: "Emma Davis", phone: "456-789-0123", email: "emma@example.com", address: "101 Maple Dr" },
+    {
+      owner_id: 1,
+      company: { name: "Willsmere Pty Ltd", abn: "081255722" },
+      name: "property owner 1",
+      phone: "123-456-7890",
+      email: "abc@gmail.com",
+      address: "123 Main St, Adelaide, SA 5000",
+    },
+    {
+      owner_id: 2,
+      company: { name: "Willsmere Pty Ltd", abn: "081255722" },
+      name: "property owner 2",
+      phone: "234-567-8901",
+      email: "def@gmail.com",
+      address: "456 Oak Ave, Adelaide, SA 5000",
+    },
   ];
   await db.insert(owners).values(ownersData);
 
   // 插入房产经纪人数据
   const agentsData = [
-    { agent_id: 1, name: "David Wilson", phone: "567-890-1234", email: "david@realestate.com", agency_name: "Wilson Realty" },
-    { agent_id: 2, name: "Lisa Thompson", phone: "678-901-2345", email: "lisa@realestate.com", agency_name: "Thompson Properties" },
-    { agent_id: 3, name: "Robert Miller", phone: "789-012-3456", email: "robert@realestate.com", agency_name: "Miller Real Estate" },
+    {
+      agent_id: 1,
+      name: "David Wilson",
+      phone: "567-890-1234",
+      email: "david@realestate.com",
+      agency_name: "Wilson Realty",
+    },
+    {
+      agent_id: 2,
+      name: "Lisa Thompson",
+      phone: "678-901-2345",
+      email: "lisa@realestate.com",
+      agency_name: "Thompson Properties",
+    },
   ];
   await db.insert(agents).values(agentsData);
 
@@ -33,7 +56,8 @@ async function seed() {
       id_card: "ID123456789",
       abn_lookup: "ABN123456789",
       business_address: "456 Business Rd",
-      photo_identification: "https://api.slingacademy.com/public/sample-products/1.png",
+      photo_identification:
+        "https://api.slingacademy.com/public/sample-products/1.png",
     },
     {
       tenant_id: 2,
@@ -43,7 +67,8 @@ async function seed() {
       id_card: "ID987654321",
       abn_lookup: "ABN987654321",
       business_address: "789 Business St",
-      photo_identification: "https://api.slingacademy.com/public/sample-products/1.png",
+      photo_identification:
+        "https://api.slingacademy.com/public/sample-products/1.png",
     },
   ];
   await db.insert(tenants).values(tenantsData);
@@ -53,42 +78,34 @@ async function seed() {
     {
       owner_id: 1,
       agent_id: 1,
-      name: "10A",
+      name: "01",
+      unit: "11",
       describe: "placeholder...",
-      size: "15.5",
+      size: "50.50",
       price: "1200",
       state: "available",
       image: "https://api.slingacademy.com/public/sample-products/1.png",
+      detail: {
+        volumn: "5532",
+        folio: "183",
+        address: "61-63 GROTE STREET, ADELAIDE SA 5000",
+      },
     },
     {
-      owner_id: 1,
+      owner_id: 2,
       agent_id: 2,
-      name: "15B",
+      name: "02",
+      unit: "11",
       describe: "placeholder...",
-      size: "8.2",
+      size: "98.70",
       price: "750",
       state: "available",
       image: "https://api.slingacademy.com/public/sample-products/2.png",
-    },
-    {
-      owner_id: 2,
-      agent_id: 1,
-      name: "22C",
-      describe: "placeholder...",
-      size: "12.8",
-      price: "980",
-      state: "sold",
-      image: "https://api.slingacademy.com/public/sample-products/3.png",
-    }, {
-      property_id: 10,
-      owner_id: 2,
-      agent_id: 1,
-      name: "22C",
-      describe: "placeholder...",
-      size: "12.8",
-      price: "980",
-      state: "sold",
-      image: "https://api.slingacademy.com/public/sample-products/3.png",
+      detail: {
+        volumn: "5532",
+        folio: "183",
+        address: "61-63 GROTE STREET, ADELAIDE SA 5000",
+      },
     },
   ];
   await db.insert(properties).values(propertiesData);

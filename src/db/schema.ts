@@ -12,6 +12,7 @@ import {
 // 业主表
 export const owners = pgTable("owners", {
   owner_id: serial("owner_id").primaryKey(),
+  company: jsonb("company").notNull(),
   name: text("name").notNull(),
   phone: text("phone").notNull(),
   email: text("email").notNull(),
@@ -39,11 +40,13 @@ export const properties = pgTable("properties", {
     .notNull()
     .references(() => agents.agent_id),
   name: text("name").notNull(),
+  unit: text("unit").notNull(),
   describe: text("describe").notNull(),
   size: text("size").notNull(),
   price: text("price").notNull(),
   state: text("state").notNull().default("available"),
   image: text("image").notNull(),
+  detail: jsonb("detail").notNull(),
   release_time: timestamp("release_time").defaultNow().notNull(),
 });
 

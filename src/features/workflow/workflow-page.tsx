@@ -10,6 +10,7 @@ import {
   isWorkflowComplete,
   updateProcessesRecords,
 } from "@/constants/workflow";
+import { getDocumentConfig } from "@/lib/documentConfig";
 import { Alert, Container, Snackbar } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import CustomerInfoPanel from "./info-panel";
@@ -75,28 +76,20 @@ function useWorkflowState(leaseData: LeaseData) {
 
   const handleApprove = useCallback(
     async (processId: string) => {
-      // generate document "LeaseSchedule_${leaseData.lease_id}.docx"
-      if (processId === PROCESS_IDS.REVIEW_APPLICATION) {
+      // Check if this process requires document generation
+      const documentConfig = getDocumentConfig(processId);
+      
+      if (documentConfig) {
         try {
           // Generate and upload document
-          const response = await fetch('/api/generate-document', {
+          const response = await fetch('/api/document', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              fileName: `LeaseSchedule_${leaseData.lease_id}.docx`,
-              email: leaseData.tenant_email,
-              // TODO: Remove this after testing
-              buffer: {
-                title: 'Application Review Document',
-                content: 'Hello World',
-                first_name: 'John',
-                last_name: 'Doe',
-                phone: '1234567890',
-                description: leaseData.rent_amount,
-                date: new Date().toISOString(),
-              }
+              processId: processId,
+              leaseData: leaseData,
             }),
           });
           
@@ -104,6 +97,8 @@ function useWorkflowState(leaseData: LeaseData) {
           if (!result.success) {
             throw new Error('Failed to generate document');
           }
+          
+          console.log(`Document generated successfully: ${result.fileName}`);
         } catch (err) {
           console.error('Error generating document:', err);
           setNotification({
@@ -112,16 +107,12 @@ function useWorkflowState(leaseData: LeaseData) {
           });
           return;
         }
-      } else if (processId === PROCESS_IDS.LANDLORD_REVIEW) {
-        // TODO: Generate document "AgreementToLease_${leaseData.lease_id}.docx"
-      } else if (processId === PROCESS_IDS.DRAFT_CONTRACT) {
-        // TODO: Generate document "DisclosureStatement_${leaseData.lease_id}.docx"
       }
 
       // Update the process state
       updateProcessState(processId, STATES.APPROVED, "approved");
     },
-    [updateProcessState]
+    [updateProcessState, leaseData]
   );
 
   const handleRefuse = useCallback(

@@ -35,7 +35,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# db
-/drizzle
+# local resources
+docs/imgs_local/
 
-.idea/
+# templates
+templates/

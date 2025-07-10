@@ -12,16 +12,36 @@
 
 ---
 
-# operation
+# DB Operation
 
-## db table update
+## rebuilding db by current scheme
 
-    npx drizzle-kit push
+1. login to db, use sql drop all table 
+    ```
+    DROP TABLE IF EXISTS 
+    agents, 
+    leases, 
+    owners, 
+    properties, 
+    CASCADE;
+    ```
+2. delete drizzle migration file
+    ```
+    $ rm -rf drizzle/
+    ```
+3. push table structure to db
+    ```
+    $ npx drizzle-kit generate
+    $ npx drizzle-kit push
+    ```
+4. seed data
+    ```
+    $ pnpm tsx src/scripts/seed.ts
+    ```
 
+## update db tables
 
-## seed data
-
-    pnpm tsx src/scripts/seed.ts
+only execute no.3 step `push table structure to db`
 
 ---
 

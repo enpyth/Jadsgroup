@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1742028546038,
-      "tag": "0000_marvelous_blazing_skull",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1745477493879,
-      "tag": "0001_confused_mongu",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1745993774561,
-      "tag": "0002_wet_millenium_guard",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1747749901359,
-      "tag": "0003_dizzy_power_pack",
+      "when": 1752119445291,
+      "tag": "0000_brown_stepford_cuckoos",
       "breakpoints": true
     }
   ]

@@ -13,7 +13,7 @@ type userRole = keyof typeof userRoles;
 const AdminList = ["admin@gmail.com", "zhangsu1305@gmail.com"];
 const LawyerList = ["lawyer@gmail.com", "lawyer1@gmail.com"];
 // either admin or landlord
-const LandlordList = ["landlord@gmail.com", "landlord1@gmail.com", ...AdminList];
+const LandlordList = ["landlord@gmail.com", "landlord1@gmail.com"];
 
 export async function getUserRole(): Promise<{
   email: string;

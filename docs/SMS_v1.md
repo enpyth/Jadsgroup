@@ -63,6 +63,7 @@ The platform will serve both public-facing and internal administrative purposes.
 * All users (admins, lawyers, landlords, tenants) can login and sign up by Google account, or use email verification code.
 * Manager roles (Admin, Lawyer, Landlord) are pre-configured in the system and are assigned upon setup.
 
+![alt text](image-1.png)
 
 ### **3.2 Property Listings**
 
@@ -70,6 +71,7 @@ The platform will serve both public-facing and internal administrative purposes.
 
 * Listings properties content are based on data provided by Jadsgroup.
 
+![alt text](image.png)
 ### **3.3 Lease Application Form**
 
 * The form is modeled on [JADS Lease Application](https://www.jadsgroup.com/properties/).
@@ -84,9 +86,13 @@ The platform will serve both public-facing and internal administrative purposes.
   6. Trading Experience
   7. Privacy Acknowledgment
 
+![alt text](image-2.png)
+
 * Applicants must input their **company name and ABN**, which is validated using the ABN Lookup API.
 
 * Upon submission, the form enters the JADS Admin Dashboard for approval or rejection.
+
+![alt text](image-4.png)
 
 ### **3.4 Document Mapping and Draft Generation**
 
@@ -103,6 +109,9 @@ During the document generation process, the website performs some optimization w
 
 These automatically generated documents are downloaded by relevant personnel to their work environment, signed and uploaded to this system for archiving.
 
+![alt text](image-7.png)
+![alt text](image-3.png)
+
 ### **3.5 Document Revisions**
 
 * All document types support revision tracking.
@@ -114,9 +123,13 @@ These automatically generated documents are downloaded by relevant personnel to 
   
     Tenants can view contact details for property maintenance.
 
+![alt text](image-5.png)
+
 2. **Operating Outgoings**:
 
     * Admin can edit outgoings (e.g., utilities, strata) for each active properties contract via the Dashboard. The outgoings format should be provided by Jadsgroup.
+
+![alt text](image-6.png)
 
 ## **4. Non-Functional Requirements**
 
