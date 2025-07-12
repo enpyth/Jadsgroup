@@ -54,10 +54,15 @@ export function PropertyInformation({ property }: PropertyInformationProps) {
                     ${property.price} / month
                   </Typography>
                 </Grid>
+                <Grid size={12}>
+                  <Typography variant="body1" sx={{ color: 'text.secondary', mt: 2 }}>
+                    Initial Rent
+                  </Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 'medium' }}>
+                    ${property.detail.initial_rent}
+                  </Typography>
+                </Grid>
               </Grid>
-              <Typography variant="body1" sx={{ color: 'text.secondary', mt: 2 }}>
-                {property.describe}
-              </Typography>
             </Box>
           </Grid>
         </Grid>

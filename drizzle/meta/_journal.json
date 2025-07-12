@@ -8,6 +8,13 @@
       "when": 1752119445291,
       "tag": "0000_brown_stepford_cuckoos",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1752296635264,
+      "tag": "0001_awesome_landau",
+      "breakpoints": true
     }
   ]
 }

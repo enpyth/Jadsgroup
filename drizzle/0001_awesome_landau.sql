@@ -1,0 +1,1 @@
+ALTER TABLE "leases" ADD COLUMN "terms" text NOT NULL;

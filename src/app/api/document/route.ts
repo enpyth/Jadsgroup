@@ -13,9 +13,6 @@ const s3Client = new S3Client({
 });
 
 // Generate a document and upload it to Cloudflare R2
-// This is used to generate a document and upload it to the tenant's email folder
-// The data.processId is the process ID to determine which template to use
-// The data.leaseData contains the lease information
 export async function POST(request: Request) {
   try {
     // Get the data from the request
@@ -38,7 +35,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Generate document data
+    // Use the provided combined lease+property data directly
     const documentData = generateDocumentData(processId, leaseData);
     if (!documentData) {
       return NextResponse.json(

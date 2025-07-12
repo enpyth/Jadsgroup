@@ -60,6 +60,7 @@ function RentalApplicationFormContent({ property, user }: { property: Property, 
           // Core lease data matching the schema
           property_id: property.property_id,
           tenant_email: user.email,
+          terms: formData.leaseTerms,
           start_date: startDate.toISOString().split('T')[0], // Convert to YYYY-MM-DD format
           end_date: endDate.toISOString().split('T')[0], // Convert to YYYY-MM-DD format
           rent_amount: property.price,

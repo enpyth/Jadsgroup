@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { db } from "@/db/index";
-import { leases, properties } from '@/db/schema';
+import { leases, properties, owners } from '@/db/schema';
 import { eq, desc } from 'drizzle-orm';
 
 export const getAllLeases = async () => {
@@ -20,6 +20,54 @@ export const getAllLeases = async () => {
         }
     ).from(leases).innerJoin(properties, eq(leases.property_id, properties.property_id))
         .orderBy(desc(leases.created_at));
+};
+
+export const getLeaseWithProperty = async (leaseId: number) => {
+    return await db.select({
+        // Lease data
+        lease_id: leases.lease_id,
+        property_id: leases.property_id,
+        tenant_email: leases.tenant_email,
+        terms: leases.terms,
+        start_date: leases.start_date,
+        end_date: leases.end_date,
+        rent_amount: leases.rent_amount,
+        deposit_amount: leases.deposit_amount,
+        state: leases.state,
+        agreement_to_lease: leases.agreement_to_lease,
+        created_at: leases.created_at,
+        application_data: leases.application_data,
+        updated_at: leases.updated_at,
+        // Property data
+        property: {
+            property_id: properties.property_id,
+            owner_id: properties.owner_id,
+            agent_id: properties.agent_id,
+            name: properties.name,
+            unit: properties.unit,
+            describe: properties.describe,
+            size: properties.size,
+            price: properties.price,
+            state: properties.state,
+            image: properties.image,
+            detail: properties.detail,
+            release_time: properties.release_time,
+        },
+        // Owner data
+        owner: {
+            owner_id: owners.owner_id,
+            company: owners.company,
+            name: owners.name,
+            phone: owners.phone,
+            email: owners.email,
+            address: owners.address,
+            created_at: owners.created_at,
+        }
+    }).from(leases)
+    .innerJoin(properties, eq(leases.property_id, properties.property_id))
+    .innerJoin(owners, eq(properties.owner_id, owners.owner_id))
+    .where(eq(leases.lease_id, leaseId))
+    .limit(1);
 };
 
 // todo return the lease id

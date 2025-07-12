@@ -10,7 +10,7 @@ async function seed() {
   const ownersData = [
     {
       owner_id: 1,
-      company: { name: "Willsmere Pty Ltd", abn: "081255722" },
+      company: { name: "Willsmere Pty Ltd", acn: "081211111" },
       name: "property owner 1",
       phone: "123-456-7890",
       email: "abc@gmail.com",
@@ -18,7 +18,7 @@ async function seed() {
     },
     {
       owner_id: 2,
-      company: { name: "Willsmere Pty Ltd", abn: "081255722" },
+      company: { name: "Willsmere Pty Ltd", acn: "081252222" },
       name: "property owner 2",
       phone: "234-567-8901",
       email: "def@gmail.com",
@@ -89,6 +89,9 @@ async function seed() {
         volumn: "5532",
         folio: "183",
         address: "61-63 GROTE STREET, ADELAIDE SA 5000",
+        office_id: "1A",
+        initial_rent: "10,000",
+        rent_review_percentage: "4.0"
       },
     },
     {
@@ -105,6 +108,9 @@ async function seed() {
         volumn: "5532",
         folio: "183",
         address: "61-63 GROTE STREET, ADELAIDE SA 5000",
+        office_id: "2B",
+        initial_rent: "12,000",
+        rent_review_percentage: "3.5"
       },
     },
   ];

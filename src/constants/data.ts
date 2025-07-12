@@ -22,6 +22,14 @@ export type Property = {
   size: string;
   image: string;
   state: string;
+  detail: {
+    volumn: string;
+    folio: string;
+    address: string;
+    office_id: string;
+    initial_rent: string;
+    rent_review_percentage: string;
+  }
 }
 
 export type Lease = {

@@ -1,11 +1,12 @@
 import 'dotenv/config';
 import { db } from "@/db/index";
-import { owners, agents, properties, tenants, coWorkers, leases, reviewRecords, maintenanceRequests } from "../db/schema";
+import { owners, agents, properties, tenants, coWorkers, leases, reviewRecords, maintenanceRequests, outgoings } from "../db/schema";
 
 // 创建数据库连接
 
 // 删除所有表的函数
 async function cleanupDatabase() {
+  await db.delete(outgoings);
   await db.delete(maintenanceRequests);
   await db.delete(reviewRecords);
   await db.delete(leases);
