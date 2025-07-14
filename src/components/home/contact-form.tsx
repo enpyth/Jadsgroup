@@ -3,12 +3,87 @@
 import { useState } from "react"
 import Image from "next/image"
 import { useLanguage } from "@/components/layout/language-context"
+import Button from "@mui/material/Button"
 
 type FormTab = "sales" | "leasing" | "general"
 
 export default function ContactForm() {
   const { t } = useLanguage()
   const [activeTab, setActiveTab] = useState<FormTab>("sales")
+
+  // Form state
+  const [form, setForm] = useState({
+    name: "",
+    mobile: "",
+    email: "",
+    address: "",
+    microGrid: false,
+    powerPurchase: false,
+    freshGrowers: false,
+    properties: false,
+    message: "",
+    verification: "",
+  })
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
+
+  // Handle input changes
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+    const { name, value, type } = e.target
+    if (type === "checkbox") {
+      setForm((prev) => ({
+        ...prev,
+        [name]: (e.target as HTMLInputElement).checked,
+      }))
+    } else {
+      setForm((prev) => ({
+        ...prev,
+        [name]: value,
+      }))
+    }
+  }
+
+  // Handle form submit
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setLoading(true)
+    setSuccess(null)
+    setError(null)
+    try {
+      const res = await fetch("/api/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...form,
+          tab: activeTab,
+          template: "contact-enquiry",
+        }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        setSuccess(t("enquirySent"))
+        setForm({
+          name: "",
+          mobile: "",
+          email: "",
+          address: "",
+          microGrid: false,
+          powerPurchase: false,
+          freshGrowers: false,
+          properties: false,
+          message: "",
+          verification: "",
+        })
+      } else {
+        setError(data.error || t("enquiryFailed"))
+      }
+    } catch (err) {
+      setError(t("enquiryFailed"))
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <section className="relative py-16 bg-blue-900 text-white">
@@ -57,24 +132,36 @@ export default function ContactForm() {
           </div>
 
           {/* Form */}
-          <form className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <form className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6" onSubmit={handleSubmit}>
             <input
               type="text"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
               placeholder={t("namePlaceholder")}
               className="bg-white/10 border border-gray-400 p-2 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
             />
             <input
               type="tel"
+              name="mobile"
+              value={form.mobile}
+              onChange={handleChange}
               placeholder={t("mobilePlaceholder")}
               className="bg-white/10 border border-gray-400 p-2 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
             />
             <input
               type="email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
               placeholder={t("emailPlaceholder")}
               className="bg-white/10 border border-gray-400 p-2 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
             />
             <input
               type="text"
+              name="address"
+              value={form.address}
+              onChange={handleChange}
               placeholder={t("addressPlaceholder")}
               className="bg-white/10 border border-gray-400 p-2 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500"
             />
@@ -83,46 +170,51 @@ export default function ContactForm() {
           {/* Checkboxes */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             <label className="flex items-center text-sm cursor-pointer group">
-              <input type="checkbox" className="mr-2 accent-red-600" />
+              <input type="checkbox" name="microGrid" checked={form.microGrid} onChange={handleChange} className="mr-2 accent-red-600" />
               <span className="group-hover:text-red-300 transition-colors">{t("microGrid")}</span>
             </label>
             <label className="flex items-center text-sm cursor-pointer group">
-              <input type="checkbox" className="mr-2 accent-red-600" />
+              <input type="checkbox" name="powerPurchase" checked={form.powerPurchase} onChange={handleChange} className="mr-2 accent-red-600" />
               <span className="group-hover:text-red-300 transition-colors">{t("powerPurchase")}</span>
             </label>
             <label className="flex items-center text-sm cursor-pointer group">
-              <input type="checkbox" className="mr-2 accent-red-600" />
+              <input type="checkbox" name="freshGrowers" checked={form.freshGrowers} onChange={handleChange} className="mr-2 accent-red-600" />
               <span className="group-hover:text-red-300 transition-colors">{t("freshGrowers")}</span>
             </label>
             <label className="flex items-center text-sm cursor-pointer group">
-              <input type="checkbox" className="mr-2 accent-red-600" />
+              <input type="checkbox" name="properties" checked={form.properties} onChange={handleChange} className="mr-2 accent-red-600" />
               <span className="group-hover:text-red-300 transition-colors">{t("properties")}</span>
             </label>
           </div>
 
           {/* Message */}
           <textarea
+            name="message"
+            value={form.message}
+            onChange={handleChange}
             placeholder={t("messagePlaceholder")}
             rows={4}
             className="w-full bg-white/10 border border-gray-400 p-2 text-white placeholder-gray-300 mb-4 focus:outline-none focus:ring-2 focus:ring-red-500"
           ></textarea>
 
-          {/* Verification */}
-          <div className="flex justify-between items-center mb-6">
-            <input
-              type="text"
-              placeholder={t("verificationCode")}
-              className="bg-white/10 border border-gray-400 p-2 text-white placeholder-gray-300 w-1/2 focus:outline-none focus:ring-2 focus:ring-red-500"
-            />
-            {/* <div className="bg-white p-1 rounded">
-              <Image src="/placeholder.svg?height=40&width=100" alt="Captcha" width={100} height={40} />
-            </div> */}
-          </div>
+          {/* TODO Verification */}
+
+
+          {/* Feedback */}
+          {loading && <div className="text-center text-yellow-300 mb-2">{t("sending")}</div>}
+          {success && <div className="text-center text-green-400 mb-2">{success}</div>}
+          {error && <div className="text-center text-red-400 mb-2">{error}</div>}
 
           <div className="text-center">
-            <button className="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 transition-colors">
-              {t("sendEnquiry")}
-            </button>
+            <Button
+              onClick={handleSubmit}
+              variant="contained"
+              color="error"
+              disabled={loading}
+              sx={{ px: 4, py: 1.5, borderRadius: 2, fontWeight: "bold" }}
+            >
+              {loading ? t("sending") : t("sendEnquiry")}
+            </Button>
           </div>
         </div>
       </div>

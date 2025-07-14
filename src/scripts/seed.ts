@@ -31,17 +31,17 @@ async function seed() {
   const agentsData = [
     {
       agent_id: 1,
-      name: "David Wilson",
-      phone: "567-890-1234",
-      email: "david@realestate.com",
-      agency_name: "Wilson Realty",
+      name: "David Wong",
+      phone: "8212 8866",
+      email: "david@jadsgroup.com",
+      agency_name: "JADSGroup",
     },
     {
       agent_id: 2,
-      name: "Lisa Thompson",
-      phone: "678-901-2345",
-      email: "lisa@realestate.com",
-      agency_name: "Thompson Properties",
+      name: "Andy Wong",
+      phone: "8212 8866",
+      email: "andy@jadsgroup.com",
+      agency_name: "JADSGroup",
     },
   ];
   await db.insert(agents).values(agentsData);

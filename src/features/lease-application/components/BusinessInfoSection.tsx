@@ -1,5 +1,5 @@
 import { Grid, Typography, Alert } from "@mui/material";
-import { ApplicationData } from "../types";
+import { ApplicationData } from "types";
 import { searchCompanyDataByABN } from "@/lib/abn";
 
 interface BusinessInfoSectionProps {

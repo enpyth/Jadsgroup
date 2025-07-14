@@ -19,7 +19,7 @@ import { getInitialState } from "@/constants/workflow"
 
 function RentalApplicationFormContent({ property, user }: { property: Property, user: User }) {
   const router = useRouter()
-  const { formData, currentStep, totalSteps, goToNextStep, goToPreviousStep } = useForm()
+  const { formData, currentStep, totalSteps } = useForm()
 
   const handleSubmit = async () => {
     try {
@@ -100,6 +100,7 @@ function RentalApplicationFormContent({ property, user }: { property: Property, 
             business_info: {
               description: formData.businessDescription,
               abn_number: formData.abnNumber,
+              acn_number: formData.acnNumber,
               company_name: formData.companyName,
               director: {
                 first_name: formData.directorFirstName,

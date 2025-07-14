@@ -36,22 +36,28 @@ export const DOCUMENT_CONFIGS: Record<string, DocumentConfig> = {
     fileName: (leaseData: LeasePropertyData) => `DisclosureStatement_${leaseData.lease_id}.docx`,
     dataMapping: (leaseData: LeasePropertyData) => ({
       title: 'Disclosure Statement',
-      tenant_name: (leaseData.application_data as ApplicationData)?.personal_info?.first_name + ' ' + (leaseData.application_data as ApplicationData)?.personal_info?.surname || '',
-      tenant_email: leaseData.tenant_email,
-      tenant_phone: (leaseData.application_data as ApplicationData)?.personal_info?.mobile || '',
-      property_address: leaseData.property.detail?.address || '',
-      rent_amount: leaseData.rent_amount,
-      rent_amount_text: numberToWords(leaseData.rent_amount),
-      deposit_amount: leaseData.deposit_amount,
-      deposit_amount_text: numberToWords(leaseData.deposit_amount),
+      office_id: leaseData.property.detail?.office_id || '',
+      unit: leaseData.property.unit,
+      size: leaseData.property.size,
+      terms: leaseData.terms,
+      terms_text: numberToWords(leaseData.terms),
       lease_start_date: formatDate(leaseData.start_date),
       lease_end_date: formatDate(leaseData.end_date),
-      lease_terms: '1 year', // Default lease terms
-      landlord_name: 'Property Owner', // Default landlord name
-      landlord_email: '', // Default landlord email
-      generated_date: new Date().toISOString(),
-      lease_id: leaseData.lease_id,
-      office_id: leaseData.property.detail?.office_id || '',
+      tenant_company_name: (leaseData.application_data as ApplicationData)?.business_info?.company_name || '',
+      tenant_company_acn: (leaseData.application_data as ApplicationData)?.business_info?.acn_number || '',
+      tenant_name: (leaseData.application_data as ApplicationData)?.personal_info?.first_name + ' ' + (leaseData.application_data as ApplicationData)?.personal_info?.surname || '',
+      tenant_director_address: (leaseData.application_data as ApplicationData)?.business_info?.director?.address || '',
+      initial_rent: leaseData.property.detail?.initial_rent || '0',
+      initial_rent_text: numberToWords(leaseData.property.detail?.initial_rent || '0'),
+      initial_rent_gst: calculateGST(leaseData.property.detail?.initial_rent || '0'),
+      instalment_amount: calculateInstalmentAmount(leaseData),
+      instalment_amount_text: numberToWords(calculateInstalmentAmount(leaseData).replace(/,/g, '')),
+      instalment_amount_gst: calculateGST(calculateInstalmentAmount(leaseData)),
+      rent_review_percentage: leaseData.property.detail?.rent_review_percentage || '0',
+      base_change_date: calculateBaseChangeDates(leaseData),
+      agent_name: leaseData.agent.name,
+      agent_phone: leaseData.agent.phone,
+      agent_email: leaseData.agent.email,
     }),
   },
   [PROCESS_IDS.DRAFT_CONTRACT]: {
@@ -59,25 +65,105 @@ export const DOCUMENT_CONFIGS: Record<string, DocumentConfig> = {
     fileName: (leaseData: LeasePropertyData) => `AgreementToLease_${leaseData.lease_id}.docx`,
     dataMapping: (leaseData: LeasePropertyData) => ({
       title: 'Agreement to Lease',
-      tenant_name: (leaseData.application_data as ApplicationData)?.personal_info?.first_name + ' ' + (leaseData.application_data as ApplicationData)?.personal_info?.surname || '',
-      tenant_email: leaseData.tenant_email,
-      tenant_phone: (leaseData.application_data as ApplicationData)?.personal_info?.mobile || '',
-      property_address: leaseData.property.detail?.address || '',
-      rent_amount: leaseData.rent_amount,
-      rent_amount_text: numberToWords(leaseData.rent_amount),
-      deposit_amount: leaseData.deposit_amount,
-      deposit_amount_text: numberToWords(leaseData.deposit_amount),
+      owner_company_name: leaseData.owner.company.name,
+      owner_company_acn: leaseData.owner.company.acn,
+      owner_name: leaseData.owner.name,
+      owner_address: leaseData.owner.address,
+      tenant_company_name: (leaseData.application_data as ApplicationData)?.business_info?.company_name || '',
+      tenant_company_acn: (leaseData.application_data as ApplicationData)?.business_info?.acn_number || '',
+      tenant_name: (leaseData.application_data as ApplicationData).personal_info.surname,
+      tenant_director_address: (leaseData.application_data as ApplicationData)?.business_info?.director?.address || '',
+      terms: leaseData.terms,
+      terms_text: numberToWords(leaseData.terms),
       lease_start_date: formatDate(leaseData.start_date),
       lease_end_date: formatDate(leaseData.end_date),
-      lease_terms: '1 year', // Default lease terms
-      landlord_name: 'Property Owner', // Default landlord name
-      landlord_email: '', // Default landlord email
-      generated_date: new Date().toISOString(),
-      lease_id: leaseData.lease_id,
-      office_id: leaseData.property.detail?.office_id || '',
+      initial_rent: leaseData.property.detail?.initial_rent || '0',
+      initial_rent_text: numberToWords(leaseData.property.detail?.initial_rent || '0'),
+      initial_rent_gst: calculateGST(leaseData.property.detail?.initial_rent || '0'),
+      rent_review_percentage: leaseData.property.detail?.rent_review_percentage || '0',
+      base_change_date: calculateBaseChangeDates(leaseData),
+      agent_name: leaseData.agent.name,
+      agent_phone: leaseData.agent.phone,
     }),
   },
 };
+
+// Helper function to calculate base change dates
+function calculateBaseChangeDates(leaseData: LeasePropertyData): string {
+  const startDate = new Date(leaseData.start_date);
+  const terms = parseInt(leaseData.terms) || 1;
+  
+  if (terms <= 1) return '';
+  
+  const changeDates = [];
+  
+  // Generate anniversary dates for each year after the first year
+  for (let year = 1; year < terms; year++) {
+    const changeDate = new Date(startDate);
+    changeDate.setFullYear(startDate.getFullYear() + year);
+    
+    const formattedDate = changeDate.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+    
+    changeDates.push(formattedDate);
+  }
+  
+  return changeDates.join(', ');
+}
+
+// Helper function to safely calculate GST
+function calculateGST(amount: string | number): string {
+  const numAmount = typeof amount === 'string' ? parseFloat(amount.replace(/,/g, '')) : amount;
+  if (isNaN(numAmount) || numAmount <= 0) return '0.00';
+  const gstAmount = numAmount * 0.1;
+  
+  // Format with commas if the amount is 1000 or greater
+  if (gstAmount >= 1000) {
+    return gstAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  
+  return gstAmount.toFixed(2);
+}
+
+// Helper function to calculate instalment amount
+function calculateInstalmentAmount(leaseData: LeasePropertyData): string {
+  const initialRent = parseFloat((leaseData.property.detail?.initial_rent || '0').replace(/,/g, ''));
+  const rentReviewPercentage = parseFloat((leaseData.property.detail?.rent_review_percentage || '0').replace(/,/g, ''));
+  const leaseTerms = parseInt(leaseData.terms) || 1; // Default to 1 year if not specified
+  
+  if (initialRent <= 0) return '0.00';
+  
+  let totalRent = 0;
+  let currentRent = initialRent; // This is monthly rent
+  
+  // Calculate rent for each year of the lease
+  for (let year = 1; year <= leaseTerms; year++) {
+    if (year === 1) {
+      // First year: use initial monthly rent
+      totalRent += currentRent * 12; // 12 months
+    } else {
+      // Subsequent years: apply rent review percentage increase
+      const increaseMultiplier = 1 + (rentReviewPercentage / 100);
+      currentRent = currentRent * increaseMultiplier;
+      totalRent += currentRent * 12; // 12 months
+    }
+  }
+  
+  // Calculate monthly instalment amount
+  const totalMonths = leaseTerms * 12;
+  const instalmentAmount = totalRent / totalMonths;
+  const roundedAmount = Math.round(instalmentAmount * 100) / 100; // Round to 2 decimal places
+  
+  // Format with commas if the amount is 1000 or greater
+  if (roundedAmount >= 1000) {
+    return roundedAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  
+  return roundedAmount.toFixed(2);
+}
 
 // Helper function to convert numbers to words
 function numberToWords(num: string): string {

@@ -39,6 +39,7 @@ interface FormData {
   // Entity Details
   businessDescription: string
   abnNumber: string
+  acnNumber: string
   companyName: string
   directorFirstName: string
   directorSurname: string
@@ -130,6 +131,7 @@ const initialFormData: FormData = {
   // Entity Details
   businessDescription: "",
   abnNumber: "",
+  acnNumber: "",
   companyName: "",
   directorFirstName: "",
   directorSurname: "",

@@ -52,6 +52,16 @@ export default function EntityDetails() {
 
           <Grid item xs={12} md={6}>
             <TextField 
+              label="ACN Number" 
+              fullWidth 
+              variant="outlined"
+              value={formData.acnNumber}
+              onChange={(e) => updateFormData({ acnNumber: e.target.value })}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField 
               label="Company Name" 
               fullWidth 
               variant="outlined"
@@ -168,6 +178,7 @@ export default function EntityDetails() {
                   <Typography variant="subtitle1">Bankrupt Document</Typography>
                 </Box>
                 <FileUpload 
+                  id="bankrupt-document-upload"
                   accept=".pdf,.doc,.docx"
                   onFileSelect={(file) => updateFormData({ bankruptDocument: file })}
                 />

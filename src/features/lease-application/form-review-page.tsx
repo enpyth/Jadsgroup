@@ -12,7 +12,7 @@ import {
 } from "@/features/lease-application/components";
 import { Divider, Container } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import { ApplicationData } from "./types";
+import { ApplicationData } from "types";
 import { InferSelectModel } from "drizzle-orm";
 import { leases } from "@/db/schema";
 

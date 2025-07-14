@@ -40,10 +40,19 @@ type OwnerData = BaseOwnerData & {
   company: CompanyData;
 };
 
+interface AgentData {
+  agent_id: string;
+  name: string;
+  phone: string;
+  email: string;
+  agency_name: string;
+}
+
 // Combined lease and property data with owner
 export interface LeasePropertyData extends LeaseData {
   property: PropertyData;
   owner: OwnerData;
+  agent: AgentData;
 }
 
 // Navigation types
@@ -103,6 +112,7 @@ export interface ApplicationData {
   business_info: {
     description: string;
     abn_number: string;
+    acn_number: string;
     company_name: string;
     director: Address & {
       first_name: string;

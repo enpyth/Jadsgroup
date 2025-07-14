@@ -206,7 +206,7 @@ export function ProcessCard({
             size="small"
             onClick={onRollback}
             startIcon={<RotateCcw size={12} />}
-            disabled={process.assignedTo !== role}
+            disabled={!process.assignedTo.includes(role)}
             sx={{ textTransform: "none", fontSize: "0.75rem" }}
           >
             Rollback
