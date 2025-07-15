@@ -17,6 +17,8 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
 import { GoogleSignInButton } from './google-auth-button';
+import { FacebookSignInButton } from './facebook-auth-button';
+import { InstagramSignInButton } from './instagram-auth-button';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Enter a valid email address' })
@@ -89,6 +91,8 @@ export default function UserAuthForm() {
       </div>
       {/* <GithubSignInButton /> */}
       <GoogleSignInButton />
+      <FacebookSignInButton />
+      <InstagramSignInButton />
     </>
   );
 }
