@@ -37,7 +37,7 @@ export default async function Page(props: pageProps) {
             description='Manage property (Server side table functionalities.)'
           />
           <Link
-            href='/dashboard/product/new'
+            href='/dashboard/property/new'
             className={cn(buttonVariants(), 'text-xs md:text-sm')}
           >
             <Plus className='mr-2 h-4 w-4' /> Add New(TODO)

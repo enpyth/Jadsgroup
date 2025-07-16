@@ -24,7 +24,7 @@ export default async function PropertyDetails(props: pageProps) {
                 <div className="space-y-4">
                     <div className="relative h-96 rounded-xl overflow-hidden">
                         <Image
-                            src={property[0].image}
+                            src={'/placeholder.jpg'}
                             alt={property[0].name}
                             fill
                             className="object-cover"

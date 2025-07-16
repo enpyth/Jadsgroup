@@ -15,6 +15,13 @@
       "when": 1752296635264,
       "tag": "0001_awesome_landau",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1752575668558,
+      "tag": "0002_harsh_the_santerians",
+      "breakpoints": true
     }
   ]
 }

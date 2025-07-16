@@ -6,27 +6,22 @@ import {
   CardHeader,
   Typography,
   Chip,
-  Button,
   Divider,
-  Box,
 } from "@mui/material";
 import type { Process, ProcessId, WorkflowId } from "@/constants/workflow";
-import { WORKFLOW_IDS, PROCESS_IDS, STATES } from "@/constants/workflow";
+import { PROCESS_IDS, STATES } from "@/constants/workflow";
 import {
-  FileText,
-  Home,
   Calendar,
-  CreditCard,
-  User,
-  Mail,
-  PenToolIcon,
-  Wrench,
-  Eye,
 } from "lucide-react";
-import { useState } from "react";
+import React from "react";
 import { type InferSelectModel } from "drizzle-orm";
 import { leases } from "@/db/schema";
 import { useRouter } from "next/navigation";
+import TenantInfo from "./components/TenantInfo";
+import LeaseDetails from "./components/LeaseDetails";
+import FinancialInfo from "./components/FinancialInfo";
+import DocumentsSection from "./components/DocumentsSection";
+import MaintenanceSection from "./components/MaintenanceSection";
 
 type LeaseData = InferSelectModel<typeof leases>;
 
@@ -43,27 +38,13 @@ function isProcessApproved(processes: Process[], processIds: ProcessId[]) {
   );
 }
 
-export default function CustomerInfoPanel({
+// 将CustomerInfoPanel重命名为InfoPanel
+export default function InfoPanel({
   leaseData,
   processes,
   isCompleted,
 }: CustomerInfoPanelProps) {
   const router = useRouter();
-
-  const formatCurrency = (amount: string) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(Number(amount));
-  };
-
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
 
   // Check if processes are approved
   const isStartApproved = isProcessApproved(processes, [
@@ -94,19 +75,11 @@ export default function CustomerInfoPanel({
     }
   };
 
-  const handleLeaseScheduleDownload = async () => {
-    const fileKey = `${leaseData.tenant_email}/LeaseSchedule_${leaseData.lease_id}.docx`;
-    await downloadDocument(fileKey);
-  };
-
-  const handleDisclosureStatementDownload = async () => {
-    const fileKey = `${leaseData.tenant_email}/DisclosureStatement_${leaseData.lease_id}.docx`;
-    await downloadDocument(fileKey);
-  };
-
-  const handleAgreementToLeaseDownload = async () => {
-    const fileKey = `${leaseData.tenant_email}/AgreementToLease_${leaseData.lease_id}.docx`;
-    await downloadDocument(fileKey);
+  // 复用 fileKey 生成
+  const fileKeys = {
+    leaseSchedule: `${leaseData.tenant_email}/LeaseSchedule_${leaseData.lease_id}.docx`,
+    disclosure: `${leaseData.tenant_email}/DisclosureStatement_${leaseData.lease_id}.docx`,
+    agreement: `${leaseData.tenant_email}/AgreementToLease_${leaseData.lease_id}.docx`,
   };
 
   return (
@@ -132,292 +105,27 @@ export default function CustomerInfoPanel({
           sx={{ pb: 1 }}
         />
         <CardContent sx={{ pt: 0 }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              marginBottom: "8px",
-            }}
-          >
-            <User size={16} color="#666" />
-            <Typography variant="subtitle2">Tenant</Typography>
-          </div>
-          <div style={{ paddingLeft: "24px", marginBottom: "16px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <Mail size={16} color="#666" />
-              <Typography variant="body2">{leaseData.tenant_email}</Typography>
-            </div>
-          </div>
-
+          <TenantInfo leaseData={leaseData} />
           <Divider sx={{ my: 2 }} />
-
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              marginBottom: "8px",
-            }}
-          >
-            <Home size={16} color="#666" />
-            <Typography variant="subtitle2">Lease Details</Typography>
-          </div>
-          <div style={{ paddingLeft: "24px", marginBottom: "16px" }}>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "4px",
-                marginBottom: "8px",
-              }}
-            >
-              <Typography variant="caption" color="text.secondary">
-                Start Date:
-              </Typography>
-              <Typography variant="caption" fontWeight="medium">
-                {formatDate(new Date(leaseData.start_date))}
-              </Typography>
-            </div>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "4px",
-                marginBottom: "8px",
-              }}
-            >
-              <Typography variant="caption" color="text.secondary">
-                End Date:
-              </Typography>
-              <Typography variant="caption" fontWeight="medium">
-                {formatDate(new Date(leaseData.end_date))}
-              </Typography>
-            </div>
-          </div>
-
+          <LeaseDetails leaseData={leaseData} />
           <Divider sx={{ my: 2 }} />
-
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              marginBottom: "8px",
-            }}
-          >
-            <CreditCard size={16} color="#666" />
-            <Typography variant="subtitle2">Financial Information</Typography>
-          </div>
-          <div style={{ paddingLeft: "24px", marginBottom: "16px" }}>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "4px",
-                marginBottom: "8px",
-              }}
-            >
-              <Typography variant="caption" color="text.secondary">
-                Monthly Rent:
-              </Typography>
-              <Typography variant="caption" fontWeight="medium">
-                {formatCurrency(leaseData.rent_amount)}
-              </Typography>
-            </div>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "4px",
-                marginBottom: "8px",
-              }}
-            >
-              <Typography variant="caption" color="text.secondary">
-                Security Deposit:
-              </Typography>
-              <Typography variant="caption" fontWeight="medium">
-                {formatCurrency(leaseData.deposit_amount)}
-              </Typography>
-            </div>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "4px",
-              }}
-            >
-              <Typography variant="caption" color="text.secondary">
-                Total Due at Signing:
-              </Typography>
-              <Typography variant="caption" fontWeight="medium">
-                {formatCurrency(leaseData.rent_amount) +
-                  formatCurrency(leaseData.deposit_amount)}
-              </Typography>
-            </div>
-          </div>
-
+          <FinancialInfo leaseData={leaseData} />
           <Divider sx={{ my: 2 }} />
-
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              marginBottom: "8px",
-            }}
-          >
-            <FileText size={16} color="#666" />
-            <Typography variant="subtitle2">Documents</Typography>
-          </div>
-          <div style={{ paddingLeft: "24px", marginBottom: "16px" }}>
-            <Box sx={{ display: "flex", gap: 1 }}>
-              <Button
-                variant="outlined"
-                size="small"
-                startIcon={<Eye size={14} />}
-                onClick={() =>
-                  (window.location.href = `/dashboard/lease/application/${leaseData.lease_id}`)
-                }
-                sx={{
-                  textTransform: "none",
-                  fontSize: "0.75rem",
-                  height: "32px",
-                  flexGrow: 1,
-                }}
-              >
-                Application Form
-              </Button>
-            </Box>
-          </div>
-          <div style={{ paddingLeft: "24px", marginBottom: "16px" }}>
-            <Box sx={{ display: "flex", gap: 1 }}>
-              <Button
-                variant="outlined"
-                size="small"
-                startIcon={<Eye size={14} />}
-                disabled={!isStartApproved}
-                onClick={handleLeaseScheduleDownload}
-                sx={{
-                  textTransform: "none",
-                  fontSize: "0.75rem",
-                  height: "32px",
-                  flexGrow: 1,
-                }}
-              >
-                Lease Schedule
-              </Button>
-            </Box>
-            {!isStartApproved && (
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{ display: "block", mt: 1, textAlign: "center" }}
-              >
-                Available after '{WORKFLOW_IDS.START}'
-              </Typography>
-            )}
-          </div>
-          <div style={{ paddingLeft: "24px", marginBottom: "16px" }}>
-            <Box sx={{ display: "flex", gap: 1 }}>
-              <Button
-                variant="outlined"
-                size="small"
-                startIcon={<Eye size={14} />}
-                disabled={!isLandlordReviewApproved}
-                onClick={handleDisclosureStatementDownload}
-                sx={{
-                  textTransform: "none",
-                  fontSize: "0.75rem",
-                  height: "32px",
-                  flexGrow: 1,
-                }}
-              >
-                Disclosure Statement
-              </Button>
-            </Box>
-            {!isLandlordReviewApproved && (
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{ display: "block", mt: 1, textAlign: "center" }}
-              >
-                Available after '{WORKFLOW_IDS.LANDLORD_REVIEW}'
-              </Typography>
-            )}
-          </div>
-          <div style={{ paddingLeft: "24px", marginBottom: "16px" }}>
-            <Box sx={{ display: "flex", gap: 1 }}>
-              <Button
-                variant="outlined"
-                size="small"
-                startIcon={<Eye size={14} />}
-                disabled={!isLegalReviewApproved}
-                onClick={handleAgreementToLeaseDownload}
-                sx={{
-                  textTransform: "none",
-                  fontSize: "0.75rem",
-                  height: "32px",
-                  flexGrow: 1,
-                }}
-              >
-                Agreement to Lease
-              </Button>
-            </Box>
-            {!isLegalReviewApproved && (
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{ display: "block", mt: 1, textAlign: "center" }}
-              >
-                Available after '{WORKFLOW_IDS.LEGAL_REVIEW}'
-              </Typography>
-            )}
-          </div>
-
-          {/* Repair Request Button - Only enabled when workflow is complete */}
+          <DocumentsSection
+            leaseData={leaseData}
+            processes={processes}
+            isCompleted={isCompleted}
+            downloadDocument={downloadDocument}
+            fileKeys={fileKeys}
+            isStartApproved={isStartApproved}
+            isLandlordReviewApproved={isLandlordReviewApproved}
+            isLegalReviewApproved={isLegalReviewApproved}
+          />
           <Divider sx={{ my: 2 }} />
-
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              marginBottom: "8px",
-            }}
-          >
-            <PenToolIcon size={16} color="#666" />
-            <Typography variant="subtitle2">Maintenance</Typography>
-          </div>
-          <div style={{ paddingLeft: "24px", marginBottom: "16px" }}>
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
-              startIcon={<Wrench size={14} />}
-              fullWidth
-              disabled={!isCompleted}
-              onClick={handleRepairRequest}
-              sx={{
-                textTransform: "none",
-                fontSize: "0.75rem",
-                height: "32px",
-                bgcolor: isCompleted ? "primary.main" : "grey.300",
-              }}
-            >
-              Repair Request
-            </Button>
-            {!isCompleted && (
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{ display: "block", mt: 1, textAlign: "center" }}
-              >
-                Available after '{WORKFLOW_IDS.FINAL_REVIEW}'
-              </Typography>
-            )}
-          </div>
-
+          <MaintenanceSection
+            isCompleted={isCompleted}
+            handleRepairRequest={handleRepairRequest}
+          />
           <div
             style={{
               marginTop: "16px",
@@ -436,7 +144,6 @@ export default function CustomerInfoPanel({
           </div>
         </CardContent>
       </Card>
-
     </>
   );
 }

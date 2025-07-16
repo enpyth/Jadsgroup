@@ -20,7 +20,7 @@ export default async function Page() {
     size: item.size,
     price: item.price,
     state: item.state,
-    image: item.image,
+    image: item.image || 'placeholder.jpg',
   }));
 
   return (

@@ -195,3 +195,13 @@ export async function getPropertyStats() {
   
 //   return await query;
 // } 
+
+// 获取所有业主
+export async function getAllOwners() {
+  return await db.select().from(owners);
+}
+
+// 获取所有经纪人
+export async function getAllAgents() {
+  return await db.select().from(agents);
+} 

@@ -45,7 +45,7 @@ export const properties = pgTable("properties", {
   size: text("size").notNull(),
   price: text("price").notNull(),
   state: text("state").notNull().default("available"),
-  image: text("image").notNull(),
+  image: text("image").default("placeholder.jpg"),
   detail: jsonb("detail").notNull(),
   release_time: timestamp("release_time").defaultNow().notNull(),
 });

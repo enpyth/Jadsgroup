@@ -23,7 +23,7 @@ const FeaturedProperties = ({ products }: {products: Product[]}) => {
                 Featured
               </div>
               <Image
-                src={product.image}
+                src={'/placeholder.jpg'}
                 alt={product.name}
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
