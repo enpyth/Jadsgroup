@@ -82,7 +82,7 @@ async function seed() {
       unit: "11",
       describe: "placeholder...",
       size: "50.50",
-      price: "1200",
+      price: "10000",
       state: "available",
       image: "https://api.slingacademy.com/public/sample-products/1.png",
       detail: {
@@ -101,7 +101,7 @@ async function seed() {
       unit: "11",
       describe: "placeholder...",
       size: "98.70",
-      price: "750",
+      price: "12000",
       state: "available",
       image: "https://api.slingacademy.com/public/sample-products/2.png",
       detail: {

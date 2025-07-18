@@ -56,8 +56,8 @@ export default async function PropertyDetails(props: pageProps) {
                     </div>
 
                     <div className="prose max-w-none">
-                        <h2 className="text-xl font-semibold text-gray-900">Description</h2>
-                        <p className="text-gray-600">{property[0].describe}</p>
+                        <h2 className="text-xl font-semibold text-gray-900">Rent Review Percentage</h2>
+                        <p className="text-gray-600">{(property[0].detail as any).rent_review_percentage}%</p>
                     </div>
 
                     <div className="space-y-4">
