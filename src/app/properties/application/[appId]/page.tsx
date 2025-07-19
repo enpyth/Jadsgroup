@@ -6,9 +6,7 @@ import { User } from "next-auth"
 import { Property } from "@/constants/data"
 
 type PageProps = {
-    params: Promise<{
-        appId: string
-    }>
+    params: { appId: string } | Promise<{ appId: string }>;
 }
 
 export default async function PropertyApplicationPage({ params }: PageProps) {
@@ -17,8 +15,14 @@ export default async function PropertyApplicationPage({ params }: PageProps) {
         redirect("/login")
     }
 
-    const resolvedParams = await params
-    const property = await getPropertyById(parseInt(resolvedParams.appId))
+    const { appId } = await params;
+    const appIdInt = parseInt(appId);
+
+    if (isNaN(appIdInt)) {
+        throw new Error(`Invalid appId: ${appId}`);
+    }
+
+const property = await getPropertyById(appIdInt)
 
     if (!property || property.length === 0) {
         notFound()
