@@ -1,44 +1,12 @@
-import { Grid, Typography, Alert } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import { ApplicationData } from "types";
-import { searchCompanyDataByABN } from "@/lib/abn";
+import { ABNValidationSection } from "@/features/lease-application/components/ABNValidationSection";
 
 interface BusinessInfoSectionProps {
   data: ApplicationData["business_info"];
 }
 
-export async function BusinessInfoSection({ data }: BusinessInfoSectionProps) {
-  let abnValidation = null;
-
-  if (data.abn_number) {
-    try {
-      const result = await searchCompanyDataByABN(
-        data.abn_number,
-        'N',
-        process.env.ABR_AUTH_GUID!
-      );
-      
-      const registeredName = result.ABRPayloadSearchResults.response.businessEntity?.mainName.organisationName;
-      if (registeredName) {
-        abnValidation = {
-          isValid: registeredName.toLowerCase() === data.company_name.toLowerCase(),
-          registeredName
-        };
-      } else {
-        abnValidation = {
-          isValid: false,
-          registeredName: '',
-          error: 'No business found with this ABN'
-        };
-      }
-    } catch (error) {
-      abnValidation = {
-        isValid: false,
-        registeredName: '',
-        error: 'Error validating ABN'
-      };
-    }
-  }
-
+export function BusinessInfoSection({ data }: BusinessInfoSectionProps) {
   return (
     <Grid item xs={12}>
       <Typography variant="h6" gutterBottom>
@@ -57,26 +25,13 @@ export async function BusinessInfoSection({ data }: BusinessInfoSectionProps) {
           <Typography variant="body2" color="text.secondary">Company Name</Typography>
           <Typography variant="body1">{data.company_name}</Typography>
         </Grid>
-        {abnValidation && (
-          <Grid item xs={12}>
-            <Alert 
-              severity={abnValidation.isValid ? "success" : "warning"}
-              sx={{ mt: 1 }}
-            >
-              {abnValidation.error ? (
-                abnValidation.error
-              ) : abnValidation.isValid ? (
-                "ABN matches registered company name"
-              ) : (
-                <>
-                  ABN registered name: {abnValidation.registeredName}
-                  <br />
-                  This name does not match the provided company name
-                </>
-              )}
-            </Alert>
-          </Grid>
-        )}
+        
+        {/* ABN Validation - Client Component */}
+        <ABNValidationSection 
+          abnNumber={data.abn_number} 
+          companyName={data.company_name} 
+        />
+        
         <Grid item xs={12}>
           <Typography variant="subtitle1" gutterBottom>Director Information</Typography>
           <Grid container spacing={2}>

@@ -37,8 +37,6 @@ export async function POST(request: Request) {
 
     // Use the provided combined lease+property data directly
     const documentData = generateDocumentData(processId, leaseData);
-    console.log("documentData:");
-    console.log(documentData);
     if (!documentData) {
       return NextResponse.json(
         { error: 'Failed to generate document data' },

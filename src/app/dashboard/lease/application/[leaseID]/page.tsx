@@ -6,7 +6,6 @@ type PageProps = {
 };
 
 export default async function LeaseFormPage({ params }: PageProps) {
-  console.log("params", params);
   const { leaseID } = await params;
   const leaseIdInt = parseInt(leaseID);
 
