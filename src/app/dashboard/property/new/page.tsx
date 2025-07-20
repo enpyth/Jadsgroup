@@ -182,25 +182,6 @@ export default function NewPropertyPage() {
           fullWidth
           margin="normal"
         />
-        <TextField
-          label="Image URL"
-          name="image"
-          value={form.image}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-          required
-        />
-        <TextField
-          label="Detail (JSON)"
-          name="detail"
-          value={form.detail}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-          helperText="Enter JSON object"
-          required
-        />
         {error && <Typography color="error">{error}</Typography>}
         {success && <Typography color="primary">Property added!</Typography>}
         <Button
