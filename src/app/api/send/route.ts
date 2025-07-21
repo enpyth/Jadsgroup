@@ -1,5 +1,5 @@
-import { ContactEnquiryEmail } from 'public/template/contact-enquiry';
-import { EmailTemplate } from 'public/template/email';
+import { ContactEnquiryEmail } from '@/template/contact-enquiry';
+import { EmailTemplate } from '@/template/email';
 import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
