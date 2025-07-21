@@ -1,7 +1,5 @@
 import PizZip from 'pizzip';
 import Docxtemplater from 'docxtemplater';
-import fs from 'fs';
-import path from 'path';
 
 interface DocumentData {
   [key: string]: any;
@@ -9,31 +7,26 @@ interface DocumentData {
 
 export async function generateDocument(templatePath: string, data: DocumentData): Promise<Buffer> {
   try {
-    // Get the absolute path to the template file
-    const absolutePath = path.join(process.cwd(), templatePath);
+    // 从 R2 获取模板文件
+    const templateUrl = `${process.env.CLOUDFLARE_R2_PUBLIC_URL}/template/${templatePath}`;
+    const response = await fetch(templateUrl);
     
-    // Read the template file
-    const content = fs.readFileSync(absolutePath, 'binary');
+    if (!response.ok) {
+      throw new Error(`Failed to fetch template from ${templateUrl}: ${response.status} ${response.statusText}`);
+    }
     
-    // Create a new instance of PizZip
-    const zip = new PizZip(content);
+    // 获取模板内容
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
 
-    // Create a new instance of Docxtemplater with image module
+    // 生成文档
+    const zip = new PizZip(buffer);
     const doc = new Docxtemplater(zip, {
       paragraphLoop: true,
       linebreaks: true,
     });
-    
-    // Render the document
     doc.render(data);
-    
-    // Get the generated document as a buffer
-    const buffer = doc.getZip().generate({
-      type: 'nodebuffer',
-      compression: 'DEFLATE',
-    });
-    
-    return buffer;
+    return doc.getZip().generate({ type: 'nodebuffer', compression: 'DEFLATE' });
   } catch (error) {
     console.error('Error generating document:', error);
     throw error;
