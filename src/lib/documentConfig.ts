@@ -9,7 +9,7 @@ export interface DocumentConfig {
 
 export const DOCUMENT_CONFIGS: Record<string, DocumentConfig> = {
   [PROCESS_IDS.REVIEW_APPLICATION]: {
-    templatePath: 'template/lease-schedule.docx',
+    templatePath: 'public/template/lease-schedule.docx',
     fileName: (leaseData: LeasePropertyData) => `LeaseSchedule_${leaseData.lease_id}.docx`,
     dataMapping: (leaseData: LeasePropertyData) => ({
       title: 'Lease Schedule',
@@ -32,7 +32,7 @@ export const DOCUMENT_CONFIGS: Record<string, DocumentConfig> = {
     }),
   },
   [PROCESS_IDS.LANDLORD_REVIEW]: {
-    templatePath: 'template/disclosure-statement.docx',
+    templatePath: 'public/template/disclosure-statement.docx',
     fileName: (leaseData: LeasePropertyData) => `DisclosureStatement_${leaseData.lease_id}.docx`,
     dataMapping: (leaseData: LeasePropertyData) => ({
       title: 'Disclosure Statement',
@@ -61,7 +61,7 @@ export const DOCUMENT_CONFIGS: Record<string, DocumentConfig> = {
     }),
   },
   [PROCESS_IDS.DRAFT_CONTRACT]: {
-    templatePath: 'template/agreement-to-lease.docx',
+    templatePath: 'public/template/agreement-to-lease.docx',
     fileName: (leaseData: LeasePropertyData) => `AgreementToLease_${leaseData.lease_id}.docx`,
     dataMapping: (leaseData: LeasePropertyData) => ({
       title: 'Agreement to Lease',
