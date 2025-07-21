@@ -5,23 +5,26 @@ import { Separator } from '@/components/ui/separator';
 import { DataTableSkeleton } from '@/components/ui/table/data-table-skeleton';
 import { searchParamsCache, serialize } from '@/lib/searchparams';
 import { cn } from '@/lib/utils';
-import { Plus } from 'lucide-react';
+import { Edit } from 'lucide-react';
 import Link from 'next/link';
 import { SearchParams } from 'nuqs/server';
 import { Suspense } from 'react';
-import ProductListingPage from '@/features/products/components/product-listing';
-import ProductTableAction from '@/features/products/components/product-tables/product-table-action';
+import AgentDetailsPage from '@/app/dashboard/agent/[agentId]/AgentDetailsPage';
 
 export const metadata = {
-  title: 'Dashboard: Property Management',
+  title: 'Dashboard: Agent Management',
 };
 
 type pageProps = {
   searchParams: Promise<SearchParams>;
+  params: {
+    agentId: string;
+  };
 };
 
 export default async function Page(props: pageProps) {
   const searchParams = await props.searchParams;
+  const params = await props.params;
   // Allow nested RSCs to access the search params (in a type-safe way)
   searchParamsCache.parse(searchParams);
 
@@ -33,25 +36,23 @@ export default async function Page(props: pageProps) {
       <div className='flex flex-1 flex-col space-y-4'>
         <div className='flex items-start justify-between'>
           <Heading
-            title='Property Management'
-            description='Manage property (Server side table functionalities.)'
+            title='Agent Details'
+            description='View and manage agent information.'
           />
           <Link
-            href='/dashboard/property/new'
+            href={'/dashboard/agent/' + params.agentId + '/edit'}
             className={cn(buttonVariants(), 'text-xs md:text-sm')}
           >
-            <Plus className='mr-2 h-4 w-4' /> Add New
+            <Edit className='mr-2 h-4 w-4' /> Edit
           </Link>
         </div>
-        <Separator />
-        {/* <ProductTableAction /> */}
         <Suspense
           key={key}
           fallback={<DataTableSkeleton columnCount={5} rowCount={10} />}
         >
-          <ProductListingPage />
+          <AgentDetailsPage agentId={params.agentId} />
         </Suspense>
       </div>
     </PageContainer>
   );
-}
+} 

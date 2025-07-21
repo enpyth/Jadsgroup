@@ -6,10 +6,10 @@ import { searchParamsCache, serialize } from '@/lib/searchparams';
 import { SearchParams } from 'nuqs/server';
 import { Suspense } from 'react';
 import ListingOutgoing from '@/features/products/components/listing-outgoing';
-import ProductTableAction from '@/features/products/components/product-tables/product-table-action';
+// import ProductTableAction from '@/features/products/components/product-tables/product-table-action';
 
 export const metadata = {
-    title: 'Dashboard: Outgoings Management',
+    title: 'Dashboard: Landowner Management',
 };
 
 type pageProps = {
@@ -17,7 +17,7 @@ type pageProps = {
 };
 
 // TODO: accessibility
-export default async function OutgoingsListPage(props: pageProps) {
+export default async function LandownerListPage(props: pageProps) {
     const searchParams = await props.searchParams;
     // Allow nested RSCs to access the search params (in a type-safe way)
     searchParamsCache.parse(searchParams);
@@ -30,15 +30,9 @@ export default async function OutgoingsListPage(props: pageProps) {
             <div className='flex flex-1 flex-col space-y-4'>
                 <div className='flex items-start justify-between'>
                     <Heading
-                        title='Outgoings Management'
-                        description='Manage all your outgoings here.'
+                        title='Landowner Management'
+                        description='Manage all your landowners here.'
                     />
-                    {/* <Link
-                            href='/dashboard/product/new'
-                            className={cn(buttonVariants(), 'text-xs md:text-sm')}
-                        >
-                            <Plus className='mr-2 h-4 w-4' /> Add New
-                        </Link> */}
                 </div>
                 <Separator />
                 {/* <ProductTableAction /> */}

@@ -9,7 +9,7 @@ export default async function ListingOutgoingPage() {
   const filterFunction = (property: any) => {
     if (role == userRoles.ADMIN) {
       const stage = getCurrentStage(property.state as WorkflowState[]);
-      return stage == WORKFLOW_IDS.COMPLETED;
+      return stage != WORKFLOW_IDS.COMPLETED;
     } else {
       // user is unknown, show no leases
       return false;

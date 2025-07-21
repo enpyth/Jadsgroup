@@ -204,4 +204,13 @@ export async function getAllOwners() {
 // 获取所有经纪人
 export async function getAllAgents() {
   return await db.select().from(agents);
+}
+
+// 获取单个经纪人详情
+export async function getAgentById(agentId: number) {
+  return await db
+    .select()
+    .from(agents)
+    .where(eq(agents.agent_id, agentId))
+    .limit(1);
 } 

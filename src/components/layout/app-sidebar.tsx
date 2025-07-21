@@ -202,7 +202,7 @@ export default function AppSidebar({ role }: { role: string }) {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
 
-                <DropdownMenuGroup>
+                {/* <DropdownMenuGroup>
                   <DropdownMenuItem>
                     <BadgeCheck />
                     Account
@@ -215,7 +215,7 @@ export default function AppSidebar({ role }: { role: string }) {
                     <Bell />
                     Notifications
                   </DropdownMenuItem>
-                </DropdownMenuGroup>
+                </DropdownMenuGroup> */}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => signOut()}>
                   <LogOut />
