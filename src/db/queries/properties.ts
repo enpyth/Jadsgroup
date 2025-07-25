@@ -214,3 +214,12 @@ export async function getAgentById(agentId: number) {
     .where(eq(agents.agent_id, agentId))
     .limit(1);
 } 
+
+// 获取单个业主详情
+export async function getOwnerById(ownerId: number) {
+  return await db
+    .select()
+    .from(owners)
+    .where(eq(owners.owner_id, ownerId))
+    .limit(1);
+} 

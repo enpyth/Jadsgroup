@@ -5,7 +5,11 @@ import { DataTableSkeleton } from '@/components/ui/table/data-table-skeleton';
 import { searchParamsCache, serialize } from '@/lib/searchparams';
 import { SearchParams } from 'nuqs/server';
 import { Suspense } from 'react';
-import ListingOutgoing from '@/features/products/components/listing-outgoing';
+import ListingLandowner from '@/features/products/components/listing-landowner';
+import Link from 'next/link';
+import { Plus } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { buttonVariants } from '@/components/ui/button';
 // import ProductTableAction from '@/features/products/components/product-tables/product-table-action';
 
 export const metadata = {
@@ -33,6 +37,13 @@ export default async function LandownerListPage(props: pageProps) {
                         title='Landowner Management'
                         description='Manage all your landowners here.'
                     />
+                    <Link
+                        href="/dashboard/landowner/new"
+                        className={cn(buttonVariants(), 'text-xs md:text-sm')}
+                    >
+                        <Plus className="h-4 w-4" />
+                        Add New Landowner
+                    </Link>
                 </div>
                 <Separator />
                 {/* <ProductTableAction /> */}
@@ -40,7 +51,7 @@ export default async function LandownerListPage(props: pageProps) {
                     key={key}
                     fallback={<DataTableSkeleton columnCount={5} rowCount={10} />}
                 >
-                    <ListingOutgoing />
+                    <ListingLandowner />
                 </Suspense>
             </div>
         </PageContainer>

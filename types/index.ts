@@ -16,7 +16,7 @@ interface Address {
 }
 
 // JSONB field structures
-interface CompanyData {
+export interface CompanyData {
   name: string;
   acn: string;
   [key: string]: any;

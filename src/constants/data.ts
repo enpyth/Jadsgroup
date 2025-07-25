@@ -55,6 +55,17 @@ export type Agent = {
   created_at: string;
 };
 
+export type Landowner = {
+  owner_id: number;
+  id: number; // for compatibility with CellAction
+  name: string;
+  phone: string;
+  email: string;
+  address: string;
+  company: string;
+  created_at: string;
+};
+
 //Info: The following data is used for the sidebar navigation and Cmd K bar.
 export const navItemsAdmin: NavItem[] = [
   {
