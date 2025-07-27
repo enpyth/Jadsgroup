@@ -25,11 +25,11 @@ export const columns: ColumnDef<Lease>[] = [
   },
   {
     accessorKey: 'rent_amount',
-    header: 'Price ($/week)'
+    header: 'Price ($/month)'
   }, 
   {
     accessorKey: 'stage',
-    header: 'Stage(Y/N) TODO'
+    header: 'Stage'
   },
   {
     accessorKey: 'created_at',

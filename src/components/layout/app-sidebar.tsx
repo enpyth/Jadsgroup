@@ -58,7 +58,7 @@ export default function AppSidebar({ role }: { role: string }) {
   const { data: session } = useSession();
   const pathname = usePathname();
   const { state, isMobile } = useSidebar();
-  const navigator = role == userRoles.TENANT ? navItemsTenant : navItemsAdmin;
+  const navigator = role == userRoles.ADMIN ? navItemsAdmin : navItemsTenant;
 
   return (
     <Sidebar collapsible='icon'>

@@ -5,8 +5,13 @@ import { useQueryState } from 'nuqs';
 import { useCallback, useMemo } from 'react';
 
 export const CATEGORY_OPTIONS = [
-  { value: 'Jadsgroup', label: 'Jadsgroup' },
-  { value: 'xxx', label: 'xxx' },
+  { value: 'Start', label: 'Start' },
+  { value: 'Lease Schedule', label: 'Lease Schedule' },
+  { value: 'Landlord Review', label: 'Landlord Review' },
+  { value: 'Legal Review', label: 'Legal Review' },
+  { value: 'Draft Contract', label: 'Draft Contract' },
+  { value: 'Final Review', label: 'Final Review' },
+  { value: 'Completed', label: 'Completed' }
 ];
 export function useProductTableFilters() {
   const [searchQuery, setSearchQuery] = useQueryState(

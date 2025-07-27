@@ -3,10 +3,18 @@ import { columns } from "./product-tables/columns_lease";
 import { getAllLeases } from "@/db/queries/leases";
 import { getCurrentStage, WorkflowState, WORKFLOW_IDS } from "@/constants/workflow";
 import { getUserRole, userRoles } from "@/constants/config";
+import { SearchParams } from "nuqs/server";
 
-export default async function ListingLeasePage() {
+type ListingLeasePageProps = {
+  searchParams: SearchParams;
+};
+
+export default async function ListingLeasePage({ searchParams }: ListingLeasePageProps) {
   const { email, role } = await getUserRole();
+  const stageFilter = typeof searchParams?.categories === 'string' ? searchParams.categories : '';
+
   const filterFunction = (property: any) => {
+    // Role-based filtering
     if (role == userRoles.ADMIN) {
       // user is admin, show all leases of the property
       return true;
@@ -29,7 +37,19 @@ export default async function ListingLeasePage() {
   };
 
   const leases = await getAllLeases();
-  const lease: any = leases.filter(filterFunction).map((res) => ({
+  let filteredLeases = leases.filter(filterFunction);
+
+  // Apply stage filter if present
+  if (stageFilter) {
+    filteredLeases = filteredLeases.filter((lease: any) => {
+      const stage = getCurrentStage(lease.state as WorkflowState[]);
+      // Support multi-select if needed (split by '.')
+      const allowedStages = stageFilter.split('.');
+      return allowedStages.includes(stage);
+    });
+  }
+
+  const lease: any = filteredLeases.map((res) => ({
     id: res.lease_id,
     property_id: res.property_id,
     property_name: res.property_name,

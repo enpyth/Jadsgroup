@@ -45,7 +45,7 @@ export default async function LeasePage(props: pageProps) {
                     key={key}
                     fallback={<DataTableSkeleton columnCount={5} rowCount={10} />}
                 >
-                    <ListingLeasePage />
+                    <ListingLeasePage searchParams={searchParams} />
                 </Suspense>
             </div>
         </PageContainer>
