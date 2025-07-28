@@ -1,7 +1,10 @@
 import React from "react";
 import { FileText, Eye } from "lucide-react";
 import { Box, Typography, Button } from "@mui/material";
-import DocumentAction from "./DocumentAction";
+import DocumentViewButton from "./DocumentViewButton";
+import DocumentUploadButton from "./DocumentUploadButton";
+import DocumentStatusMessage from "./DocumentStatusMessage";
+import { userRoles } from "@/constants/config";
 
 interface DocumentsSectionProps {
   leaseData: any;
@@ -10,8 +13,10 @@ interface DocumentsSectionProps {
   downloadDocument: (fileKey: string) => Promise<void>;
   fileKeys: any;
   isStartApproved: boolean;
+  isAdminPublishApproved: boolean;
   isLandlordReviewApproved: boolean;
   isLegalReviewApproved: boolean;
+  role: string;
 }
 
 const DocumentsSection: React.FC<DocumentsSectionProps> = ({
@@ -21,10 +26,13 @@ const DocumentsSection: React.FC<DocumentsSectionProps> = ({
   downloadDocument,
   fileKeys,
   isStartApproved,
+  isAdminPublishApproved,
   isLandlordReviewApproved,
   isLegalReviewApproved,
+  role,
 }) => (
   <>
+    {/* application form */}
     <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
       <FileText size={16} color="#666" />
       <Typography variant="subtitle2">Documents</Typography>
@@ -49,59 +57,85 @@ const DocumentsSection: React.FC<DocumentsSectionProps> = ({
         </Button>
       </Box>
     </div>
+    
+    {/* Documents */}
+    {/* Lease Schedule Draft - Only visible to admin */}
+    {role === userRoles.ADMIN && (
+      <div style={{ paddingLeft: "24px", marginBottom: "16px" }}>
+        <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+          <DocumentViewButton
+            label="Lease Schedule Draft"
+            fileKey={fileKeys.leaseSchedule}
+            disabled={!isStartApproved}
+            onDownload={downloadDocument}
+          />
+          <DocumentUploadButton
+            disabled={!isStartApproved}
+            email={leaseData.tenant_email}
+          />
+        </Box>
+        <DocumentStatusMessage
+          isAvailable={isStartApproved}
+          requiredStep="START"
+        />
+      </div>
+    )}
+    {/* Lease Schedule */}
     <div style={{ paddingLeft: "24px", marginBottom: "16px" }}>
-      <DocumentAction
-        label="Lease Schedule"
-        fileKey={fileKeys.leaseSchedule}
-        disabled={!isStartApproved}
-        onDownload={downloadDocument}
-        email={leaseData.tenant_email}
+      <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+        <DocumentViewButton
+          label="Lease Schedule"
+          fileKey={fileKeys.leaseSchedulePdf}
+          disabled={!isAdminPublishApproved}
+          onDownload={downloadDocument}
+        />
+        <DocumentUploadButton
+          disabled={!isAdminPublishApproved}
+          email={leaseData.tenant_email}
+        />
+      </Box>
+      <DocumentStatusMessage
+        isAvailable={isAdminPublishApproved}
+        requiredStep="ADMIN_PUBLISH"
       />
-      {!isStartApproved && (
-        <Typography
-          variant="caption"
-          color="text.secondary"
-          sx={{ display: "block", mt: 1, textAlign: "center" }}
-        >
-          Available after 'START'
-        </Typography>
-      )}
     </div>
+    {/* Disclosure Statement */}
     <div style={{ paddingLeft: "24px", marginBottom: "16px" }}>
-      <DocumentAction
-        label="Disclosure Statement"
-        fileKey={fileKeys.disclosure}
-        disabled={!isLandlordReviewApproved}
-        onDownload={downloadDocument}
-        email={leaseData.tenant_email}
+      <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+        <DocumentViewButton
+          label="Disclosure Statement"
+          fileKey={fileKeys.disclosure}
+          disabled={!isLandlordReviewApproved}
+          onDownload={downloadDocument}
+        />
+        <DocumentUploadButton
+          disabled={!isLandlordReviewApproved}
+          email={leaseData.tenant_email}
+        />
+      </Box>
+      <DocumentStatusMessage
+        isAvailable={isLandlordReviewApproved}
+        requiredStep="LANDLORD_REVIEW"
       />
-      {!isLandlordReviewApproved && (
-        <Typography
-          variant="caption"
-          color="text.secondary"
-          sx={{ display: "block", mt: 1, textAlign: "center" }}
-        >
-          Available after 'LANDLORD_REVIEW'
-        </Typography>
-      )}
     </div>
+    {/* Agreement to Lease */}
     <div style={{ paddingLeft: "24px", marginBottom: "16px" }}>
-      <DocumentAction
-        label="Agreement to Lease"
-        fileKey={fileKeys.agreement}
-        disabled={!isLegalReviewApproved}
-        onDownload={downloadDocument}
-        email={leaseData.tenant_email}
+      <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+        <DocumentViewButton
+          label="Agreement to Lease"
+          fileKey={fileKeys.agreement}
+          disabled={!isLegalReviewApproved}
+          onDownload={downloadDocument}
+        />
+        <DocumentUploadButton
+          disabled={!isLegalReviewApproved}
+          email={leaseData.tenant_email}
+        />
+      </Box>
+      <DocumentStatusMessage
+        isAvailable={isLegalReviewApproved}
+        requiredStep="LEGAL_REVIEW"
       />
-      {!isLegalReviewApproved && (
-        <Typography
-          variant="caption"
-          color="text.secondary"
-          sx={{ display: "block", mt: 1, textAlign: "center" }}
-        >
-          Available after 'LEGAL_REVIEW'
-        </Typography>
-      )}
     </div>
   </>
 );

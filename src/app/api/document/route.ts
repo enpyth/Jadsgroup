@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { generateDocument } from '@/lib/documentGenerator';
+import { generateDocument } from '@/lib/documentUtils';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { getDocumentConfig, generateDocumentData, getDocumentFileName } from '@/lib/documentConfig';
 

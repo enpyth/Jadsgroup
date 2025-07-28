@@ -28,10 +28,6 @@ const FinancialInfo: React.FC<FinancialInfoProps> = ({ leaseData }) => {
           <Typography variant="caption" color="text.secondary">Security Deposit:</Typography>
           <Typography variant="caption" fontWeight="medium">{formatCurrency(leaseData.deposit_amount)}</Typography>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4px" }}>
-          <Typography variant="caption" color="text.secondary">Total Due at Signing:</Typography>
-          <Typography variant="caption" fontWeight="medium">{formatCurrency(leaseData.rent_amount) + formatCurrency(leaseData.deposit_amount)}</Typography>
-        </div>
       </div>
     </>
   );

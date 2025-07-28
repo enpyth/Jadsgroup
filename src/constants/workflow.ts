@@ -3,6 +3,7 @@ import { userRoles } from "./config"
 // Workflow state constants
 export const WORKFLOW_IDS = {
     START: "Start",
+    ADMIN_PUBLISH: "Admin Publish",
     LEASE_SCHEDULE: "Lease Schedule",
     LANDLORD_REVIEW: "Landlord Review",
     LEGAL_REVIEW: "Legal Review",
@@ -14,6 +15,7 @@ export const WORKFLOW_IDS = {
 // Process ID constants
 export const PROCESS_IDS = {
     REVIEW_APPLICATION: "Review Application",
+    ADMIN_PUBLISH: "ADMIN_PUBLISH",
     LEASE_SCHEDULE: "Lease Schedule",
     LANDLORD_REVIEW: "Landlord Review",
     JADSGROUP_LEGAL_REVIEW: "Jadsgroup Legal Review",
@@ -64,7 +66,19 @@ export const DEFAULT_WORKFLOW_CONFIG: WorkflowState[] = [
         processes: [
             {
                 id: PROCESS_IDS.REVIEW_APPLICATION,
-                description: "Jadsgroup reviews the applicant and generates a Lease Schedule linked to the selected property.",
+                description: "Jadsgroup reviews the applicant and generates a Lease Schedule Draft.",
+                assignedTo: userRoles.ADMIN,
+                state: STATES.PENDING,
+                createdAt: new Date().toISOString(),
+            },
+        ],
+    },
+    {
+        stageId: WORKFLOW_IDS.ADMIN_PUBLISH,
+        processes: [
+            {
+                id: PROCESS_IDS.ADMIN_PUBLISH,
+                description: "Admin generates a Lease Schedule PDF.",
                 assignedTo: userRoles.ADMIN,
                 state: STATES.PENDING,
                 createdAt: new Date().toISOString(),

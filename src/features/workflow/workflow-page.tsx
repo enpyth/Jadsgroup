@@ -18,6 +18,7 @@ import ProcessList from "./process-card-list";
 import WorkflowHeader from "./workflow-header";
 import { useState, useCallback } from "react";
 import { PROCESS_IDS } from "@/constants/workflow";
+import { generatePdf } from "@/lib/documentUtils";
 
 type LeaseData = InferSelectModel<typeof leases>;
 
@@ -107,6 +108,8 @@ function useWorkflowState(leaseData: LeaseData) {
           });
           return;
         }
+      } else if (processId === PROCESS_IDS.ADMIN_PUBLISH) {
+        console.log("TODO: Admin Publish: upload PDF");
       }
 
       // Update the process state
@@ -169,6 +172,7 @@ export default function WorkflowPage({ leaseData, role }: WorkflowPageProps) {
             leaseData={leaseData}
             processes={workflowStates.flatMap((s) => s.processes)}
             isCompleted={isCompleted}
+            role={role}
           />
         </Grid>
         <Grid size={9}>

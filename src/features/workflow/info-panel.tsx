@@ -17,6 +17,7 @@ import React from "react";
 import { type InferSelectModel } from "drizzle-orm";
 import { leases } from "@/db/schema";
 import { useRouter } from "next/navigation";
+import { downloadDocument } from "@/lib/documentUtils";
 import TenantInfo from "./components/TenantInfo";
 import LeaseDetails from "./components/LeaseDetails";
 import FinancialInfo from "./components/FinancialInfo";
@@ -29,6 +30,7 @@ interface CustomerInfoPanelProps {
   leaseData: LeaseData;
   processes: Process[];
   isCompleted: boolean;
+  role: string;
 }
 
 // Check if all processes in the list are approved
@@ -43,12 +45,16 @@ export default function InfoPanel({
   leaseData,
   processes,
   isCompleted,
+  role,
 }: CustomerInfoPanelProps) {
   const router = useRouter();
 
   // Check if processes are approved
   const isStartApproved = isProcessApproved(processes, [
     PROCESS_IDS.REVIEW_APPLICATION,
+  ]);
+  const isAdminPublishApproved = isProcessApproved(processes, [
+    PROCESS_IDS.ADMIN_PUBLISH,
   ]);
   const isLandlordReviewApproved = isProcessApproved(processes, [
     PROCESS_IDS.LANDLORD_REVIEW,
@@ -64,20 +70,10 @@ export default function InfoPanel({
     router.push('/dashboard/maintenance');
   };
 
-  const downloadDocument = async (fileKey: string) => {
-    try {
-      const downloadUrl = `/api/download?key=${encodeURIComponent(fileKey)}`;
-      const link = document.createElement("a");
-      link.href = downloadUrl;
-      link.click();
-    } catch (error) {
-      console.error("Error downloading document:", error);
-    }
-  };
-
   // 复用 fileKey 生成
   const fileKeys = {
     leaseSchedule: `${leaseData.tenant_email}/LeaseSchedule_${leaseData.lease_id}.docx`,
+    leaseSchedulePdf: `${leaseData.tenant_email}/LeaseSchedule_${leaseData.lease_id}.pdf`,
     disclosure: `${leaseData.tenant_email}/DisclosureStatement_${leaseData.lease_id}.docx`,
     agreement: `${leaseData.tenant_email}/AgreementToLease_${leaseData.lease_id}.docx`,
   };
@@ -118,8 +114,10 @@ export default function InfoPanel({
             downloadDocument={downloadDocument}
             fileKeys={fileKeys}
             isStartApproved={isStartApproved}
+            isAdminPublishApproved={isAdminPublishApproved}
             isLandlordReviewApproved={isLandlordReviewApproved}
             isLegalReviewApproved={isLegalReviewApproved}
+            role={role}
           />
           <Divider sx={{ my: 2 }} />
           <MaintenanceSection
