@@ -60,7 +60,6 @@ export default function RentalHistory() {
                       >
                         <FormControlLabel value="residential" control={<Radio />} label="Residential" />
                         <FormControlLabel value="commercial" control={<Radio />} label="Commercial" />
-                        <FormControlLabel value="strata" control={<Radio />} label="Strata" />
                       </RadioGroup>
                     </FormControl>
                   </Grid>

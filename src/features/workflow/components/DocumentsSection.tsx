@@ -16,6 +16,7 @@ interface DocumentsSectionProps {
   isAdminPublishApproved: boolean;
   isLandlordReviewApproved: boolean;
   isLegalReviewApproved: boolean;
+  isFinalReviewApproved: boolean;
   role: string;
 }
 
@@ -29,11 +30,19 @@ const DocumentsSection: React.FC<DocumentsSectionProps> = ({
   isAdminPublishApproved,
   isLandlordReviewApproved,
   isLegalReviewApproved,
+  isFinalReviewApproved,
   role,
 }) => (
   <>
     {/* application form */}
-    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
+        marginBottom: "8px",
+      }}
+    >
       <FileText size={16} color="#666" />
       <Typography variant="subtitle2">Documents</Typography>
     </div>
@@ -57,14 +66,14 @@ const DocumentsSection: React.FC<DocumentsSectionProps> = ({
         </Button>
       </Box>
     </div>
-    
+
     {/* Documents */}
     {/* Lease Schedule Draft - Only visible to admin */}
     {role === userRoles.ADMIN && (
       <div style={{ paddingLeft: "24px", marginBottom: "16px" }}>
         <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
           <DocumentViewButton
-            label="Lease Schedule Draft"
+            label={`LeaseSchedule_${leaseData.lease_id}.docx`}
             fileKey={fileKeys.leaseSchedule}
             disabled={!isStartApproved}
             onDownload={downloadDocument}
@@ -84,15 +93,17 @@ const DocumentsSection: React.FC<DocumentsSectionProps> = ({
     <div style={{ paddingLeft: "24px", marginBottom: "16px" }}>
       <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
         <DocumentViewButton
-          label="Lease Schedule"
+          label={`LeaseSchedule_${leaseData.lease_id}.pdf`}
           fileKey={fileKeys.leaseSchedulePdf}
           disabled={!isAdminPublishApproved}
           onDownload={downloadDocument}
         />
+        {role === userRoles.ADMIN && (
         <DocumentUploadButton
-          disabled={!isAdminPublishApproved}
-          email={leaseData.tenant_email}
-        />
+            disabled={!isAdminPublishApproved}
+            email={leaseData.tenant_email}
+          />
+        )}
       </Box>
       <DocumentStatusMessage
         isAvailable={isAdminPublishApproved}
@@ -103,15 +114,17 @@ const DocumentsSection: React.FC<DocumentsSectionProps> = ({
     <div style={{ paddingLeft: "24px", marginBottom: "16px" }}>
       <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
         <DocumentViewButton
-          label="Disclosure Statement"
+          label={`DisclosureStatement_${leaseData.lease_id}.docx`}
           fileKey={fileKeys.disclosure}
           disabled={!isLandlordReviewApproved}
           onDownload={downloadDocument}
         />
-        <DocumentUploadButton
-          disabled={!isLandlordReviewApproved}
-          email={leaseData.tenant_email}
-        />
+        {role === userRoles.ADMIN && (
+          <DocumentUploadButton
+            disabled={!isLandlordReviewApproved}
+            email={leaseData.tenant_email}
+          />
+        )}
       </Box>
       <DocumentStatusMessage
         isAvailable={isLandlordReviewApproved}
@@ -122,22 +135,66 @@ const DocumentsSection: React.FC<DocumentsSectionProps> = ({
     <div style={{ paddingLeft: "24px", marginBottom: "16px" }}>
       <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
         <DocumentViewButton
-          label="Agreement to Lease"
+          label={`AgreementToLease_${leaseData.lease_id}.docx`}
           fileKey={fileKeys.agreement}
           disabled={!isLegalReviewApproved}
           onDownload={downloadDocument}
         />
-        <DocumentUploadButton
-          disabled={!isLegalReviewApproved}
-          email={leaseData.tenant_email}
-        />
+        {role === userRoles.ADMIN && (
+          <DocumentUploadButton
+            disabled={!isLegalReviewApproved}
+            email={leaseData.tenant_email}
+          />
+        )}
       </Box>
       <DocumentStatusMessage
         isAvailable={isLegalReviewApproved}
         requiredStep="LEGAL_REVIEW"
       />
     </div>
+    {/* Legal Lease */}
+    <div style={{ paddingLeft: "24px", marginBottom: "16px" }}>
+      <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+        <DocumentViewButton
+          label={`LegalLease_${leaseData.lease_id}.pdf`}
+          fileKey={fileKeys.legalLease}
+          disabled={!isLegalReviewApproved}
+          onDownload={downloadDocument}
+        />
+        {(role === userRoles.ADMIN || role === userRoles.LAWYER) && (
+          <DocumentUploadButton
+            disabled={!isLegalReviewApproved}
+            email={leaseData.tenant_email}
+          />
+        )}
+      </Box>
+      <DocumentStatusMessage
+        isAvailable={isLegalReviewApproved}
+        requiredStep="LEGAL_REVIEW"
+      />
+    </div>
+    {/* Signed Contract */}
+    <div style={{ paddingLeft: "24px", marginBottom: "16px" }}>
+      <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+        <DocumentViewButton
+          label={`SignedContract_${leaseData.lease_id}.pdf`}
+          fileKey={fileKeys.signedContract}
+          disabled={!isFinalReviewApproved}
+          onDownload={downloadDocument}
+        />
+        {role === userRoles.ADMIN && (
+          <DocumentUploadButton
+            disabled={!isFinalReviewApproved}
+            email={leaseData.tenant_email}
+          />
+        )}
+      </Box>
+        <DocumentStatusMessage
+          isAvailable={isFinalReviewApproved}
+          requiredStep="FINAL_REVIEW"
+        />
+    </div>
   </>
 );
 
-export default DocumentsSection; 
+export default DocumentsSection;

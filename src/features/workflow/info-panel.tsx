@@ -65,6 +65,9 @@ export default function InfoPanel({
     PROCESS_IDS.LANDLORD_REVIEW,
     PROCESS_IDS.REVIEW_APPLICATION,
   ]);
+  const isFinalReviewApproved = isProcessApproved(processes, [
+    PROCESS_IDS.FINAL_REVIEW,
+  ]);
 
   const handleRepairRequest = () => {
     router.push('/dashboard/maintenance');
@@ -76,6 +79,8 @@ export default function InfoPanel({
     leaseSchedulePdf: `${leaseData.tenant_email}/LeaseSchedule_${leaseData.lease_id}.pdf`,
     disclosure: `${leaseData.tenant_email}/DisclosureStatement_${leaseData.lease_id}.docx`,
     agreement: `${leaseData.tenant_email}/AgreementToLease_${leaseData.lease_id}.docx`,
+    legalLease: `${leaseData.tenant_email}/LegalLease_${leaseData.lease_id}.pdf`,
+    signedContract: `${leaseData.tenant_email}/SignedContract_${leaseData.lease_id}.pdf`,
   };
 
   return (
@@ -117,6 +122,7 @@ export default function InfoPanel({
             isAdminPublishApproved={isAdminPublishApproved}
             isLandlordReviewApproved={isLandlordReviewApproved}
             isLegalReviewApproved={isLegalReviewApproved}
+            isFinalReviewApproved={isFinalReviewApproved}
             role={role}
           />
           <Divider sx={{ my: 2 }} />
