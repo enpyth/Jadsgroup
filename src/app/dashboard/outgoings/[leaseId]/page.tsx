@@ -1,4 +1,5 @@
 import { getOutgoingByLeaseId } from "@/db/queries/outgoings";
+import { getTenantEmailByLeaseId } from "@/db/queries/leases";
 import OutgoingDetailPage from "@/features/outgoings/details-page";
 
 type PageProps = {
@@ -13,6 +14,13 @@ export default async function OutgoingPage({ params }: PageProps) {
         throw new Error(`Invalid leaseId: ${leaseId}`);
     }
 
-    const outgoingData = await getOutgoingByLeaseId(leaseIdInt);
-    return <OutgoingDetailPage outgoingData={outgoingData[0]} />;
+    const [outgoingData, leaseData] = await Promise.all([
+        getOutgoingByLeaseId(leaseIdInt),
+        getTenantEmailByLeaseId(leaseIdInt)
+    ]);
+
+    return <OutgoingDetailPage 
+        outgoingData={outgoingData[0]} 
+        tenantEmail={leaseData[0].tenant_email}
+    />;
 }

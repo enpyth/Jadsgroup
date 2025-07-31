@@ -123,5 +123,7 @@ export const outgoings = pgTable("outgoings", {
     .notNull()
     .references(() => leases.lease_id),
   records: jsonb("records").notNull(),
+  invoice_id: text("invoice_id").default(""),
+  invoice_img: text("invoice_img").default("placeholder.jpg"),
   created_at: timestamp("created_at").defaultNow().notNull(),
 });

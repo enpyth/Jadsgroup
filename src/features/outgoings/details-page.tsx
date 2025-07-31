@@ -1,18 +1,21 @@
 "use client";
 
 import { type InferSelectModel } from "drizzle-orm";
-import { outgoings } from "@/db/schema";
+import { outgoings, leases } from "@/db/schema";
 import { useState } from "react";
 import { Container, Typography, Box } from '@mui/material';
 import { AddCategoryForm } from './components/AddCategoryForm';
 import { CategoryHeader } from './components/CategoryHeader';
 import { ItemsTable } from './components/ItemsTable';
 import { SaveButton } from './components/SaveButton';
+import { InvoiceUpload } from './components/InvoiceUpload';
 
 type OutgoingData = InferSelectModel<typeof outgoings>;
+type LeaseData = InferSelectModel<typeof leases>;
 
 type PageProps = {
     outgoingData: OutgoingData;
+    tenantEmail: string;
 };
 
 type RecordItem = {
@@ -28,11 +31,12 @@ type Record = {
     items: RecordItem[];
 };
 
-
-export default function OutgoingDetailPage({ outgoingData }: PageProps) {
+export default function OutgoingDetailPage({ outgoingData, tenantEmail }: PageProps) {
     const [records, setRecords] = useState<Record[]>(outgoingData.records as Record[]);
     const [isEditing, setIsEditing] = useState(false);
     const [newCategoryName, setNewCategoryName] = useState("");
+    const [invoiceId, setInvoiceId] = useState(outgoingData.invoice_id || "");
+    const [invoiceImg, setInvoiceImg] = useState(outgoingData.invoice_img || "placeholder.jpg");
 
     const handleItemChange = (categoryIndex: number, itemIndex: number, field: keyof RecordItem, value: string) => {
         const newRecords = [...records];
@@ -74,6 +78,16 @@ export default function OutgoingDetailPage({ outgoingData }: PageProps) {
         setIsEditing(true);
     };
 
+    const handleInvoiceIdChange = (value: string) => {
+        setInvoiceId(value);
+        setIsEditing(true);
+    };
+
+    const handleInvoiceImgChange = (value: string) => {
+        setInvoiceImg(value);
+        setIsEditing(true);
+    };
+
     const handleSubmit = async () => {
         try {
             const response = await fetch(`/api/outgoings/${outgoingData.lease_id}`, {
@@ -81,7 +95,11 @@ export default function OutgoingDetailPage({ outgoingData }: PageProps) {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ records }),
+                body: JSON.stringify({ 
+                    records,
+                    invoice_id: invoiceId,
+                    invoice_img: invoiceImg
+                }),
             });
 
             if (!response.ok) {
@@ -101,6 +119,15 @@ export default function OutgoingDetailPage({ outgoingData }: PageProps) {
             <Typography variant="h4" component="h1" gutterBottom>
                 Outgoing Details - Lease ID: {outgoingData.lease_id}
             </Typography>
+
+            <InvoiceUpload
+                invoiceId={invoiceId}
+                invoiceImg={invoiceImg}
+                onInvoiceIdChange={handleInvoiceIdChange}
+                onInvoiceImgChange={handleInvoiceImgChange}
+                leaseId={outgoingData.lease_id}
+                tenantEmail={tenantEmail}
+            />
 
             <AddCategoryForm
                 newCategoryName={newCategoryName}

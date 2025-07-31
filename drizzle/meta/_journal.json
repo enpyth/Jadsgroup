@@ -22,6 +22,13 @@
       "when": 1752575668558,
       "tag": "0002_harsh_the_santerians",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1753687638452,
+      "tag": "0003_next_mojo",
+      "breakpoints": true
     }
   ]
 }
