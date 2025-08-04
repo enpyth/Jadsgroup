@@ -69,9 +69,7 @@ export const leases = pgTable("leases", {
   property_id: integer("property_id")
     .notNull()
     .references(() => properties.property_id),
-  tenant_email: text("tenant_email")
-    .notNull()
-    .references(() => tenants.email),
+  tenant_email: text("tenant_email").notNull(),
   terms: text("terms").notNull(),
   start_date: date("start_date").notNull(),
   end_date: date("end_date").notNull(),

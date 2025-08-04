@@ -84,7 +84,6 @@ export const getTenantEmailByLeaseId = async (leaseId: number) => {
     }).from(leases).where(eq(leases.lease_id, leaseId)).limit(1);
 };
 
-// todo return the lease id
 export const addLease = async (leaseData: any) => {
     const result = await db.insert(leases).values(leaseData).returning({ lease_id: leases.lease_id });
     return result[0].lease_id;

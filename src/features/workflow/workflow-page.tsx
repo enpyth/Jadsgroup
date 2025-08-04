@@ -19,6 +19,8 @@ import WorkflowHeader from "./workflow-header";
 import { useState, useCallback } from "react";
 import { PROCESS_IDS } from "@/constants/workflow";
 import { generatePdf } from "@/lib/documentUtils";
+import { emailConfig } from "@/lib/email-config";
+import type { ApplicationData } from "types";
 
 type LeaseData = InferSelectModel<typeof leases>;
 
@@ -119,10 +121,46 @@ function useWorkflowState(leaseData: LeaseData) {
   );
 
   const handleRefuse = useCallback(
-    (processId: string) => {
-      updateProcessState(processId, STATES.REFUSED, "refused");
+    async (processId: string) => {
+      try {
+        // Update the process state first
+        await updateProcessState(processId, STATES.REFUSED, "refused");
+
+        // Send email notification to the applicant
+        const applicationData = leaseData.application_data as ApplicationData;
+        const emailResponse = await fetch('/api/send', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            template: 'lease-refusal',
+            recipients: [leaseData.tenant_email],
+            subject: 'Lease Application Update - Not Approved',
+            message: 'We regret to inform you that your lease application has not been approved after careful review.',
+            leaseId: leaseData.lease_id.toString(),
+            applicantName: applicationData?.personal_info?.first_name 
+              ? `${applicationData.personal_info.first_name} ${applicationData.personal_info.surname}`
+              : 'Applicant',
+            refusalReason: 'After careful review of your application, we are unable to proceed with your lease request at this time. This decision was made after thorough consideration of all application criteria and current market conditions.',
+          }),
+        });
+
+        if (!emailResponse.ok) {
+          console.error('Failed to send refusal email notification:', emailResponse.statusText);
+          // Don't throw error here as the process state was updated successfully
+        } else {
+          console.log('Refusal email notification sent successfully');
+        }
+      } catch (error) {
+        console.error('Error in handleRefuse:', error);
+        setNotification({
+          message: 'Failed to process refusal. Please try again.',
+          type: 'error',
+        });
+      }
     },
-    [updateProcessState]
+    [updateProcessState, leaseData]
   );
 
   const handleRollback = useCallback(

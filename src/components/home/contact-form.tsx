@@ -4,12 +4,15 @@ import { useState } from "react"
 import Image from "next/image"
 import { useLanguage } from "@/components/layout/language-context"
 import Button from "@mui/material/Button"
+import { useEmail } from "@/hooks/useEmail"
+import type { ContactEnquiryData } from "@/lib"
 
 type FormTab = "sales" | "leasing" | "general"
 
 export default function ContactForm() {
   const { t } = useLanguage()
   const [activeTab, setActiveTab] = useState<FormTab>("sales")
+  const { sendContactEnquiry, loading, error, success, reset } = useEmail()
 
   // Form state
   const [form, setForm] = useState({
@@ -24,9 +27,6 @@ export default function ContactForm() {
     message: "",
     verification: "",
   })
-  const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
 
   // Handle input changes
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
@@ -47,41 +47,27 @@ export default function ContactForm() {
   // Handle form submit
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setLoading(true)
-    setSuccess(null)
-    setError(null)
-    try {
-      const res = await fetch("/api/send", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...form,
-          tab: activeTab,
-          template: "contact-enquiry",
-        }),
+    
+    const emailData: ContactEnquiryData = {
+      ...form,
+      tab: activeTab,
+    }
+
+    const response = await sendContactEnquiry(emailData)
+    
+    if (response.success) {
+      setForm({
+        name: "",
+        mobile: "",
+        email: "",
+        address: "",
+        microGrid: false,
+        powerPurchase: false,
+        freshGrowers: false,
+        properties: false,
+        message: "",
+        verification: "",
       })
-      const data = await res.json()
-      if (res.ok) {
-        setSuccess(t("enquirySent"))
-        setForm({
-          name: "",
-          mobile: "",
-          email: "",
-          address: "",
-          microGrid: false,
-          powerPurchase: false,
-          freshGrowers: false,
-          properties: false,
-          message: "",
-          verification: "",
-        })
-      } else {
-        setError(data.error || t("enquiryFailed"))
-      }
-    } catch (err) {
-      setError(t("enquiryFailed"))
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -202,7 +188,7 @@ export default function ContactForm() {
 
           {/* Feedback */}
           {loading && <div className="text-center text-yellow-300 mb-2">{t("sending")}</div>}
-          {success && <div className="text-center text-green-400 mb-2">{success}</div>}
+          {success && <div className="text-center text-green-400 mb-2">{t("enquirySent")}</div>}
           {error && <div className="text-center text-red-400 mb-2">{error}</div>}
 
           <div className="text-center">

@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation"
 import { User } from "next-auth"
 import { FormProvider, useForm } from "./form-context"
 import { getInitialState } from "@/constants/workflow"
+import { emailConfig } from "@/lib/email-config"
 
 function RentalApplicationFormContent({ property, user }: { property: Property, user: User }) {
   const router = useRouter()
@@ -163,6 +164,28 @@ function RentalApplicationFormContent({ property, user }: { property: Property, 
       if (!outgoingResponse.ok) {
         console.error('Failed to create outgoing:', outgoingResponse.statusText)
         throw new Error('Failed to create outgoing')
+      }
+
+      // Send email notification to admin
+      const emailResponse = await fetch('/api/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          template: 'lease-notification',
+          recipients: emailConfig.leaseSubmitNotificationRecipients,
+          subject: 'New Lease Request Received',
+          message: `Hello Jads admin, you have received a new lease request, check www.jadsgroup.com/dashboard/lease/${lease_id}`,
+          leaseId: lease_id,
+          applicantName: `${formData.firstName} ${formData.surname}`,
+          propertyAddress: property.detail.address,
+        }),
+      })
+
+      if (!emailResponse.ok) {
+        console.error('Failed to send email notification:', emailResponse.statusText)
+        // Don't throw error here as the lease was created successfully
       }
 
       // Redirect to success page or dashboard
