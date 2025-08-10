@@ -59,7 +59,7 @@ export async function POST(request: Request) {
     const type = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
 
     // Upload the document to Cloudflare R2
-    const key = `${email}/${fileName}`;
+    const key = `tenants/${email}/${fileName}`;
     await s3Client.send(
       new PutObjectCommand({
         Bucket: process.env.CLOUDFLARE_R2_BUCKET_NAME,

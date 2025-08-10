@@ -11,7 +11,11 @@ export type Product = {
   category: string;
   state: string;
   owner: string;
-  agent: string;
+  agent: {
+    name: string;
+    agencyName: string;
+    img?: string;
+  };
 };
 
 export type Property = {

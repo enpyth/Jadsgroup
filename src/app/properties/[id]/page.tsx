@@ -1,7 +1,25 @@
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { getPropertyById } from '@/db/queries/properties';
+import { getPropertyWithDetailsById } from '@/db/queries/properties';
+import { 
+  Box, 
+  Card, 
+  CardContent, 
+  Typography, 
+  Grid, 
+  Chip, 
+  Avatar, 
+  Divider,
+  Container,
+  Paper
+} from '@mui/material';
+import { 
+  MapPin, 
+  Building2, 
+  Phone,
+  Mail
+} from 'lucide-react';
 
 type pageProps = {
     params: {
@@ -11,84 +29,227 @@ type pageProps = {
 
 export default async function PropertyDetails(props: pageProps) {
     const params = await props.params;
-    const property = await getPropertyById(params.id);
+    const property = await getPropertyWithDetailsById(params.id);
 
-    if (!property) {
+    if (!property || property.length === 0) {
         notFound();
     }
 
+    const propertyData = property[0];
+    const carouselImages = (propertyData.detail as any)?.carousel || [propertyData.image];
+    const address = '44/60 Gouger St, Adelaide SA 5000'; // Fixed address as requested
+
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Property Images */}
-                <div className="space-y-4">
-                    <div className="relative h-96 rounded-xl overflow-hidden">
-                        <Image
-                            src={'/placeholder.jpg'}
-                            alt={property[0].name}
-                            fill
-                            className="object-cover"
-                        />
-                    </div>
-                    <div className="grid grid-cols-3 gap-4">
-                        {/* Additional images can be added here */}
-                    </div>
-                </div>
+        <Container maxWidth="xl" sx={{ py: 4 }}>
+            <Grid container spacing={4}>
+                {/* Property Images Carousel */}
+                <Grid item xs={12} lg={7}>
+                    <Paper elevation={3} sx={{ borderRadius: 2, overflow: 'hidden' }}>
+                        <Box sx={{ position: 'relative', height: 500 }}>
+                            <Image
+                                src={propertyData.image || '/placeholder.jpg'}
+                                alt={propertyData.name}
+                                fill
+                                className="object-cover"
+                                priority
+                            />
+                        </Box>
+                        
+                        {carouselImages.length > 0 && (
+                            <Grid container spacing={1} sx={{ p: 2 }}>
+                                {carouselImages.slice(0, 4).map((image: string, index: number) => (
+                                    <Grid item xs={4} key={index}>
+                                        <Box sx={{ 
+                                            position: 'relative', 
+                                            height: 120, 
+                                            borderRadius: 1, 
+                                            overflow: 'hidden',
+                                            cursor: 'pointer'
+                                        }}>
+                                            <Image
+                                                src={image}
+                                                alt={`${propertyData.name} ${index + 2}`}
+                                                fill
+                                                className="object-cover"
+                                            />
+                                        </Box>
+                                    </Grid>
+                                ))}
+                            </Grid>
+                        )}
+                    </Paper>
+                </Grid>
 
                 {/* Property Details */}
-                <div className="space-y-6">
-                    <div>
-                        <h1 className="text-3xl font-bold text-gray-900">{property[0].name}</h1>
-                        <p className="text-gray-500 mt-2">{property[0].state}</p>
-                    </div>
+                <Grid item xs={12} lg={5}>
+                    <Box sx={{ spaceY: 3 }}>
+                        <Typography variant="h3" component="h1" gutterBottom>
+                            {propertyData.name}
+                        </Typography>
+                        
+                        <Typography variant="h6" color="text.secondary" gutterBottom>
+                            Unit {propertyData.unit} • {propertyData.state}
+                        </Typography>
 
-                    <div className="flex items-center gap-4 text-sm text-gray-600">
-                        <div className="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                            </svg>
-                            {property[0].size} m²
-                        </div>
-                    </div>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                            <MapPin size={20} color="#666" />
+                            <Typography variant="body1" color="text.secondary">
+                                {address}
+                            </Typography>
+                        </Box>
 
-                    <div className="text-3xl font-bold text-gray-900">
-                        ${property[0].price.toLocaleString()} / month
-                    </div>
+                        <Typography variant="h4" color="primary" gutterBottom>
+                            ${parseInt(propertyData.price).toLocaleString()} / month
+                        </Typography>
 
-                    <div className="prose max-w-none">
-                        <h2 className="text-xl font-semibold text-gray-900">Rent Review Percentage</h2>
-                        <p className="text-gray-600">{(property[0].detail as any).rent_review_percentage}%</p>
-                    </div>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+                            <Chip 
+                                icon={<Building2 size={16} />} 
+                                label={`${propertyData.size} m²`} 
+                                variant="outlined" 
+                            />
+                            <Chip 
+                                label={`${(propertyData.detail as any)?.rent_review_percentage || 0}% Rent Review`} 
+                                color="secondary" 
+                                variant="outlined"
+                            />
+                        </Box>
 
-                    <div className="space-y-4">
-                        <h2 className="text-xl font-semibold text-gray-900">Features</h2>
-                        <ul className="grid grid-cols-2 gap-4 text-gray-600">
-                            <li className="flex items-center">
-                                <svg className="h-5 w-5 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                </svg>
-                                Air Conditioning
-                            </li>
-                            <li className="flex items-center">
-                                <svg className="h-5 w-5 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                </svg>
-                                Parking Available
-                            </li>
-                            {/* Add more features as needed */}
-                        </ul>
-                    </div>
+                        <Divider sx={{ my: 2 }} />
 
-                    <div className="pt-6">
-                        <Link
-                            href={`/properties/application/${property[0].property_id}`}
-                            className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
-                        >
-                            Apply Now
-                        </Link>
-                    </div>
-                </div>
-            </div>
-        </div>
+                        {/* Agent Information */}
+                        <Typography variant="h6" gutterBottom>
+                            Listed by
+                        </Typography>
+                        <Card variant="outlined">
+                            <CardContent>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                    <Avatar 
+                                        src={propertyData.agentImg} 
+                                        alt={propertyData.agentName}
+                                        sx={{ width: 56, height: 56 }}
+                                    />
+                                    <Box>
+                                        <Typography variant="h6">
+                                            {propertyData.agentName}
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            {propertyData.agentAgencyName}
+                                        </Typography>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
+                                            <Phone size={16} color="#666" />
+                                            <Typography variant="body2" color="text.secondary">
+                                                {propertyData.agentPhone}
+                                            </Typography>
+                                        </Box>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
+                                            <Mail size={16} color="#666" />
+                                            <Typography variant="body2" color="text.secondary">
+                                                {propertyData.agentEmail}
+                                            </Typography>
+                                        </Box>
+                                    </Box>
+                                </Box>
+                            </CardContent>
+                        </Card>
+
+                        <Box sx={{ mt: 3 }}>
+                            <Link
+                                href={`/properties/application/${propertyData.property_id}`}
+                                style={{ textDecoration: 'none' }}
+                            >
+                                <Box
+                                    sx={{
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        px: 4,
+                                        py: 2,
+                                        backgroundColor: 'primary.main',
+                                        color: 'white',
+                                        borderRadius: 2,
+                                        textDecoration: 'none',
+                                        fontWeight: 'bold',
+                                        fontSize: '1.1rem',
+                                        '&:hover': {
+                                            backgroundColor: 'primary.dark',
+                                        },
+                                        transition: 'background-color 0.2s'
+                                    }}
+                                >
+                                    Apply Now
+                                </Box>
+                            </Link>
+                        </Box>
+                    </Box>
+                </Grid>
+
+                {/* Google Maps */}
+                <Grid item xs={12}>
+                    <Paper elevation={3} sx={{ borderRadius: 2, overflow: 'hidden' }}>
+                        <Box sx={{ p: 2, backgroundColor: 'grey.50' }}>
+                            <Typography variant="h6" gutterBottom>
+                                Property Location
+                            </Typography>
+                        </Box>
+                        <Box sx={{ height: 400, position: 'relative' }}>
+                            <iframe
+                                src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || 'AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8'}&q=${encodeURIComponent(address)}`}
+                                width="100%"
+                                height="100%"
+                                style={{ border: 0 }}
+                                allowFullScreen
+                                loading="lazy"
+                                referrerPolicy="no-referrer-when-downgrade"
+                            />
+                        </Box>
+                    </Paper>
+                </Grid>
+
+                {/* Property Features */}
+                <Grid item xs={12}>
+                    <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
+                        <Typography variant="h6" gutterBottom>
+                            Property Features
+                        </Typography>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} sm={6} md={4}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                    <Box sx={{ 
+                                        width: 8, 
+                                        height: 8, 
+                                        borderRadius: '50%', 
+                                        backgroundColor: 'success.main' 
+                                    }} />
+                                    <Typography>Air Conditioning</Typography>
+                                </Box>
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={4}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                    <Box sx={{ 
+                                        width: 8, 
+                                        height: 8, 
+                                        borderRadius: '50%', 
+                                        backgroundColor: 'success.main' 
+                                    }} />
+                                    <Typography>Parking Available</Typography>
+                                </Box>
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={4}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                    <Box sx={{ 
+                                        width: 8, 
+                                        height: 8, 
+                                        borderRadius: '50%', 
+                                        backgroundColor: 'success.main' 
+                                    }} />
+                                    <Typography>Modern Facilities</Typography>
+                                </Box>
+                            </Grid>
+                        </Grid>
+                    </Paper>
+                </Grid>
+            </Grid>
+        </Container>
     );
 } 

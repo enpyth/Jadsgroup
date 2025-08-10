@@ -27,6 +27,7 @@ export const agents = pgTable("agents", {
   phone: text("phone").notNull(),
   email: text("email").notNull(),
   agency_name: text("agency_name").notNull(),
+  img: text("img").notNull(),
   created_at: timestamp("created_at").defaultNow().notNull(),
 });
 

@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     }
 
     const buffer = await file.arrayBuffer()
-    const key = `${email}/${fileName}`
+    const key = `tenants/${email}/${fileName}`
 
     await s3Client.send(
       new PutObjectCommand({

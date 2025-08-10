@@ -34,14 +34,16 @@ async function seed() {
       name: "David Wong",
       phone: "8212 8866",
       email: "david@jadsgroup.com",
-      agency_name: "JADSGroup",
+      agency_name: "JadsGroup",
+      img: "https://pub-2fc963203eb04b46a89c49ff987cb883.r2.dev/agents/DavidHong.jpg"
     },
     {
       agent_id: 2,
       name: "Andy Wong",
       phone: "8212 8866",
       email: "andy@jadsgroup.com",
-      agency_name: "JADSGroup",
+      agency_name: "JadsGroup",
+      img: "https://pub-2fc963203eb04b46a89c49ff987cb883.r2.dev/agents/AndyHong.jpg"
     },
   ];
   await db.insert(agents).values(agentsData);
@@ -84,14 +86,19 @@ async function seed() {
       size: "50.50",
       price: "10000",
       state: "available",
-      image: "https://api.slingacademy.com/public/sample-products/1.png",
+      image: "https://pub-2fc963203eb04b46a89c49ff987cb883.r2.dev/properties/placeholder.jpg",
       detail: {
         volumn: "5532",
         folio: "183",
         address: "61-63 GROTE STREET, ADELAIDE SA 5000",
         office_id: "1A",
         initial_rent: "10,000",
-        rent_review_percentage: "4.0"
+        rent_review_percentage: "4.0",
+        carousel: [
+          "https://pub-2fc963203eb04b46a89c49ff987cb883.r2.dev/properties/24/1.jpg",
+          "https://pub-2fc963203eb04b46a89c49ff987cb883.r2.dev/properties/24/2.jpg",
+          "https://pub-2fc963203eb04b46a89c49ff987cb883.r2.dev/properties/24/3.jpg",
+        ],
       },
     },
     {
@@ -103,14 +110,19 @@ async function seed() {
       size: "98.70",
       price: "12000",
       state: "available",
-      image: "https://api.slingacademy.com/public/sample-products/2.png",
+      image: "https://pub-2fc963203eb04b46a89c49ff987cb883.r2.dev/properties/placeholder.jpg",
       detail: {
         volumn: "5532",
         folio: "183",
         address: "61-63 GROTE STREET, ADELAIDE SA 5000",
         office_id: "2B",
         initial_rent: "12,000",
-        rent_review_percentage: "3.5"
+        rent_review_percentage: "3.5",
+        carousel: [
+          "https://pub-2fc963203eb04b46a89c49ff987cb883.r2.dev/properties/25/1.jpg",
+          "https://pub-2fc963203eb04b46a89c49ff987cb883.r2.dev/properties/25/2.jpg",
+          "https://pub-2fc963203eb04b46a89c49ff987cb883.r2.dev/properties/25/3.jpg",
+        ],
       },
     },
   ];

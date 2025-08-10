@@ -75,12 +75,12 @@ export default function InfoPanel({
 
   // 复用 fileKey 生成
   const fileKeys = {
-    leaseSchedule: `${leaseData.tenant_email}/LeaseSchedule_${leaseData.lease_id}.docx`,
-    leaseSchedulePdf: `${leaseData.tenant_email}/LeaseSchedule_${leaseData.lease_id}.pdf`,
-    disclosure: `${leaseData.tenant_email}/DisclosureStatement_${leaseData.lease_id}.docx`,
-    agreement: `${leaseData.tenant_email}/AgreementToLease_${leaseData.lease_id}.docx`,
-    legalLease: `${leaseData.tenant_email}/LegalLease_${leaseData.lease_id}.pdf`,
-    signedContract: `${leaseData.tenant_email}/SignedContract_${leaseData.lease_id}.pdf`,
+    leaseSchedule: `tenants/${leaseData.tenant_email}/LeaseSchedule_${leaseData.lease_id}.docx`,
+    leaseSchedulePdf: `tenants/${leaseData.tenant_email}/LeaseSchedule_${leaseData.lease_id}.pdf`,
+    disclosure: `tenants/${leaseData.tenant_email}/DisclosureStatement_${leaseData.lease_id}.docx`,
+    agreement: `tenants/${leaseData.tenant_email}/AgreementToLease_${leaseData.lease_id}.docx`,
+    legalLease: `tenants/${leaseData.tenant_email}/LegalLease_${leaseData.lease_id}.pdf`,
+    signedContract: `tenants/${leaseData.tenant_email}/SignedContract_${leaseData.lease_id}.pdf`,
   };
 
   return (

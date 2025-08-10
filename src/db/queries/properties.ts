@@ -36,14 +36,44 @@ export async function getPropertyWithDetails() {
     price: properties.price,
     state: properties.state,
     image: properties.image,
+    unit: properties.unit,
     releaseTime: properties.release_time,
     ownerName: owners.name,
-    agentName: agents.agency_name,
+    agentName: agents.name,
+    agentAgencyName: agents.agency_name,
+    agentImg: agents.img,
   })
   .from(properties)
   .innerJoin(owners, eq(properties.owner_id, owners.owner_id))
   .innerJoin(agents, eq(properties.agent_id, agents.agent_id))
-  // TODO lease
+}
+
+// 获取单个房产详情，包含所有者和经纪人信息
+export async function getPropertyWithDetailsById(propertyId: number) {
+  return await db
+  .select({
+    property_id: properties.property_id,
+    name: properties.name,
+    description: properties.describe,
+    size: properties.size,
+    price: properties.price,
+    state: properties.state,
+    image: properties.image,
+    unit: properties.unit,
+    releaseTime: properties.release_time,
+    detail: properties.detail,
+    ownerName: owners.name,
+    agentName: agents.name,
+    agentAgencyName: agents.agency_name,
+    agentImg: agents.img,
+    agentPhone: agents.phone,
+    agentEmail: agents.email,
+  })
+  .from(properties)
+  .innerJoin(owners, eq(properties.owner_id, owners.owner_id))
+  .innerJoin(agents, eq(properties.agent_id, agents.agent_id))
+  .where(eq(properties.property_id, propertyId))
+  .limit(1);
 }
 
 // 创建新房产
