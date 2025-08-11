@@ -44,8 +44,8 @@ export const InvoiceUpload: React.FC<InvoiceUploadProps> = ({
     try {
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('fileName', `invoice_${leaseId}_${Date.now()}_${file.name}`);
-      formData.append('email', tenantEmail);
+      const key = `tenants/${tenantEmail}/invoice_${leaseId}_${Date.now()}_${file.name}`
+      formData.append('key', key);
 
       const response = await fetch('/api/upload', {
         method: 'POST',

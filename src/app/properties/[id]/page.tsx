@@ -12,13 +12,14 @@ import {
   Avatar, 
   Divider,
   Container,
-  Paper
+  Paper,
+  Button
 } from '@mui/material';
 import { 
   MapPin, 
   Building2, 
   Phone,
-  Mail
+  Mail,
 } from 'lucide-react';
 
 type pageProps = {
@@ -99,7 +100,7 @@ export default async function PropertyDetails(props: pageProps) {
                         </Box>
 
                         <Typography variant="h4" color="primary" gutterBottom>
-                            ${parseInt(propertyData.price).toLocaleString()} / month
+                            ${parseInt(propertyData.price).toLocaleString()} / p.m. + GST & Outgoings
                         </Typography>
 
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
@@ -119,7 +120,7 @@ export default async function PropertyDetails(props: pageProps) {
 
                         {/* Agent Information */}
                         <Typography variant="h6" gutterBottom>
-                            Listed by
+                            Agent Details
                         </Typography>
                         <Card variant="outlined">
                             <CardContent>
@@ -127,15 +128,18 @@ export default async function PropertyDetails(props: pageProps) {
                                     <Avatar 
                                         src={propertyData.agentImg} 
                                         alt={propertyData.agentName}
-                                        sx={{ width: 56, height: 56 }}
+                                        sx={{ width: 80, height: 80 }}
                                     />
                                     <Box>
                                         <Typography variant="h6">
                                             {propertyData.agentName}
                                         </Typography>
-                                        <Typography variant="body2" color="text.secondary">
-                                            {propertyData.agentAgencyName}
-                                        </Typography>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
+                                            <Building2 size={16} color="#666"/>
+                                            <Typography variant="body2" color="text.secondary">
+                                                {propertyData.agentAgencyName}
+                                            </Typography>
+                                        </Box>
                                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
                                             <Phone size={16} color="#666" />
                                             <Typography variant="body2" color="text.secondary">
@@ -153,7 +157,7 @@ export default async function PropertyDetails(props: pageProps) {
                             </CardContent>
                         </Card>
 
-                        <Box sx={{ mt: 3 }}>
+                        {/* <Box sx={{ mt: 3 }}>
                             <Link
                                 href={`/properties/application/${propertyData.property_id}`}
                                 style={{ textDecoration: 'none' }}
@@ -180,10 +184,48 @@ export default async function PropertyDetails(props: pageProps) {
                                     Apply Now
                                 </Box>
                             </Link>
-                        </Box>
+                        </Box> */}
+                        <Button variant="contained" color="primary" fullWidth disabled={true} sx={{ mt: 6, fontSize: '1.1rem', fontWeight: 'bold' }}>
+                            Apply Now (Coming Soon)
+                        </Button>
                     </Box>
                 </Grid>
-
+                                
+                {/* Property Description */}
+                <Grid item xs={12}>
+                    <Paper elevation={3} sx={{ borderRadius: 2, overflow: 'hidden' }}>
+                        <Box sx={{ p: 3, backgroundColor: 'grey.50' }}>
+                            <Typography variant="h5" gutterBottom sx={{ mb: 2, color: 'text.primary', fontWeight: 'bold' }}>
+                                Property Description
+                            </Typography>
+                            <Box sx={{ 
+                                '& p': { 
+                                    mb: 2, 
+                                    lineHeight: 1.7,
+                                    textAlign: 'justify',
+                                },
+                                '& p:last-child': { mb: 0 }
+                            }}>
+                                {propertyData.description?.split('\n\n').map((paragraph, index) => (
+                                    <Typography 
+                                        key={index} 
+                                        variant="body1" 
+                                        color="text.secondary"
+                                        component="p"
+                                        sx={{ 
+                                            fontSize: '1.2rem',
+                                            letterSpacing: '0.3px',
+                                            fontWeight: 'bold'
+                                        }}
+                                    >
+                                        {paragraph.trim()}
+                                    </Typography>
+                                ))}
+                            </Box>
+                        </Box>
+                    </Paper>
+                </Grid>
+                
                 {/* Google Maps */}
                 <Grid item xs={12}>
                     <Paper elevation={3} sx={{ borderRadius: 2, overflow: 'hidden' }}>
@@ -203,50 +245,6 @@ export default async function PropertyDetails(props: pageProps) {
                                 referrerPolicy="no-referrer-when-downgrade"
                             />
                         </Box>
-                    </Paper>
-                </Grid>
-
-                {/* Property Features */}
-                <Grid item xs={12}>
-                    <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
-                        <Typography variant="h6" gutterBottom>
-                            Property Features
-                        </Typography>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                    <Box sx={{ 
-                                        width: 8, 
-                                        height: 8, 
-                                        borderRadius: '50%', 
-                                        backgroundColor: 'success.main' 
-                                    }} />
-                                    <Typography>Air Conditioning</Typography>
-                                </Box>
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                    <Box sx={{ 
-                                        width: 8, 
-                                        height: 8, 
-                                        borderRadius: '50%', 
-                                        backgroundColor: 'success.main' 
-                                    }} />
-                                    <Typography>Parking Available</Typography>
-                                </Box>
-                            </Grid>
-                            <Grid item xs={12} sm={6} md={4}>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                    <Box sx={{ 
-                                        width: 8, 
-                                        height: 8, 
-                                        borderRadius: '50%', 
-                                        backgroundColor: 'success.main' 
-                                    }} />
-                                    <Typography>Modern Facilities</Typography>
-                                </Box>
-                            </Grid>
-                        </Grid>
                     </Paper>
                 </Grid>
             </Grid>

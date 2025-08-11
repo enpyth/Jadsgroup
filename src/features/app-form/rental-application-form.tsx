@@ -30,8 +30,8 @@ function RentalApplicationFormContent({ property, user }: { property: Property, 
       if (formData.idDocument) {
         const uploadFormData = new FormData()
         uploadFormData.append('file', formData.idDocument)
-        uploadFormData.append('fileName', `idDocument_${Date.now()}_${formData.idDocument.name}`)
-        uploadFormData.append('email', user.email || 'anonymous')
+        const key = `tenants/${user.email}/idDocument_${Date.now()}_${formData.idDocument.name}`
+        uploadFormData.append('key', key)
 
         const uploadResponse = await fetch('/api/upload', {
           method: 'POST',

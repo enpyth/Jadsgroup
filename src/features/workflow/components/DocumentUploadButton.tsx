@@ -16,10 +16,8 @@ const DocumentUploadButton: React.FC<DocumentUploadButtonProps> = ({
     if (!file) return;
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("fileName", file.name);
-    formData.append("email", email);
-    console.log("filename: ", file.name);
-    console.log("email: ", email);
+    const key = `tenants/${email}/${file.name}`
+    formData.append("key", key);
     try {
       const res = await fetch("/api/upload", {
         method: "POST",
