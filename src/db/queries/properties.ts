@@ -38,6 +38,7 @@ export async function getPropertyWithDetails() {
     image: properties.image,
     unit: properties.unit,
     releaseTime: properties.release_time,
+    detail: properties.detail,
     ownerName: owners.name,
     agentName: agents.name,
     agentAgencyName: agents.agency_name,
