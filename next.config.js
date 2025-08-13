@@ -3,11 +3,11 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/(.*)',
+        source: '/_next/static/:path*',
         headers: [
           {
             key: 'Cache-Control',
-            value: 'no-cache'
+            value: 'public, max-age=86400, immutable'
           }
         ]
       }

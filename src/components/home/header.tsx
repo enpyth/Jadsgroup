@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation"
 import { ChevronDown } from "lucide-react"
 import { useSession } from "next-auth/react"
 
+// TODO: header can not be latest version
 export default function Header() {
   const { language, setLanguage, t } = useLanguage()
   const dropdownRef = useRef<HTMLLIElement>(null)
