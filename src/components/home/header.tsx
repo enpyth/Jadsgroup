@@ -145,42 +145,37 @@ export default function Header() {
         <nav className="md:hidden mt-3 border-t border-gray-100 pt-2">
           <ul className="flex space-x-4 overflow-x-auto py-1 text-sm">
             <li>
-              <Link href="#" className="text-red-600 font-medium whitespace-nowrap">
+              <Link href="/" className={`whitespace-nowrap ${isActive("/") ? "text-red-600 font-medium" : "text-gray-700 hover:text-red-600 transition-colors"}`}>
                 {t("home")}
               </Link>
             </li>
             <li>
-              <Link href="#" className="text-gray-700 whitespace-nowrap">
+              <Link href="/about" className={`whitespace-nowrap ${isActive("/about") ? "text-red-600 font-medium" : "text-gray-700 hover:text-red-600 transition-colors"}`}>
                 {t("aboutUs")}
               </Link>
             </li>
             <li>
-              <Link href="#" className="text-gray-700 whitespace-nowrap">
+              <Link href="/properties" className={`whitespace-nowrap ${isActive("/properties") ? "text-red-600 font-medium" : "text-gray-700 hover:text-red-600 transition-colors"}`}>
                 {t("property")}
               </Link>
             </li>
             <li>
-              <Link href="#" className="text-gray-700 whitespace-nowrap">
+              <Link href="/tech-microgrid" className={`whitespace-nowrap ${isActive("/technology") || isActive("/tech-microgrid") || isActive("/tech-solar-commercial") || isActive("/tech-solar-residential") ? "text-red-600 font-medium" : "text-gray-700 hover:text-red-600 transition-colors"}`}>
                 {t("technology")}
               </Link>
             </li>
             <li>
-              <Link href="#" className="text-gray-700 whitespace-nowrap">
-                {t("export")}
-              </Link>
-            </li>
-            <li>
-              <Link href="#" className="text-gray-700 whitespace-nowrap">
+              <Link href="/mall" className={`whitespace-nowrap ${isActive("/mall") ? "text-red-600 font-medium" : "text-gray-700 hover:text-red-600 transition-colors"}`}>
                 {t("marketPlaza")}
               </Link>
             </li>
             <li>
-              <Link href="#" className="text-gray-700 whitespace-nowrap">
+              <Link href="/events" className={`whitespace-nowrap ${isActive("/events") ? "text-red-600 font-medium" : "text-gray-700 hover:text-red-600 transition-colors"}`}>
                 {t("events")}
               </Link>
             </li>
             <li>
-              <Link href="#" className="text-gray-700 whitespace-nowrap">
+              <Link href="/contact" className={`whitespace-nowrap ${isActive("/contact") ? "text-red-600 font-medium" : "text-gray-700 hover:text-red-600 transition-colors"}`}>
                 {t("contactUs")}
               </Link>
             </li>

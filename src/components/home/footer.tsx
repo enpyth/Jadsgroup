@@ -32,17 +32,17 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="#" className="flex items-center hover:text-red-300 transition-colors">
+                <Link href="/about" className="flex items-center hover:text-red-300 transition-colors">
                   <span className="text-red-500 mr-2">▶</span> {t("aboutUs")}
                 </Link>
               </li>
               <li>
-                <Link href="#" className="flex items-center hover:text-red-300 transition-colors">
+                <Link href="/mall" className="flex items-center hover:text-red-300 transition-colors">
                   <span className="text-red-500 mr-2">▶</span> {t("marketPlaza")}
                 </Link>
               </li>
               <li>
-                <Link href="#" className="flex items-center hover:text-red-300 transition-colors">
+                <Link href="/tech-microgrid" className="flex items-center hover:text-red-300 transition-colors">
                   <span className="text-red-500 mr-2">▶</span> {t("technology")}
                 </Link>
               </li>
@@ -53,22 +53,22 @@ export default function Footer() {
             <h4 className="font-semibold mb-4">{t("services")}</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="#" className="flex items-center hover:text-red-300 transition-colors">
+                <Link href="/project-management" className="flex items-center hover:text-red-300 transition-colors">
                   <span className="text-red-500 mr-2">▶</span> {t("projectManagement")}
                 </Link>
               </li>
               <li>
-                <Link href="#" className="flex items-center hover:text-red-300 transition-colors">
+                <Link href="/properties" className="flex items-center hover:text-red-300 transition-colors">
                   <span className="text-red-500 mr-2">▶</span> {t("propertyManagement")}
                 </Link>
               </li>
               <li>
-                <Link href="#" className="flex items-center hover:text-red-300 transition-colors">
+                <Link href="/strata-management" className="flex items-center hover:text-red-300 transition-colors">
                   <span className="text-red-500 mr-2">▶</span> {t("strataManagement")}
                 </Link>
               </li>
               <li>
-                <Link href="#" className="flex items-center hover:text-red-300 transition-colors">
+                <Link href="/tech-microgrid" className="flex items-center hover:text-red-300 transition-colors">
                   <span className="text-red-500 mr-2">▶</span> {t("technology")}
                 </Link>
               </li>
@@ -85,9 +85,9 @@ export default function Footer() {
               <div className="flex items-start">
                 <MapPin className="h-4 w-4 mr-2 mt-1 flex-shrink-0" />
                 <span>
-                  Suite 2, Market Plaza
+                  Level 1, suite 3, 
                   <br />
-                  44-60 Gouger Street,
+                  61-63 Grote street,
                   <br />
                   Adelaide, South
                   <br />
@@ -95,15 +95,6 @@ export default function Footer() {
                 </span>
               </div>
             </div>
-          </div>
-        </div>
-
-        <div className="mt-12 pt-6 border-t border-blue-800">
-          <h4 className="font-semibold mb-4 text-center">{t("termsConditions")}</h4>
-          <div className="text-center text-sm">
-            <Link href="#" className="flex items-center justify-center hover:text-red-300 transition-colors">
-              <span className="text-red-500 mr-2">▶</span> {t("termsOfUse")}
-            </Link>
           </div>
         </div>
 
